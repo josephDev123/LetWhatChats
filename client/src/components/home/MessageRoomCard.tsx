@@ -1,12 +1,13 @@
 import { Images } from "../../../Images";
 import { messageRoomType } from "../../type/messageRoomType";
+import { motion } from "framer-motion";
 
 type MessageRoomCard = {
   item: messageRoomType;
 };
 export default function MessageRoomCard({ item }: MessageRoomCard) {
   return (
-    <section className="flex gap-2 items-center hover:bg-slate-200 p-3 rounded-md cursor-pointer">
+    <motion.section className="flex gap-2 items-center hover:bg-slate-200 p-3 rounded-md cursor-pointer">
       <img
         src={Images.avatar_one_png}
         alt="profile_avatar"
@@ -28,6 +29,6 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
           {/* <span className="text-slate-500 text-ellipsis"></span> */}
         </p>
       </div>
-    </section>
+    </motion.section>
   );
 }
