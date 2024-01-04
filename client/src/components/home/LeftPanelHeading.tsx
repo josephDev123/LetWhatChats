@@ -23,7 +23,7 @@ export default function LeftPanelHeading() {
         )}
 
         {openFilterModal && (
-          <FilterDropDown newRoomDropDownStatus={toggleCreateNewRoomDropDown} />
+          <FilterDropDown newRoomDropDownStatus={openFilterModal} />
         )}
         <BsFilter
           className="cursor-pointer"
