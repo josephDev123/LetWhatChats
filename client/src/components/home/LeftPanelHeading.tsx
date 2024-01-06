@@ -8,13 +8,20 @@ export default function LeftPanelHeading() {
   const [toggleCreateNewRoomDropDown, setToggleCreateNewRoomDropDown] =
     useState(false);
   const [openFilterModal, setOpenFilterModal] = useState(false);
+
   return (
     <section className="flex justify-between">
       <span className="text-xl font-semibold">Chats</span>
       <span className="flex gap-6 relative">
         <FaRegPenToSquare
           className="cursor-pointer "
-          onClick={() => setToggleCreateNewRoomDropDown((prev) => !prev)}
+          onClick={() => {
+            if (openFilterModal) {
+              setOpenFilterModal(false);
+              setToggleCreateNewRoomDropDown((prev) => !prev);
+            }
+            setToggleCreateNewRoomDropDown((prev) => !prev);
+          }}
         />
         {toggleCreateNewRoomDropDown && (
           <CreateNewRoomDropDown
@@ -27,7 +34,13 @@ export default function LeftPanelHeading() {
         )}
         <BsFilter
           className="cursor-pointer"
-          onClick={() => setOpenFilterModal((prev) => !prev)}
+          onClick={() => {
+            if (toggleCreateNewRoomDropDown) {
+              setToggleCreateNewRoomDropDown(false);
+              setOpenFilterModal((prev) => !prev);
+            }
+            setOpenFilterModal((prev) => !prev);
+          }}
         />
       </span>
     </section>

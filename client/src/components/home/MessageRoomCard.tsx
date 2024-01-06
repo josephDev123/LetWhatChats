@@ -1,13 +1,18 @@
 import { Images } from "../../../Images";
 import { messageRoomType } from "../../type/messageRoomType";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 type MessageRoomCard = {
   item: messageRoomType;
 };
 export default function MessageRoomCard({ item }: MessageRoomCard) {
+  const redirect = useNavigate();
   return (
-    <motion.section className="flex gap-2 items-center hover:bg-slate-200 p-3 rounded-md cursor-pointer">
+    <motion.section
+      onClick={() => redirect(item.roomUniqueName)}
+      className="flex gap-2 items-center hover:bg-slate-200 p-3 rounded-md cursor-pointer"
+    >
       <img
         src={Images.avatar_one_png}
         alt="profile_avatar"

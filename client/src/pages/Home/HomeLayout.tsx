@@ -4,6 +4,7 @@ import LeftPanelHeading from "../../components/home/LeftPanelHeading";
 import SearchChat from "../../components/home/SearchChat";
 import MessageRoomCard from "../../components/home/MessageRoomCard";
 import { messageRoomData } from "../../dummyData/messageRoom_data";
+import { Images } from "../../../Images";
 
 export default function HomeLayout({}: {}) {
   const { userData } = getCredential();
@@ -21,7 +22,10 @@ export default function HomeLayout({}: {}) {
         </div>
       </div>
       {/* right section */}
-      <div className="w-[70%] flex flex-col h-screen">
+      <div
+        className="w-[70%] flex flex-col h-screen bg-cover bg-center"
+        style={{ backgroundImage: `url(${Images.whatsapp_bg})` }}
+      >
         <Outlet />
       </div>
     </section>

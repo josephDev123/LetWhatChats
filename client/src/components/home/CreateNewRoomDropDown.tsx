@@ -24,7 +24,7 @@ export default function CreateNewRoomDropDown({
         <input
           type="search"
           placeholder="create name"
-          className="p-2 mt-2 rounded-md focus:outline-none bg-slate-100"
+          className="p-2 mt-2 rounded-md focus:outline-none bg-slate-100 focus:border-b focus:border-green-500"
         />
 
         <div className="flex gap-4"></div>

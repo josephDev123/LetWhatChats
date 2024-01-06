@@ -12,6 +12,7 @@ import HomeLayout from "./pages/Home/HomeLayout";
 import DashboardLayout from "./pages/Dashboard/DashboardLayout";
 import { verifyUserStatus } from "./actions/auth/verifyUserStatus";
 import DashboardPage from "./pages/Dashboard/page";
+import ChatById from "./pages/MessageId/ChatById";
 
 export const mainroutes = createBrowserRouter([
   {
@@ -25,9 +26,10 @@ export const mainroutes = createBrowserRouter([
         element: "welcome",
         errorElement: "error",
       },
+
       {
-        path: "/contact",
-        element: "Contact page",
+        path: ":id",
+        element: <ChatById />,
         errorElement: "error",
       },
     ],
