@@ -1,6 +1,7 @@
 import Joi from "joi";
 
 export const registercredentialValidation = async (
+  surname: string,
   name?: string,
   email?: string,
   password?: number | string
@@ -26,9 +27,10 @@ export const registercredentialValidation = async (
       email: Joi.string()
         .email({ tlds: { allow: false } })
         .required(),
+      surname: Joi.string().min(5).max(10),
     });
 
-    return schema.validate({ name, password, email });
+    return schema.validate({ name, password, email, surname });
   } catch (error) {
     throw new Error("Validation error: " + (error as Error).message);
   }

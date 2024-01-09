@@ -1,15 +1,12 @@
+import { string } from "joi";
 import mongoose, { Document, Schema, Types } from "mongoose";
 
 type userType = {
   name: string;
   email: string;
+  username: String;
   password: string;
-  username: string;
-  profile_id: Types.ObjectId;
-  otp: string;
-  confirm_otp: boolean;
-  staging: number;
-  status: boolean;
+  profile_img: String;
 };
 //user schema
 
@@ -45,17 +42,7 @@ const userSchema = new mongoose.Schema<userType>({
         `${props.value} is not a valid username. Must be alphanumeric and between 3 to 20 characters.`,
     },
   },
-
-  profile_id: {
-    type: Schema.Types.ObjectId,
-    ref: "UserProfile",
-  },
-
-  otp: String,
-
-  confirm_otp: { type: Boolean, default: false },
-
-  staging: { type: Number, default: 0 },
+  profile_img: String,
 });
 
 //user model
