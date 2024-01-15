@@ -1,4 +1,4 @@
-import { Link, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { getCredential } from "../../utils/getCredential";
 import LeftPanelHeading from "../../components/home/LeftPanelHeading";
 import SearchChat from "../../components/home/SearchChat";
@@ -8,7 +8,7 @@ import { Images } from "../../../Images";
 
 export default function HomeLayout({}: {}) {
   const { userData } = getCredential();
-
+  console.log(userData);
   return (
     <section className="flex w-full h-full gap-1">
       {/* left section */}

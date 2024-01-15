@@ -1,6 +1,4 @@
 import { motion, AnimatePresence } from "framer-motion";
-import MessageRoomCard from "./MessageRoomCard";
-import { messageRoomData } from "../../dummyData/messageRoom_data";
 import { createNewRoomDropDownVariant } from "../../framerMotion_variants/newRoomDropDownVariants";
 import { CiUnread } from "react-icons/ci";
 import { RiContactsLine } from "react-icons/ri";

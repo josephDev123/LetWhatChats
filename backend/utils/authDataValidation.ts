@@ -25,7 +25,7 @@ export const registercredentialValidation = async (
         )
         .required(),
       email: Joi.string()
-        .email({ tlds: { allow: false } })
+        .email() //{ tlds: { allow: false } }
         .required(),
       surname: Joi.string().min(5).max(10),
     });

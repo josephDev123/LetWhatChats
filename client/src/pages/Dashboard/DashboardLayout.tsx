@@ -1,11 +1,7 @@
-import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import { STATUS } from "../../utils/request_status";
 import { Link } from "react-router-dom";
 
 export default function DashboardLayout() {
-  const [status, setStatus] = useState(STATUS.IDLE);
-
   return (
     <div className="flex flex-col items-center gap-4 justify-center ">
       <div className="flex justify-between ">

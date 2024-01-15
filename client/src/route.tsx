@@ -5,9 +5,8 @@ import { registerAction } from "./actions/auth/registerAction";
 import { loginAction } from "./actions/auth/loginAction";
 import { ConfirmOtp } from "./actions/auth/confirmOtp";
 import Otp from "./pages/otp/Otp";
-import ProfilePic from "./pages/Profile-pic/ProfilePic";
 import SetUsername from "./pages/setUsername/SetUsername";
-import Theme from "./pages/theme/Theme";
+
 import HomeLayout from "./pages/Home/HomeLayout";
 import DashboardLayout from "./pages/Dashboard/DashboardLayout";
 import { verifyUserStatus } from "./actions/auth/verifyUserStatus";

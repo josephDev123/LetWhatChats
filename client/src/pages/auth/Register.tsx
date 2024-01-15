@@ -11,6 +11,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { axiosInstance } from "../../axios/axiosInstance";
+import { UploadFirebase } from "../../utils/firebaseImgUpload";
 
 import { registerSchema } from "../../zodTypes/registerType";
 
@@ -46,8 +47,29 @@ export default function Register() {
     }
   };
 
-  const handleOnSubmit: SubmitHandler<registerType> = (data) => {
-    const;
+  const handleOnSubmit: SubmitHandler<registerType> = async (data) => {
+    try {
+      const fileUploadUrl = await UploadFirebase(profileImgData);
+      if (!fileUploadUrl) {
+        return;
+      } else {
+        const submitReq = await axiosInstance({
+          method: "post",
+          url: "/auth/register",
+          data: {
+            name: data.name,
+            email: data.email,
+            username: data.username,
+            password: data.password,
+            profile_img: fileUploadUrl,
+          },
+        });
+        const resp = await submitReq.data;
+        console.log(resp);
+      }
+    } catch (error: any) {
+      console.log(error.message);
+    }
   };
 
   return (
