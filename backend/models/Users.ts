@@ -21,14 +21,14 @@ const userSchema = new mongoose.Schema<userType>({
     type: String,
     required: true,
     unique: true, // Ensure uniqueness
-    match: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+    // match: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
   },
 
   password: {
     type: String,
     required: true,
-    maxlength: 10,
-    min: 6,
+    // maxlength: 10,
+    // min: 6,
     unique: true,
   },
 
@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema<userType>({
     validate: {
       validator: function (value: any) {
         // Alphanumeric with a length between 3 and 20 characters
-        return /^[a-zA-Z0-9]{3,20}$/.test(value);
+        return /^[a-zA-Z0-9]{5,10}$/.test(value);
       },
       message: (props) =>
         `${props.value} is not a valid username. Must be alphanumeric and between 3 to 20 characters.`,

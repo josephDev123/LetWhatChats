@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 export const registercredentialValidation = async (
-  surname: string,
+  username: string,
   name?: string,
   email?: string,
   password?: number | string
@@ -15,8 +15,8 @@ export const registercredentialValidation = async (
         .trim()
         .required(),
       password: Joi.string()
-        .min(8)
-        .max(15)
+        // .min(6)
+        // .max(10)
         .pattern(
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/
         )
@@ -25,12 +25,12 @@ export const registercredentialValidation = async (
         )
         .required(),
       email: Joi.string()
-        .email() //{ tlds: { allow: false } }
+        // .email() //{ tlds: { allow: false } }
         .required(),
       surname: Joi.string().min(5).max(10),
     });
 
-    return schema.validate({ name, password, email, surname });
+    return schema.validate({ name, password, email, username });
   } catch (error) {
     throw new Error("Validation error: " + (error as Error).message);
   }

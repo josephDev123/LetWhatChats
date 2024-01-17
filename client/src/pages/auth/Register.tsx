@@ -12,13 +12,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { axiosInstance } from "../../axios/axiosInstance";
 import { UploadFirebase } from "../../utils/firebaseImgUpload";
-
+import LoadingModal from "../../components/generic/LoadingModal";
 import { registerSchema } from "../../zodTypes/registerType";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [uploadProfileUrl, setUploadProfileUrl] = useState<null | string>();
   const [profileImgData, setprofileImgData] = useState<object>();
+  const [status, setStatus] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const location = useNavigate();
 
   type registerType = z.infer<typeof registerSchema>;
   const {
@@ -43,14 +47,16 @@ export default function Register() {
       };
 
       reader.readAsDataURL(selectedFile);
-      reader.abort();
+      // reader.abort();
     }
   };
 
   const handleOnSubmit: SubmitHandler<registerType> = async (data) => {
+    setStatus("loading");
     try {
       const fileUploadUrl = await UploadFirebase(profileImgData);
       if (!fileUploadUrl) {
+        setStatus("");
         return;
       } else {
         const submitReq = await axiosInstance({
@@ -66,9 +72,12 @@ export default function Register() {
         });
         const resp = await submitReq.data;
         console.log(resp);
+        // window.location.href = "/login";
+        location("/login");
       }
     } catch (error: any) {
-      console.log(error.message);
+      setStatus("error");
+      setErrorMessage(error.message);
     }
   };
 
@@ -79,6 +88,10 @@ export default function Register() {
           <SVGChatComponent color="green" className="w-[100px] h-[100px]" />
         </div>
 
+        {/* error when submiting */}
+        {status === "error" && (
+          <p className="text-sm text-red-500">{errorMessage}</p>
+        )}
         <form className="space-y-4" onSubmit={handleSubmit(handleOnSubmit)}>
           <div className="flex flex-col">
             <div className="flex gap-1 w-full items-center justify-center relative">
@@ -87,7 +100,7 @@ export default function Register() {
                 {...register("name")}
                 name="name"
                 type="text"
-                className="p-2 border-b outline-none w-full placeholder:pl-5 focus:border-green-300 mt-1"
+                className="p-2 border-b outline-none w-full pl-8 focus:border-green-300 mt-1"
                 placeholder="Enter your names"
               />
             </div>
@@ -103,7 +116,7 @@ export default function Register() {
                 {...register("username")}
                 name="username"
                 type="text"
-                className="p-2 border-b outline-none w-full placeholder:pl-5 focus:border-green-300 mt-1"
+                className="p-2 border-b outline-none w-full pl-8 focus:border-green-300 mt-1"
                 placeholder="Enter your username"
               />
             </div>
@@ -119,7 +132,7 @@ export default function Register() {
                 {...register("email")}
                 name="email"
                 type="email"
-                className="p-2 border-b outline-none w-full placeholder:pl-5 focus:border-green-300 mt-1"
+                className="p-2 border-b outline-none w-full pl-8 focus:border-green-300 mt-1"
                 placeholder="Enter your email"
               />
             </div>
@@ -136,7 +149,7 @@ export default function Register() {
                 {...register("password")}
                 name="password"
                 type={`${!showPassword ? "password" : "text"}`}
-                className="p-2 border-b outline-none w-full placeholder:pl-5 focus:border-green-300 mt-1"
+                className="p-2 border-b outline-none w-full pl-8 focus:border-green-300 mt-1"
                 placeholder="Enter your correct password"
               />
 
@@ -202,6 +215,9 @@ export default function Register() {
           </Link>
         </p>
       </div>
+
+      {/* loading modal */}
+      {status === "loading" && <LoadingModal />}
     </div>
   );
 }

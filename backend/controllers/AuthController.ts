@@ -18,6 +18,8 @@ import { Console, log, profile } from "console";
 import { randomBytes, randomUUID } from "crypto";
 import { sendMail } from "../utils/sendMail";
 import { generateRandomPIN } from "../utils/generateRandomPin";
+import { isUsernameRegistered } from "../utils/isUsernameRegistered";
+import { unhashPassword } from "../utils/unhashPassword";
 
 export const register = async (req: Request, res: Response) => {
   try {
@@ -27,10 +29,10 @@ export const register = async (req: Request, res: Response) => {
     const isEmailUsed = await isEmailAlreadyUsed(email);
 
     const validationResult = await registercredentialValidation(
+      surname,
       name,
       email,
-      password,
-      surname
+      password
     );
 
     if (validationResult.error) {
@@ -48,13 +50,12 @@ export const register = async (req: Request, res: Response) => {
       const newUser = new UserModel({
         name: name,
         email: email,
+        username: surname,
         password: hashedPassword,
         profile_img: profile_img,
       });
       const user = await newUser.save();
-
-      res.cookie("user", user, {});
-
+      // res.cookie("user", user, {});
       return res.status(201).json({
         error: false,
         showMessage: true,
@@ -82,11 +83,11 @@ export const register = async (req: Request, res: Response) => {
 
 export const loginController = async (req: Request, res: Response) => {
   try {
-    const { name, email } = req.body;
+    const { username, email, password } = req.body;
     const validationResult = await registercredentialValidation(
-      name,
+      username,
       email,
-      "Password@123"
+      password
     );
 
     if (validationResult.error) {
@@ -99,6 +100,11 @@ export const loginController = async (req: Request, res: Response) => {
       });
     }
 
+    const hashedPassword = "";
+    const comparePassword = await unhashPassword(password, hashedPassword);
+    if (!comparePassword) {
+    }
+
     const new_Email = await isRegisteredEmail(email);
     if (new_Email === false) {
       console.log("The email is not yet registered");
@@ -109,9 +115,9 @@ export const loginController = async (req: Request, res: Response) => {
       });
     }
 
-    const checkNameAlreadyRegistered = await isNameAlreadyReqistered(name);
-    if (checkNameAlreadyRegistered === false) {
-      console.log("The name is not yet registered");
+    const checkUsernameAlreadyRegistered = await isUsernameRegistered(username);
+    if (checkUsernameAlreadyRegistered === false) {
+      console.log("The username is not yet registered");
       return res.json({
         error: true,
         showMessage: true,
@@ -119,34 +125,16 @@ export const loginController = async (req: Request, res: Response) => {
       });
     }
     const token = await createToken(email);
-    // console.log(token);
-    // const user_id = await UserModel.findOne({ email }, "_id");
-    // const userProfile = await UserProfile.findOne({
-    //   user_id: user_id?._id,
-    // }).populate("user_id");
 
     const user = await UserModel.findOne({ email: email });
 
-    // check whether the user is real by checking for OTP status
-    // if (user?.confirm_otp == false) {
-    //   return res.json({
-    //     error: true,
-    //     showMessage: true,
-    //     message: "Otp unconfirmed",
-    //   });
-    // }
+    res.cookie("token", token, {
+      maxAge: 300000,
+      secure: true,
+      httpOnly: false,
+    });
+    // res.cookie("user", JSON.stringify(user));
 
-    res.cookie("token", token, {
-      maxAge: 300000,
-      secure: true,
-      httpOnly: false,
-    });
-    res.cookie("user", JSON.stringify(user));
-    res.cookie("token", token, {
-      maxAge: 300000,
-      secure: true,
-      httpOnly: false,
-    });
     return res.json({
       success: true,
       showMessage: false,
