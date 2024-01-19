@@ -6,7 +6,10 @@ import {
   isEmailAlreadyUsed,
 } from "../utils/comparePassword";
 import { UserModel } from "../models/Users";
-import { registercredentialValidation } from "../utils/authDataValidation";
+import {
+  loginCredentialValidation,
+  registercredentialValidation,
+} from "../utils/authDataValidation";
 import { isRegisteredEmail } from "../utils/isRegisteredEmail";
 import { isNameAlreadyReqistered } from "../utils/isNameRegistered";
 import jwt from "jsonwebtoken";
@@ -23,13 +26,13 @@ import { unhashPassword } from "../utils/unhashPassword";
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { email, name, surname, password, profile_img } = req.body;
+    const { email, name, username, password, profile_img } = req.body;
     const hashedPassword = await hashPassword(password);
     const isPasswordAlreadyUsed = await isPasswordAlreadyTaken(password);
     const isEmailUsed = await isEmailAlreadyUsed(email);
 
     const validationResult = await registercredentialValidation(
-      surname,
+      username,
       name,
       email,
       password
@@ -50,7 +53,7 @@ export const register = async (req: Request, res: Response) => {
       const newUser = new UserModel({
         name: name,
         email: email,
-        username: surname,
+        username: username,
         password: hashedPassword,
         profile_img: profile_img,
       });
@@ -84,7 +87,11 @@ export const register = async (req: Request, res: Response) => {
 export const loginController = async (req: Request, res: Response) => {
   try {
     const { username, email, password } = req.body;
-    const validationResult = await registercredentialValidation(
+
+    const dbForPassword = await UserModel.findOne({ email });
+    // console.log(dbPassword);
+
+    const validationResult = await loginCredentialValidation(
       username,
       email,
       password
@@ -100,9 +107,16 @@ export const loginController = async (req: Request, res: Response) => {
       });
     }
 
-    const hashedPassword = "";
+    const hashedPassword = dbForPassword?.password;
     const comparePassword = await unhashPassword(password, hashedPassword);
-    if (!comparePassword) {
+
+    if (comparePassword === false) {
+      console.log("The password is not yet registered");
+      return res.json({
+        error: true,
+        showMessage: true,
+        message: "The password is not yet registered",
+      });
     }
 
     const new_Email = await isRegisteredEmail(email);
@@ -137,7 +151,8 @@ export const loginController = async (req: Request, res: Response) => {
 
     return res.json({
       success: true,
-      showMessage: false,
+      showMessage: true,
+      data: user,
       message: "login successful",
     });
   } catch (error) {

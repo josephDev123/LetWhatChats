@@ -9,7 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { axiosInstance } from "../../axios/axiosInstance";
 import LoadingModal from "../../components/generic/LoadingModal";
-import { registerSchema } from "../../zodTypes/registerType";
+import { loginSchema } from "../../zodTypes/registerType";
 import { useNavigate } from "react-router-dom";
 import { LuUserCircle2 } from "react-icons/lu";
 
@@ -19,29 +19,31 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState("");
   const location = useNavigate();
 
-  type registerType = z.infer<typeof registerSchema>;
+  type loginType = z.infer<typeof loginSchema>;
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<registerType>({ resolver: zodResolver(registerSchema) });
+  } = useForm<loginType>({ resolver: zodResolver(loginSchema) });
 
-  const handleOnLogin: SubmitHandler<registerType> = async (data) => {
+  const handleOnLogin: SubmitHandler<loginType> = async (data) => {
+    console.log(data);
     setStatus("loading");
     try {
-      const submitReq = await axiosInstance({
+      const loginReq = await axiosInstance({
         method: "post",
-        url: "/auth/login",
+        url: "auth/login",
         data: {
           email: data.email,
           username: data.username,
           password: data.password,
         },
       });
-      const resp = await submitReq.data;
+      const resp = await loginReq.data;
+      window.localStorage.setItem("user", JSON.stringify(resp));
       console.log(resp);
 
-      location("/login");
+      return location("/");
     } catch (error: any) {
       setStatus("error");
       setErrorMessage(error.message);

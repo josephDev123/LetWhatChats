@@ -66,7 +66,6 @@ export const mainroutes = createBrowserRouter([
     path: "/login",
     element: <Login />,
     errorElement: "error",
-    action: loginAction,
   },
 
   {
