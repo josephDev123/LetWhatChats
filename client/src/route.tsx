@@ -27,7 +27,7 @@ export const mainroutes = createBrowserRouter([
       },
 
       {
-        path: ":id",
+        path: ":room",
         element: <ChatById />,
         errorElement: "error",
       },
