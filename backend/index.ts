@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 import { AuthRoute } from "./routes/auths/authRoute";
 import cookieParser from "cookie-parser";
 import { authenticateToken } from "./middleware/authenticateToken";
+import { Server } from "socket.io";
+import { createServer } from "http";
 
 dotenv.config();
 
@@ -14,6 +16,12 @@ const corsOption = {
 };
 
 const app: Express = express();
+const HttpServer = createServer(app);
+const socketServer = new Server(HttpServer, {
+  cors: {
+    origin: "http://localhost:5173",
+  },
+});
 
 app.use(cors(corsOption));
 app.use(express.json());
@@ -26,9 +34,21 @@ app.use(cookieParser());
 const startApp = async () => {
   try {
     await dbConnection();
+
+    // socketServer.io
+    socketServer.on("connection", (socket) => {
+      socket.on("joinRoom", (room) => {
+        //   // socket.to(data).emit("reponse", "welcome to the room");
+        socket.on("exchangeMessage", (room, data) => {
+          // console.log(room);
+          socket.to(room).emit("exchangeMessage", data);
+        });
+      });
+    });
+
     app.use("/auth", AuthRoute);
 
-    app.listen(process.env.PORT, () => {
+    HttpServer.listen(process.env.PORT, () => {
       console.log(`listening on port ${process.env.PORT}`);
     });
   } catch (error) {
