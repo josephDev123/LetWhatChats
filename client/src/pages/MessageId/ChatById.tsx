@@ -11,6 +11,7 @@ import { socket } from "../../socketIo";
 
 export default function ChatById() {
   const [toggleAttachment, setToggleAttachment] = useState(false);
+  const [message, setMessage] = useState<any[]>([]);
   // const [socket, setSocket] = useState<any>();
   const [chat, setChat] = useState("");
   const { room } = useParams();
@@ -48,13 +49,14 @@ export default function ChatById() {
 
     // }
 
-    socket.emit("exchangeMessage", room, chat);
+    socket.emit("submitMessage", { room, chat });
   }
 
   useEffect(() => {
     if (socket) {
       // Handle incoming chat messages
-      socket.on("exchangeMessage", (chat: string) => {
+      socket.on("exchangeMessage", (chat) => {
+        setMessage([...message, chat]);
         console.log(chat);
       });
     }
@@ -75,6 +77,10 @@ export default function ChatById() {
       <div className="flex flex-col justify-between gap-4 px-4 text-white/80 pt-8">
         <IncomingMessage />
         <SentMessage />
+
+        {message.map((item, i) => (
+          <span key={i}>{item}</span>
+        ))}
       </div>
       <div className="relative text-white/80 flex gap-4 mt-auto items-center py-2 px-4 bg-black/40">
         <GrEmoji className="hover:bg-black/30 p-1 rounded-md text-3xl cursor-pointer" />
