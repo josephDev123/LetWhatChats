@@ -1,4 +1,5 @@
 import { Images } from "../../../Images";
+import { useUser } from "../../customHooks/useUser";
 import { messageRoomType } from "../../type/messageRoomType";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +9,8 @@ type MessageRoomCard = {
 };
 export default function MessageRoomCard({ item }: MessageRoomCard) {
   const redirect = useNavigate();
+  const user = useUser();
+
   return (
     <motion.section
       onClick={() => redirect(item.roomUniqueName)}

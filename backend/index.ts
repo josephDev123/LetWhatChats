@@ -37,15 +37,16 @@ const startApp = async () => {
 
     // socketServer.io
     socketServer.on("connection", (socket) => {
-      socket.on("joinRoom", (room) => {
-        // console.log(room);
-        socket.join(room);
+      socket.on("joinRoom", (roomOption) => {
+        console.log(roomOption);
+        socket.emit("recieveRoom", { roomOption });
+        socket.join(roomOption.room);
         //   // socket.to(data).emit("reponse", "welcome to the room");
       });
 
       socket.on("submitMessage", (data) => {
-        // console.log(room);
         socket.to(data.room).emit("exchangeMessage", data.chat);
+        socket.emit("exchangeMessage", data.chat);
       });
     });
 

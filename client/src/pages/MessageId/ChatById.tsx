@@ -15,6 +15,7 @@ export default function ChatById() {
   // const [socket, setSocket] = useState<any>();
   const [chat, setChat] = useState("");
   const { room } = useParams();
+  console.log(message);
 
   useEffect(() => {
     // const newSocket = io("http://localhost:7000/");
@@ -56,6 +57,7 @@ export default function ChatById() {
     if (socket) {
       // Handle incoming chat messages
       socket.on("exchangeMessage", (chat) => {
+        console.log(chat);
         setMessage([...message, chat]);
         console.log(chat);
       });
