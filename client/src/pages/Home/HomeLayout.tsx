@@ -3,12 +3,25 @@ import { getCredential } from "../../utils/getCredential";
 import LeftPanelHeading from "../../components/home/LeftPanelHeading";
 import SearchChat from "../../components/home/SearchChat";
 import MessageRoomCard from "../../components/home/MessageRoomCard";
-import { messageRoomData } from "../../dummyData/messageRoom_data";
+import { messageRoomType } from "../../type/messageRoomType";
 import { Images } from "../../../Images";
+import { useEffect, useState } from "react";
+import { socket } from "../../socketIo";
 
 export default function HomeLayout({}: {}) {
+  const [rooms, setRooms] = useState<messageRoomType[]>([]);
+  socket.connect();
   const { userData } = getCredential();
   console.log(userData);
+
+  useEffect(() => {
+    socket.on("getRoom", (roomsCredential) => {
+      // const newSetRoom = Array.from(new Set([rooms, roomsCredential]));
+      setRooms((prev) => [...prev, roomsCredential]);
+      // setRooms(newSetRoom);
+    });
+  }, []);
+
   return (
     <section className="flex w-full h-full gap-1">
       {/* left section */}
@@ -16,7 +29,7 @@ export default function HomeLayout({}: {}) {
         <LeftPanelHeading />
         <SearchChat />
         <div className="overflow-y-auto mt-4">
-          {messageRoomData.map((item, index) => (
+          {rooms.map((item, index) => (
             <MessageRoomCard key={index} item={item} />
           ))}
         </div>

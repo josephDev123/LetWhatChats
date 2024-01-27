@@ -4,8 +4,9 @@ import { messageRoomData } from "../../dummyData/messageRoom_data";
 import { IoPeopleOutline } from "react-icons/io5";
 import { createNewRoomDropDownVariant } from "../../framerMotion_variants/newRoomDropDownVariants";
 import { socket } from "../../socketIo";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useUser } from "../../customHooks/useUser";
+import moment from "moment";
 
 interface CreateNewRoomDropDownProps {
   newRoomDropDownStatus: boolean;
@@ -15,7 +16,7 @@ export default function CreateNewRoomDropDown({
   newRoomDropDownStatus,
 }: CreateNewRoomDropDownProps) {
   const [room, setRoom] = useState("");
-  const [rooms, setRooms] = useState<any[]>([]);
+  const currentTime = moment().format("h:mma");
 
   const user = useUser();
 
@@ -23,18 +24,12 @@ export default function CreateNewRoomDropDown({
     if (!room) {
       return;
     }
-    socket.emit("joinRoom", {
-      room,
-      userProfile: user.data.profile_img,
-      time: "7:20",
+    socket.emit("createRoom", {
+      roomUniqueName: room,
+      avatar: user.data.profile_img,
+      time: currentTime,
     });
   };
-
-  useEffect(() => {
-    socket.on("receiveRoom", (room) => {
-      setRooms((prev) => [...prev, room]);
-    });
-  }, [socket]);
 
   return (
     <AnimatePresence>
@@ -57,7 +52,7 @@ export default function CreateNewRoomDropDown({
         <button
           onClick={handleCreateRoom}
           type="button"
-          className="self-start p-1 flex gap-4 items-center mt-2 w-full rounded-sm  hover:bg-slate-200 focus:border-b-2 border-green-500"
+          className="self-start p-1 flex gap-4 items-center mt-2 w-full rounded-sm hover:text-black hover:bg-slate-200/30 focus:border-b-2 border-green-500"
         >
           <IoPeopleOutline className="bg-slate-200 rounded-full p-2 text-4xl" />
           <span>Create Room</span>

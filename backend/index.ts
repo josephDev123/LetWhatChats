@@ -37,9 +37,8 @@ const startApp = async () => {
 
     // socketServer.io
     socketServer.on("connection", (socket) => {
-      socket.on("joinRoom", (roomOption) => {
-        console.log(roomOption);
-        socket.emit("recieveRoom", { roomOption });
+      socket.on("createRoom", (roomOption) => {
+        socket.to(roomOption.room).emit("getRoom", roomOption);
         socket.join(roomOption.room);
         //   // socket.to(data).emit("reponse", "welcome to the room");
       });
