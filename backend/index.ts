@@ -7,6 +7,7 @@ import cookieParser from "cookie-parser";
 import { authenticateToken } from "./middleware/authenticateToken";
 import { Server } from "socket.io";
 import { createServer } from "http";
+import { User } from "./utils/User";
 
 dotenv.config();
 
@@ -17,7 +18,7 @@ const corsOption = {
 
 const app: Express = express();
 const HttpServer = createServer(app);
-const socketServer = new Server(HttpServer, {
+const io = new Server(HttpServer, {
   cors: {
     origin: "http://localhost:5173",
   },
@@ -33,19 +34,47 @@ app.use(cookieParser());
 
 const startApp = async () => {
   try {
+    const user = new User();
     await dbConnection();
 
     // socketServer.io
-    socketServer.on("connection", (socket) => {
-      socket.on("createRoom", (roomOption) => {
-        socket.to(roomOption.room).emit("getRoom", roomOption);
-        socket.join(roomOption.room);
-        //   // socket.to(data).emit("reponse", "welcome to the room");
+    io.on("connection", (socket) => {
+      // socket.on("createRoom", (roomOption) => {
+      //   socket.join(roomOption.room);
+      //   io.to(roomOption.room).emit("getRoom", roomOption);
+      // });
+
+      socket.on("welcomeMessage", (room) => {
+        socket.join(room.room);
+        user.addUser(socket.id, room.room);
+        // console.log(room.room);
+        const userRoom = user.getUser(room.room);
+        // console.log(userRoom);
+
+        if (userRoom) {
+          socket
+            // .to(userRoom.room)
+            .emit("welcomeMessage", `welcome to ${room.room} room`);
+        } else {
+          console.log("User not found or missing room information.");
+        }
       });
 
       socket.on("submitMessage", (data) => {
-        socket.to(data.room).emit("exchangeMessage", data.chat);
-        socket.emit("exchangeMessage", data.chat);
+        const userRoom = user.getUser(data.room);
+        const submittedChatData = {
+          name: data.name,
+          room: data.room,
+          chat: data.chat,
+          time: data.time,
+        };
+        if (userRoom) {
+          io.to(userRoom.room).emit("exchangeMessage", submittedChatData);
+        } else {
+          console.log("User not found or missing room information.");
+        }
+
+        // socket.emit("exchangeMessage", data.chat);
       });
     });
 

@@ -5,44 +5,59 @@ import SentMessage from "../../components/messageId/SentMessage";
 import { GrEmoji } from "react-icons/gr";
 import { GrFormAttachment } from "react-icons/gr";
 import UploadFilePopUp from "../../components/messageId/UploadFilePopUp";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, Fragment, useEffect, useRef, useState } from "react";
 // import { io, Socket } from "socket.io-client";
 import { socket } from "../../socketIo";
+import { useUser } from "../../customHooks/useUser";
+import moment from "moment";
+import { ChatDataType } from "../../type/chatDataType";
 
 export default function ChatById() {
   const [toggleAttachment, setToggleAttachment] = useState(false);
-  const [message, setMessage] = useState<any[]>([]);
+  const [message, setMessage] = useState<ChatDataType[]>([]);
+  console.log(message);
+  const welcomeRef = useRef<HTMLDivElement>(null);
   // const [socket, setSocket] = useState<any>();
   const [chat, setChat] = useState("");
   const { room } = useParams();
-  console.log(message);
+  const user = useUser();
 
-  useEffect(() => {
-    // const newSocket = io("http://localhost:7000/");
-    // setSocket(newSocket);
-    function onConnect() {
-      console.log("client connected");
-    }
+  // useEffect(() => {
+  // const newSocket = io("http://localhost:7000/");
+  // setSocket(newSocket);
+  function onConnect() {
+    socket.emit("welcomeMessage", { room });
+    console.log("client connected");
+  }
 
-    function disConnect() {
-      console.log("client disconnected");
-    }
+  function disConnect() {
+    console.log("client disconnected");
+  }
 
-    socket.on("connect", onConnect);
+  socket.on("connect", onConnect);
 
-    socket.on("disconnect", disConnect);
+  socket.on("disconnect", disConnect);
 
-    socket.emit("joinRoom", room);
+  // socket.emit("joinRoom", room);
 
-    return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", disConnect);
-    };
-  }, [room]);
+  // return () => {
+  // socket.off("connect", onConnect);
+  // socket.off("disconnect", disConnect);
+  //   };
+  // }, [room]);
 
   socket.on("connect_error", (error: any) => {
     console.error("Connection error:", error);
   });
+
+  // useEffect(() => {
+  socket.on("welcomeMessage", (data) => {
+    // console.log(data);
+    if (welcomeRef.current) {
+      welcomeRef.current.innerHTML = data;
+    }
+  });
+  // }, []);
 
   function handleSubmitMessage(e: FormEvent) {
     e.preventDefault();
@@ -50,19 +65,23 @@ export default function ChatById() {
 
     // }
 
-    socket.emit("submitMessage", { room, chat });
+    socket.emit("submitMessage", {
+      name: user.data.name,
+      room,
+      chat,
+      time: moment(new Date()).format("h:mm"),
+    });
   }
 
-  useEffect(() => {
-    if (socket) {
-      // Handle incoming chat messages
-      socket.on("exchangeMessage", (chat) => {
-        console.log(chat);
-        setMessage([...message, chat]);
-        console.log(chat);
-      });
-    }
-  }, [socket]);
+  // useEffect(() => {
+  if (socket) {
+    // Handle incoming chat messages
+    socket.on("exchangeMessage", (chat) => {
+      console.log(chat);
+      setMessage([...message, chat]);
+    });
+  }
+  // }, [socket]);
 
   return (
     <section className="flex flex-col w-full h-full">
@@ -77,11 +96,17 @@ export default function ChatById() {
       </div>
 
       <div className="flex flex-col justify-between gap-4 px-4 text-white/80 pt-8">
-        <IncomingMessage />
-        <SentMessage />
+        <div ref={welcomeRef}></div>
 
         {message.map((item, i) => (
-          <span key={i}>{item}</span>
+          // <span key={i}>{item}</span>
+          <Fragment key={i}>
+            {item.name !== user.data.name ? (
+              <IncomingMessage item={item} />
+            ) : (
+              <SentMessage item={item} />
+            )}
+          </Fragment>
         ))}
       </div>
       <div className="relative text-white/80 flex gap-4 mt-auto items-center py-2 px-4 bg-black/40">

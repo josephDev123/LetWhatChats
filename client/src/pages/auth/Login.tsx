@@ -27,7 +27,7 @@ export default function Login() {
   } = useForm<loginType>({ resolver: zodResolver(loginSchema) });
 
   const handleOnLogin: SubmitHandler<loginType> = async (data) => {
-    console.log(data);
+    // console.log(data);
     setStatus("loading");
     try {
       const loginReq = await axiosInstance({
@@ -45,6 +45,7 @@ export default function Login() {
 
       return location("/");
     } catch (error: any) {
+      console.log(error);
       setStatus("error");
       setErrorMessage(error.message);
     }

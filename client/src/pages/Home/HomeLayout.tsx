@@ -10,15 +10,11 @@ import { socket } from "../../socketIo";
 
 export default function HomeLayout({}: {}) {
   const [rooms, setRooms] = useState<messageRoomType[]>([]);
-  socket.connect();
   const { userData } = getCredential();
-  console.log(userData);
 
   useEffect(() => {
     socket.on("getRoom", (roomsCredential) => {
-      // const newSetRoom = Array.from(new Set([rooms, roomsCredential]));
       setRooms((prev) => [...prev, roomsCredential]);
-      // setRooms(newSetRoom);
     });
   }, []);
 
