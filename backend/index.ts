@@ -39,10 +39,15 @@ const startApp = async () => {
 
     // socketServer.io
     io.on("connection", (socket) => {
-      // socket.on("createRoom", (roomOption) => {
-      //   socket.join(roomOption.room);
-      //   io.to(roomOption.room).emit("getRoom", roomOption);
-      // });
+      socket.on("createRoom", (roomOption) => {
+        socket.join(roomOption.roomUniqueName);
+        user.addUser(socket.id, roomOption.roomUniqueName);
+        const userRoom = user.getUser(roomOption.roomUniqueName);
+
+        if (userRoom) {
+          io.to(userRoom.room).emit("getCreateRoom", roomOption);
+        }
+      });
 
       socket.on("welcomeMessage", (room) => {
         socket.join(room.room);

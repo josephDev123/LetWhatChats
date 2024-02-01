@@ -6,6 +6,10 @@ export const Images = {
     "./public/imgs/pngs/WhatsApp_Background.jpeg",
     import.meta.url
   ).href,
+  mobile_whatsapp_bg: new URL(
+    "../client/src/assets/Default_WhatsApp_background.jpeg",
+    import.meta.url
+  ).href,
   whatsapp_bg2: new URL(
     "./public/imgs/pngS/whatsappBackground.jpeg",
     import.meta.url

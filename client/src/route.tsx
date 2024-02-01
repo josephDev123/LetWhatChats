@@ -31,6 +31,22 @@ export const mainroutes = createBrowserRouter([
         element: <ChatById />,
         errorElement: "error",
       },
+      {
+        path: "community",
+        element: "community",
+        errorElement: "error",
+      },
+
+      {
+        path: "chats",
+        element: "chats  room",
+        errorElement: "error",
+      },
+      {
+        path: "calls",
+        element: "Calls",
+        errorElement: "error",
+      },
     ],
   },
 

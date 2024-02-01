@@ -11,6 +11,7 @@ import { socket } from "../../socketIo";
 import { useUser } from "../../customHooks/useUser";
 import moment from "moment";
 import { ChatDataType } from "../../type/chatDataType";
+import style from "../../styles/mobile_bg.module.css";
 
 export default function ChatById() {
   const [toggleAttachment, setToggleAttachment] = useState(false);
@@ -84,14 +85,18 @@ export default function ChatById() {
   // }, [socket]);
 
   return (
-    <section className="flex flex-col w-full h-full">
+    <section
+      className={`flex flex-col w-full h-full ${style.backgroundImageContainer}`}
+    >
       <div className="flex gap-2 items-center py-2 px-4 bg-black/40">
-        <div className="w-12 h-12 rounded-full hover:">
+        <div className="sm:w-12 sm:h-12 h-10 w-10 rounded-full hover:">
           <img src={Images.avatar_one_png} alt="" />
         </div>
         <div className="flex flex-col leading-tight text-white/80">
-          <h5 className="font-bold ">{room}</h5>
-          <p>breteke, garri, juwon, mercy, joshua</p>
+          <h5 className="font-bold text-sm sm:text-base ">{room}</h5>
+          <p className="text-sm sm:text-base ">
+            breteke, garri, juwon, mercy, joshua
+          </p>
         </div>
       </div>
 
@@ -109,7 +114,7 @@ export default function ChatById() {
           </Fragment>
         ))}
       </div>
-      <div className="relative text-white/80 flex gap-4 mt-auto items-center py-2 px-4 bg-black/40">
+      <div className="relative sm:text-white/80 text-black/50 font-semibold flex gap-4 mt-auto items-center py-2 px-4 bg-black/40">
         <GrEmoji className="hover:bg-black/30 p-1 rounded-md text-3xl cursor-pointer" />
         <GrFormAttachment
           onClick={() => setToggleAttachment((prev) => !prev)}
@@ -123,7 +128,7 @@ export default function ChatById() {
             onChange={(e) => setChat(e.target.value)}
             type="text"
             placeholder="Type a message"
-            className="bg-transparent w-full focus:outline-none"
+            className="bg-transparent placeholder:text-black/50 w-full focus:outline-none"
           />
           <button type="submit">Send</button>
         </form>
