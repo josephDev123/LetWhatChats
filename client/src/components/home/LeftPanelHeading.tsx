@@ -12,13 +12,13 @@ export default function LeftPanelHeading() {
   const [openFilterModal, setOpenFilterModal] = useState(false);
 
   return (
-    <section className="flex  items-center justify-between">
-      <span className="text-xl font-semibold">JoeWhatChats</span>
-      <span className="flex items-center sm:gap-6 gap-4 relative">
+    <section className="flex  items-center justify-between relative">
+      <span className="text-xl font-semibold ">JoeWhatChats</span>
+      <span className="flex items-center sm:gap-6 gap-4 ">
         <IoCameraOutline className="cursor-pointer text-xl sm:hidden" />
         <CiSearch className="cursor-pointer text-xl sm:hidden" />
         <FaRegPenToSquare
-          className="cursor-pointer "
+          className="cursor-pointer"
           onClick={() => {
             if (openFilterModal) {
               setOpenFilterModal(false);
@@ -27,15 +27,7 @@ export default function LeftPanelHeading() {
             setToggleCreateNewRoomDropDown((prev) => !prev);
           }}
         />
-        {toggleCreateNewRoomDropDown && (
-          <CreateNewRoomDropDown
-            newRoomDropDownStatus={toggleCreateNewRoomDropDown}
-          />
-        )}
 
-        {openFilterModal && (
-          <FilterDropDown newRoomDropDownStatus={openFilterModal} />
-        )}
         <BsFilter
           className="cursor-pointer"
           onClick={() => {
@@ -47,6 +39,15 @@ export default function LeftPanelHeading() {
           }}
         />
       </span>
+
+      {openFilterModal && (
+        <FilterDropDown newRoomDropDownStatus={openFilterModal} />
+      )}
+      {toggleCreateNewRoomDropDown && (
+        <CreateNewRoomDropDown
+          newRoomDropDownStatus={toggleCreateNewRoomDropDown}
+        />
+      )}
     </section>
   );
 }

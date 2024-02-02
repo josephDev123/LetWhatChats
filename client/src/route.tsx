@@ -12,6 +12,9 @@ import DashboardLayout from "./pages/Dashboard/DashboardLayout";
 import { verifyUserStatus } from "./actions/auth/verifyUserStatus";
 import DashboardPage from "./pages/Dashboard/page";
 import ChatById from "./pages/MessageId/ChatById";
+import Community from "./pages/Community";
+import Chats from "./pages/Chats";
+import Calls from "./pages/Calls";
 
 export const mainroutes = createBrowserRouter([
   {
@@ -33,18 +36,18 @@ export const mainroutes = createBrowserRouter([
       },
       {
         path: "community",
-        element: "community",
+        element: <Community />,
         errorElement: "error",
       },
 
       {
         path: "chats",
-        element: "chats  room",
+        element: <Chats />,
         errorElement: "error",
       },
       {
         path: "calls",
-        element: "Calls",
+        element: <Calls />,
         errorElement: "error",
       },
     ],

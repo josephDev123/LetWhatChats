@@ -1,4 +1,3 @@
-import { useUser } from "../../customHooks/useUser";
 import { messageRoomType } from "../../type/messageRoomType";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -8,12 +7,11 @@ type MessageRoomCard = {
 };
 export default function MessageRoomCard({ item }: MessageRoomCard) {
   const redirect = useNavigate();
-  const user = useUser();
 
   return (
     <motion.section
       onClick={() => redirect(item.roomUniqueName)}
-      className="flex gap-2 items-center hover:bg-slate-200 p-3 rounded-md cursor-pointer"
+      className="flex gap-2 items-center hover:bg-slate-200 sm:p-3 rounded-md cursor-pointer"
     >
       <img
         src={item.avatar}
@@ -21,7 +19,7 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
         width={12}
         height={12}
         loading="lazy"
-        className="h-12 w-12 rounded-full border border-black"
+        className="sm:h-12 sm:w-12 w-10 h-10 rounded-full border border-black"
       />
 
       <div className="flex flex-col">

@@ -42,11 +42,12 @@ export default function HomeLayout({}: {}) {
             <MessageRoomCard key={index} item={item} />
           ))}
         </div>
+        {/* small screen */}
         <div className="sm:hidden flex flex-col h-screen bg-cover bg-center p-2">
           <Outlet />
         </div>
       </div>
-      {/* right section */}
+      {/* right section and large screen*/}
       <div
         className="w-[70%] sm:flex hidden flex-col h-screen bg-cover bg-center"
         style={{ backgroundImage: `url(${Images.whatsapp_bg})` }}
