@@ -71,13 +71,20 @@ export default function Register() {
           },
         });
         const resp = await submitReq.data;
-        console.log(resp);
+
         // window.location.href = "/login";
         location("/login");
       }
     } catch (error: any) {
+      // console.log(error.response.data);
+      if (error.response.data) {
+        setStatus("error");
+        setErrorMessage(error.response.data.error);
+        return;
+      }
       setStatus("error");
-      setErrorMessage(error.message);
+      setErrorMessage("Something went wrong");
+      return;
     }
   };
 

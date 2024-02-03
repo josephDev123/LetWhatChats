@@ -8,6 +8,7 @@ import { authenticateToken } from "./middleware/authenticateToken";
 import { Server } from "socket.io";
 import { createServer } from "http";
 import { User } from "./utils/User";
+import { errorHandleMiddleware } from "./middleware/errorHandlerMiddleware";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ const io = new Server(HttpServer, {
 app.use(cors(corsOption));
 app.use(express.json());
 app.use(cookieParser());
+
 // app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 //   console.error(err.stack);
 //   res.status(500).send("Something went wrong!");
@@ -84,7 +86,7 @@ const startApp = async () => {
     });
 
     app.use("/auth", AuthRoute);
-
+    app.use(errorHandleMiddleware);
     HttpServer.listen(process.env.PORT, () => {
       console.log(`listening on port ${process.env.PORT}`);
     });

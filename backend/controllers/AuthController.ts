@@ -1,10 +1,7 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import { hashPassword } from "../utils/hashPassword";
-import {
-  isPasswordAlreadyTaken,
-  isEmailAlreadyUsed,
-} from "../utils/comparePassword";
+import { isEmailAlreadyUsed } from "../utils/comparePassword";
 import { UserModel } from "../models/Users";
 import {
   loginCredentialValidation,
@@ -23,13 +20,18 @@ import { sendMail } from "../utils/sendMail";
 import { generateRandomPIN } from "../utils/generateRandomPin";
 import { isUsernameRegistered } from "../utils/isUsernameRegistered";
 import { unhashPassword } from "../utils/unhashPassword";
+import { GlobalError } from "../utils/globalError";
 
-export const register = async (req: Request, res: Response) => {
+export const register = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { email, name, username, password, profile_img } = req.body;
     const hashedPassword = await hashPassword(password);
-    const isPasswordAlreadyUsed = await isPasswordAlreadyTaken(password);
-    const isEmailUsed = await isEmailAlreadyUsed(email);
+    // const isPasswordAlreadyUsed = await isPasswordAlreadyTaken(password);
+    // const isEmailUsed = await isEmailAlreadyUsed(email);
 
     const validationResult = await registercredentialValidation(
       username,
@@ -39,48 +41,73 @@ export const register = async (req: Request, res: Response) => {
     );
 
     if (validationResult.error) {
-      // Handle validation error
-      return res.json({
-        error: true,
-        showMessage: true,
-        message: validationResult.error.message,
-      });
+      const validationError = new GlobalError(
+        validationResult.error.message,
+        "validateError",
+        400,
+        true
+      );
+
+      return next(validationError);
     }
 
-    // console.log(isPasswordAlreadyUsed, isEmailUsed, hashedPassword);
+    const isEmail = await UserModel.findOne({ email: email });
 
-    if (isPasswordAlreadyUsed === false && isEmailUsed === false) {
-      const newUser = new UserModel({
-        name: name,
-        email: email,
-        username: username,
-        password: hashedPassword,
-        profile_img: profile_img,
-      });
-      const user = await newUser.save();
-      // res.cookie("user", user, {});
-      return res.status(201).json({
-        error: false,
-        showMessage: true,
-        message: "New user created successfully",
-        // data: userAndProfile,
-      });
-    } else {
-      // session.endSession();
-      console.log("user Already registered");
-      return res.status(400).json({
-        error: true,
-        showMessage: true,
-        message: "user Already registered",
-      });
+    const isPasswordTaken = await unhashPassword(password, isEmail?.password);
+    console.log(isPasswordTaken);
+    if (isPasswordTaken) {
+      const error = new GlobalError(
+        "Password already taken/registered",
+        "RegistrationError ",
+        400,
+        true
+      );
+      return next(error);
     }
-  } catch (error) {
-    console.log(error);
-    return res.json({
-      error: true,
-      showMessage: false,
-      message: (error as Error).message,
+    const alreadyRegistered = await isEmailAlreadyUsed(email);
+    if (alreadyRegistered) {
+      const error = new GlobalError(
+        "Email already taken/registered",
+        "RegistrationError",
+        400,
+        true
+      );
+      return next(error);
+    }
+    const newUser = new UserModel({
+      name: name,
+      email: email,
+      username: username,
+      password: hashedPassword,
+      profile_img: profile_img,
     });
+    const user = await newUser.save();
+    // res.cookie("user", user, {});
+    return res.status(201).json({
+      error: false,
+      showMessage: true,
+      message: "New user created successfully",
+      // data: userAndProfile,
+    });
+  } catch (error: any) {
+    // console.log("trying", error);
+    if (error.name === "RegistrationError") {
+      const customError = new GlobalError(
+        error.message,
+        error.name,
+        error.statusCode,
+        error.operational
+      );
+      return next(customError);
+    } else {
+      const customError = new GlobalError(
+        "something went wrong",
+        "unknownError",
+        500,
+        false
+      );
+      return next(customError);
+    }
   }
 };
 

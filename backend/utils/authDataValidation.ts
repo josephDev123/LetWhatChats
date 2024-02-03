@@ -10,7 +10,7 @@ export const registercredentialValidation = async (
     const schema = Joi.object({
       name: Joi.string()
 
-        .min(2)
+        .min(3)
         .max(30)
         .pattern(/^[a-zA-Z\s]+$/)
         .trim()
