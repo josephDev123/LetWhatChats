@@ -1,13 +1,15 @@
-import { messageRoomType } from "../type/messageRoomType";
-import { useState } from "react";
 import { socket } from "../socketIo";
 import MessageRoomCard from "../components/home/MessageRoomCard";
+import { useSelector, useDispatch } from "react-redux";
+import { chatAppType } from "../sliceType";
+import { addRoomData } from "../slice";
 
 export default function Chats() {
-  const [rooms, setRooms] = useState<messageRoomType[]>([]);
+  const dispatch = useDispatch();
+  const rooms = useSelector((state: chatAppType) => state.roomCredential);
   if (socket) {
     socket.on("getCreateRoom", (roomsCredential) => {
-      setRooms([...rooms, roomsCredential]);
+      dispatch(addRoomData(roomsCredential));
     });
   }
   return (

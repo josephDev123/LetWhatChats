@@ -10,10 +10,12 @@ import moment from "moment";
 
 interface CreateNewRoomDropDownProps {
   newRoomDropDownStatus: boolean;
+  closeModal: () => void;
 }
 
 export default function CreateNewRoomDropDown({
   newRoomDropDownStatus,
+  closeModal,
 }: CreateNewRoomDropDownProps) {
   const [room, setRoom] = useState("");
   const currentTime = moment().format("h:mma");
@@ -29,6 +31,7 @@ export default function CreateNewRoomDropDown({
       avatar: user.data.profile_img,
       time: currentTime,
     });
+    closeModal();
   };
 
   return (
@@ -38,7 +41,7 @@ export default function CreateNewRoomDropDown({
         initial={{ opacity: 1 }}
         animate={newRoomDropDownStatus ? "open" : "closed"}
         variants={createNewRoomDropDownVariant}
-        className="absolute bottom-0 top-6 p-4 drop-shadow-md rounded-md sm:w-[300px] w-full sm:h-[500px] h-[400px] overflow-y-auto no-scrollbar flex flex-col text-white bg-black/75 z-30"
+        className="absolute bottom-0 top-7 lg:right-0 sm:left-32 right-0 p-4 drop-shadow-md rounded-md sm:w-[300px] w-full sm:h-[500px] h-[400px] overflow-y-auto no-scrollbar flex flex-col text-white bg-black/75 z-30"
       >
         <h4 className="w-full text-xl">New chat</h4>
         <input

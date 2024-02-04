@@ -20,7 +20,7 @@ export default function FilterDropDown({
         initial={{ opacity: 1 }}
         animate={newRoomDropDownStatus ? "open" : "closed"}
         variants={createNewRoomDropDownVariant}
-        className="absolute bottom-0 top-6 p-4 drop-shadow-md rounded-md w-[200px] h-[250px] flex flex-col text-white bg-black/75 z-30"
+        className="absolute bottom-0  right-0 top-6 p-4 drop-shadow-md rounded-md w-[200px] h-[250px] flex flex-col text-white bg-black/75 z-30"
       >
         <h4 className="w-full text-xl mb-3">Filter chats by</h4>
 

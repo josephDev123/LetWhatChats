@@ -46,6 +46,7 @@ export default function LeftPanelHeading() {
       {toggleCreateNewRoomDropDown && (
         <CreateNewRoomDropDown
           newRoomDropDownStatus={toggleCreateNewRoomDropDown}
+          closeModal={() => setToggleCreateNewRoomDropDown(false)}
         />
       )}
     </section>
