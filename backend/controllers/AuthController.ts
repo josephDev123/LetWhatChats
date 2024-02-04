@@ -54,7 +54,7 @@ export const register = async (
     const isEmail = await UserModel.findOne({ email: email });
 
     const isPasswordTaken = await unhashPassword(password, isEmail?.password);
-    console.log(isPasswordTaken);
+
     if (isPasswordTaken) {
       const error = new GlobalError(
         "Password already taken/registered",
