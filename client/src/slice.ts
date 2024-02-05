@@ -30,6 +30,7 @@ const chatSlice = createSlice({
     addRoomData: (state, action) => {
       const payload = action.payload;
       state.roomCredential.push(payload);
+      // state.roomCredential = [...state.roomCredential, payload];
     },
   },
 });

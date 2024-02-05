@@ -21,11 +21,12 @@ export default function CreateNewRoomDropDown({
   const currentTime = moment().format("h:mma");
 
   const user = useUser();
-  console.log(user);
+
   const handleCreateRoom = () => {
     if (!room || room.length < 1) {
       return;
     }
+
     socket.emit("createRoom", {
       roomUniqueName: room,
       avatar: user.data.profile_img,

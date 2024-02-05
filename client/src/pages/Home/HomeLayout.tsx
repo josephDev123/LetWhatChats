@@ -15,7 +15,7 @@ import { chatAppType } from "../../sliceType";
 export default function HomeLayout({}: {}) {
   const dispatch = useDispatch();
   const rooms = useSelector((state: chatAppType) => state.roomCredential);
-  console.log("from redux", rooms);
+  console.log(rooms);
   const redirect = useNavigate();
   const user = useUser();
   useEffect(() => {
@@ -24,11 +24,18 @@ export default function HomeLayout({}: {}) {
     }
   }, []);
 
-  if (socket) {
-    socket.on("getCreateRoom", (roomsCredential) => {
-      dispatch(addRoomData(roomsCredential));
-    });
-  }
+  useEffect(() => {
+    if (socket) {
+      socket.on("getCreateRoom", (roomsCredential) => {
+        console.log(roomsCredential);
+        dispatch(addRoomData(roomsCredential));
+      });
+    }
+
+    return () => {
+      socket.off("getCreateRoom");
+    };
+  }, [rooms, dispatch, socket]);
 
   return (
     <section className="flex w-full h-full gap-1">
