@@ -47,4 +47,42 @@ Welcome to the JoeWhatChats! This project aims to replicate the functionality of
 ## Installation
 
 1. Clone the repository:
-2. `git clone https://github.com/yourusername/whatsapp-clone.git`
+   `git clone https://github.com/yourusername/whatsapp-clone.git`
+
+2. Install dependencies for the backend:
+   `cd backend 
+    npm install
+`
+
+3. Install dependencies for the frontend:
+   `cd client
+    npm install
+`
+
+4. Set up environment variables:
+
+Create a .env file in the backend directory.
+Add MongoDB connection URI, JWT secret, and other necessary variables.
+
+5. Start the backend server:
+   `cd backend
+    npm start
+`
+
+6. Start the frontend development server:
+   `cd frontend
+    npm start
+`
+
+## Usage
+
+<ol>
+<li>Sign up or log in to your account.</li>
+<li>Create a new room or join an existing one.</li>
+<li>Start sending and receiving messages in real-time.</li>
+<li>Stay tuned for the upcoming video call feature!</li>
+</ol>
+
+## Credits
+
+This project was developed by Uzuegbu Joseph.
