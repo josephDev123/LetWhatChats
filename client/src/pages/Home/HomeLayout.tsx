@@ -15,7 +15,7 @@ import { chatAppType } from "../../sliceType";
 export default function HomeLayout({}: {}) {
   const dispatch = useDispatch();
   const rooms = useSelector((state: chatAppType) => state.roomCredential);
-  console.log(rooms);
+  // console.log(rooms);
   const redirect = useNavigate();
   const user = useUser();
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function HomeLayout({}: {}) {
   useEffect(() => {
     if (socket) {
       socket.on("getCreateRoom", (roomsCredential) => {
-        console.log(roomsCredential);
+        // console.log(roomsCredential);
         dispatch(addRoomData(roomsCredential));
       });
     }
@@ -47,13 +47,14 @@ export default function HomeLayout({}: {}) {
           <MobileTopTab />
         </div>
 
+        {/* large screen left panel */}
         <div className="overflow-y-auto sm:flex hidden flex-col mt-4">
           {rooms.map((item, index) => (
             <MessageRoomCard key={index} item={item} />
           ))}
         </div>
         {/* small screen */}
-        <div className="sm:hidden flex flex-col h-screen bg-cover bg-center p-2">
+        <div className="sm:hidden flex flex-col w-full overflow-y-auto h-full bg-cover bg-center p-2 bg-red-400">
           <Outlet />
         </div>
       </div>
