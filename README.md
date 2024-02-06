@@ -2,7 +2,7 @@
 
 Welcome to the JoeWhatChats! This project aims to replicate the functionality of WhatsApp, allowing users to create rooms, send messages, and soon, make video calls using Node.js, Express, MongoDB, React, and Socket.IO.
 
-### Features
+## Features
 
 <ul>
 <li>
@@ -21,7 +21,7 @@ Welcome to the JoeWhatChats! This project aims to replicate the functionality of
 </li>
 <ul>
 
-### Technologies Used
+## Technologies Used
 
 <ul>
 <li>
@@ -44,7 +44,7 @@ Welcome to the JoeWhatChats! This project aims to replicate the functionality of
 </li>
 <ul>
 
-### Installation
+## Installation
 
 1. Clone the repository:
 2. `git clone https://github.com/yourusername/whatsapp-clone.git`
