@@ -5,6 +5,7 @@ import CreateNewRoomDropDown from "./CreateNewRoomDropDown";
 import FilterDropDown from "./FilterDropDown";
 import { IoCameraOutline } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
+import { Link } from "react-router-dom";
 
 export default function LeftPanelHeading() {
   const [toggleCreateNewRoomDropDown, setToggleCreateNewRoomDropDown] =
@@ -13,7 +14,9 @@ export default function LeftPanelHeading() {
 
   return (
     <section className="flex  items-center justify-between relative">
-      <span className="text-xl font-semibold ">JoeWhatChats</span>
+      <Link to="/" className="text-xl font-semibold ">
+        JoeWhatChats
+      </Link>
       <span className="flex items-center sm:gap-6 gap-4 ">
         <IoCameraOutline className="cursor-pointer text-xl sm:hidden" />
         <CiSearch className="cursor-pointer text-xl sm:hidden" />

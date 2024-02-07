@@ -22,7 +22,7 @@ export default function Chats() {
   }
 
   return (
-    <div className="flex flex-col h-full space-y-2 overflow-y-auto bg-green-400">
+    <div className="flex flex-col h-full space-y-4">
       {rooms.map((item, index) => (
         <MessageRoomCard key={index} item={item} />
       ))}

@@ -48,13 +48,13 @@ export default function HomeLayout({}: {}) {
         </div>
 
         {/* large screen left panel */}
-        <div className="overflow-y-auto sm:flex hidden flex-col mt-4">
+        <div className="overflow-y-auto no-scrollbar sm:flex hidden flex-col mt-4">
           {rooms.map((item, index) => (
             <MessageRoomCard key={index} item={item} />
           ))}
         </div>
         {/* small screen */}
-        <div className="sm:hidden flex flex-col w-full overflow-y-auto h-full bg-cover bg-center p-2 bg-red-400">
+        <div className="sm:hidden flex flex-col w-full overflow-y-auto no-scrollbar h-full bg-cover bg-center p-2">
           <Outlet />
         </div>
       </div>
