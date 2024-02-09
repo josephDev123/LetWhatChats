@@ -54,7 +54,7 @@ export default function HomeLayout({}: {}) {
           ))}
         </div>
         {/* small screen */}
-        <div className="sm:hidden flex flex-col w-full overflow-y-auto no-scrollbar h-full bg-cover bg-center p-2">
+        <div className="sm:hidden flex flex-col w-full overflow-y-auto no-scrollbar h-full bg-cover bg-center">
           <Outlet />
         </div>
       </div>
