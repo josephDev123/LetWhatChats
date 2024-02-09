@@ -58,7 +58,7 @@ export default function HomeLayout({}: {}) {
           <Outlet />
         </div>
       </div>
-      {/* right section and large screen*/}
+      {/* right section and large screen */}
       <div
         className="w-[70%] sm:flex hidden flex-col h-screen bg-cover bg-center"
         style={{ backgroundImage: `url(${Images.whatsapp_bg})` }}
