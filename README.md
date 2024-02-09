@@ -85,4 +85,4 @@ Add MongoDB connection URI, JWT secret, and other necessary variables.
 
 ## Credits
 
-This project was developed by Uzuegbu Joseph
+This project was developed by Uzuegbu Joseph.
