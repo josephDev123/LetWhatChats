@@ -1,7 +1,7 @@
 import { string } from "joi";
 import mongoose, { Document, Schema, Types } from "mongoose";
 
-type userType = {
+export type userType = {
   name: string;
   email: string;
   username: String;

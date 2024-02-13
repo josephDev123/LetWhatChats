@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcrypt";
 import { hashPassword } from "../utils/hashPassword";
 import { isEmailAlreadyUsed } from "../utils/comparePassword";
-import { UserModel } from "../models/Users";
+import { UserModel, userType } from "../models/Users";
 import {
   loginCredentialValidation,
   registercredentialValidation,
@@ -51,19 +51,32 @@ export const register = async (
       return next(validationError);
     }
 
-    const isEmail = await UserModel.findOne({ email: email });
+    const userData: any = await UserModel.findOne({ email: email });
 
-    const isPasswordTaken = await unhashPassword(password, isEmail?.password);
-
-    if (isPasswordTaken) {
+    if (userData !== null) {
       const error = new GlobalError(
-        "Password already taken/registered",
-        "RegistrationError ",
+        "Email already taken/registered",
+        "RegistrationError",
         400,
         true
       );
       return next(error);
     }
+
+    if (userData !== null) {
+      let isPasswordTaken = await unhashPassword(password, userData.password);
+      console.log(isPasswordTaken);
+      if (isPasswordTaken) {
+        const error = new GlobalError(
+          "Password already taken/registered",
+          "RegistrationError ",
+          400,
+          true
+        );
+        return next(error);
+      }
+    }
+
     const alreadyRegistered = await isEmailAlreadyUsed(email);
     if (alreadyRegistered) {
       const error = new GlobalError(
@@ -74,6 +87,7 @@ export const register = async (
       );
       return next(error);
     }
+    console.log("hello");
     const newUser = new UserModel({
       name: name,
       email: email,

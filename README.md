@@ -21,6 +21,12 @@ Welcome to the JoeWhatChats! This project aims to replicate the functionality of
 </li>
 <ul>
 
+## Samples
+
+### large screen version
+
+<img src="./client/src/assets/chat_sample.png" alt="large screen sample" />
+
 ## Technologies Used
 
 <ul>
