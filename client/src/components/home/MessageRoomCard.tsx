@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { BsThreeDots } from "react-icons/bs";
 import { useState } from "react";
+import { convertToUrlFriendly } from "../generic/convertToUrlFreiendly";
 
 type MessageRoomCard = {
   item: messageRoomType;
@@ -25,8 +26,8 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
 
   return (
     <motion.section
-      onClick={() => redirect(`/${item.roomUniqueName}`)}
-      className="flex gap-2  items-center hover:bg-slate-200 sm:p-3 rounded-md cursor-pointer"
+      onClick={() => redirect(convertToUrlFriendly(`/${item.roomUniqueName}`))}
+      className="flex gap-2  items-center hover:bg-slate-200 sm:p-3 rounded-md cursor-pointer bg-green-50"
     >
       <img
         src={item.avatar}

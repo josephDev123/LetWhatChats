@@ -5,27 +5,28 @@ import SentMessage from "../../components/messageId/SentMessage";
 import { GrEmoji } from "react-icons/gr";
 import { GrFormAttachment } from "react-icons/gr";
 import UploadFilePopUp from "../../components/messageId/UploadFilePopUp";
-import { FormEvent, Fragment, useEffect, useRef, useState } from "react";
+import { FormEvent, Fragment, useRef, useState } from "react";
 // import { io, Socket } from "socket.io-client";
 import { socket } from "../../socketIo";
 import { useUser } from "../../customHooks/useUser";
 import moment from "moment";
 import { ChatDataType } from "../../type/chatDataType";
 import style from "../../styles/mobile_bg.module.css";
+import Emojipicker from "../../components/generic/EmojiPicker";
 
 export default function ChatById() {
   const [toggleAttachment, setToggleAttachment] = useState(false);
   const [message, setMessage] = useState<ChatDataType[]>([]);
-  console.log(message);
+  const [isEmojiModalOpen, setisEmojiModalOpen] = useState(false);
+
   const welcomeRef = useRef<HTMLDivElement>(null);
   // const [socket, setSocket] = useState<any>();
   const [chat, setChat] = useState("");
+  // console.log(chat);
   const { room } = useParams();
+  console.log(room);
   const user = useUser();
 
-  // useEffect(() => {
-  // const newSocket = io("http://localhost:7000/");
-  // setSocket(newSocket);
   function onConnect() {
     socket.emit("welcomeMessage", { room });
     console.log("client connected");
@@ -38,14 +39,6 @@ export default function ChatById() {
   socket.on("connect", onConnect);
 
   socket.on("disconnect", disConnect);
-
-  // socket.emit("joinRoom", room);
-
-  // return () => {
-  // socket.off("connect", onConnect);
-  // socket.off("disconnect", disConnect);
-  //   };
-  // }, [room]);
 
   socket.on("connect_error", (error: any) => {
     console.error("Connection error:", error);
@@ -62,16 +55,14 @@ export default function ChatById() {
 
   function handleSubmitMessage(e: FormEvent) {
     e.preventDefault();
-    // if ((e as React.KeyboardEvent).key === "Enter") {
-
-    // }
-
+    console.log(user.data.name, room, chat);
     socket.emit("submitMessage", {
       name: user.data.name,
       room,
       chat,
       time: moment(new Date()).format("h:mm"),
     });
+    setChat("");
   }
 
   // useEffect(() => {
@@ -104,7 +95,6 @@ export default function ChatById() {
         <div ref={welcomeRef}></div>
 
         {message.map((item, i) => (
-          // <span key={i}>{item}</span>
           <Fragment key={i}>
             {item.name !== user.data.name ? (
               <IncomingMessage item={item} />
@@ -114,8 +104,12 @@ export default function ChatById() {
           </Fragment>
         ))}
       </div>
+
       <div className="relative sm:text-white/80 text-black/50 font-semibold flex gap-4 mt-auto items-center py-2 px-4 bg-black/40">
-        <GrEmoji className="hover:bg-black/30 p-1 rounded-md text-3xl cursor-pointer" />
+        <GrEmoji
+          onClick={() => setisEmojiModalOpen((prev) => !prev)}
+          className="hover:bg-black/30 p-1 rounded-md text-3xl cursor-pointer"
+        />
         <GrFormAttachment
           onClick={() => setToggleAttachment((prev) => !prev)}
           className="hover:bg-black/30 p-1 rounded-md text-3xl cursor-pointer"
@@ -127,13 +121,24 @@ export default function ChatById() {
           <input
             onChange={(e) => setChat(e.target.value)}
             type="text"
+            value={chat}
             placeholder="Type a message"
             className="bg-transparent placeholder:text-black/50 w-full focus:outline-none"
           />
           <button type="submit">Send</button>
         </form>
       </div>
-
+      {isEmojiModalOpen && (
+        <span className="absolute bottom-12">
+          <Emojipicker
+            setEmojidata={(item: any) => {
+              setChat((prevText) => `${prevText}  ${item.emoji} `);
+              setisEmojiModalOpen(false);
+            }}
+            className="h-96"
+          />
+        </span>
+      )}
       {toggleAttachment && <UploadFilePopUp />}
     </section>
   );
