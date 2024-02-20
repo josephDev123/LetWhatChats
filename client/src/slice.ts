@@ -29,8 +29,10 @@ const chatSlice = createSlice({
   reducers: {
     addRoomData: (state, action) => {
       const payload = action.payload;
-      state.roomCredential.push(payload);
-      // state.roomCredential = [...state.roomCredential, payload];
+      return {
+        ...state,
+        roomCredential: [...state.roomCredential, ...payload],
+      };
     },
   },
 });

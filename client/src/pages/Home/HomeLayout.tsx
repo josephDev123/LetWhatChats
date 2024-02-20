@@ -4,18 +4,22 @@ import LeftPanelHeading from "../../components/home/LeftPanelHeading";
 import SearchChat from "../../components/home/SearchChat";
 import MessageRoomCard from "../../components/home/MessageRoomCard";
 import { Images } from "../../../Images";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { socket } from "../../socketIo";
 import { useUser } from "../../customHooks/useUser";
 import MobileTopTab from "../../components/generic/MobileTopTab";
 import { addRoomData } from "../../slice";
 import { useSelector, useDispatch } from "react-redux";
 import { chatAppType } from "../../sliceType";
+import axios from "axios";
+import { messageRoomType } from "../../type/messageRoomType";
+import { useQuery } from "@tanstack/react-query";
 
 export default function HomeLayout({}: {}) {
+  const [roomCredential, setroomCredential] = useState<messageRoomType[]>([]);
   const dispatch = useDispatch();
   const rooms = useSelector((state: chatAppType) => state.roomCredential);
-  // console.log(rooms);
+  console.log(rooms);
   const redirect = useNavigate();
   const user = useUser();
   useEffect(() => {
@@ -28,7 +32,8 @@ export default function HomeLayout({}: {}) {
     if (socket) {
       socket.on("getCreateRoom", (roomsCredential) => {
         // console.log(roomsCredential);
-        dispatch(addRoomData(roomsCredential));
+        setroomCredential((prev) => [...prev, roomsCredential]);
+        // dispatch(addRoomData(roomsCredential));
       });
     }
 
@@ -36,6 +41,32 @@ export default function HomeLayout({}: {}) {
       socket.off("getCreateRoom");
     };
   }, [rooms, dispatch, socket]);
+
+  // useEffect(() => {
+  //   (async () => {
+  //     const req = await axios({
+  //       method: "get",
+  //       url: `http://localhost:7000/room/${user.data.email}`,
+  //     });
+  //     console.log(req.data);
+  //     setroomCredential(req.data);
+  //     // dispatch(addRoomData(req.data));
+  //   })();
+  // }, []);
+
+  const { isLoading, isError, data } = useQuery({
+    queryKey: ["roomCredential"],
+    queryFn: async () => {
+      const req = await axios({
+        method: "get",
+        url: `http://localhost:7000/room/${user.data.email}`,
+      });
+      console.log(req.data);
+      setroomCredential(req.data);
+      // dispatch(addRoomData(req.data));
+      return req.data;
+    },
+  });
 
   return (
     <section className="flex w-full h-full gap-1">
@@ -48,8 +79,8 @@ export default function HomeLayout({}: {}) {
         </div>
 
         {/* large screen left panel */}
-        <div className="overflow-y-auto no-scrollbar sm:flex hidden flex-col mt-4">
-          {rooms.map((item, index) => (
+        <div className="overflow-y-auto  sm:flex hidden flex-col mt-4 space-y-0.5">
+          {roomCredential.map((item, index) => (
             <MessageRoomCard key={index} item={item} />
           ))}
         </div>

@@ -7,6 +7,8 @@ import { socket } from "../../socketIo";
 import { useState } from "react";
 import { useUser } from "../../customHooks/useUser";
 import moment from "moment";
+import { convertToUrlFriendly } from "../generic/convertToUrlFreiendly";
+import axios from "axios";
 
 interface CreateNewRoomDropDownProps {
   newRoomDropDownStatus: boolean;
@@ -22,16 +24,18 @@ export default function CreateNewRoomDropDown({
 
   const user = useUser();
 
-  const handleCreateRoom = () => {
+  const handleCreateRoom = async () => {
     if (!room || room.length < 1) {
       return;
     }
 
     socket.emit("createRoom", {
-      roomUniqueName: room,
+      userEmail: user.data.email,
+      roomUniqueName: convertToUrlFriendly(room),
       avatar: user.data.profile_img,
       time: currentTime,
     });
+
     closeModal();
   };
 

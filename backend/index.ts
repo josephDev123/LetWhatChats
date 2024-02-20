@@ -8,7 +8,10 @@ import { authenticateToken } from "./middleware/authenticateToken";
 import { Server } from "socket.io";
 import { createServer } from "http";
 import { User } from "./utils/User";
+import { chatRoomModel } from "./models/chatRoom";
 import { errorHandleMiddleware } from "./middleware/errorHandlerMiddleware";
+import { roomModel } from "./models/rooms";
+import { chatRoomRoute } from "./routes/Chatroom/chatRoom";
 
 dotenv.config();
 
@@ -41,13 +44,15 @@ const startApp = async () => {
 
     // socketServer.io
     io.on("connection", (socket) => {
-      socket.on("createRoom", (roomOption) => {
+      socket.on("createRoom", async (roomOption) => {
         socket.join(roomOption.roomUniqueName);
         user.addUser(socket.id, roomOption.roomUniqueName);
         const userRoom = user.getUser(roomOption.roomUniqueName);
 
         if (userRoom) {
           io.to(userRoom.room).emit("getCreateRoom", roomOption);
+          const roomModelDb = new roomModel(roomOption);
+          await roomModelDb.save();
         }
       });
 
@@ -77,6 +82,9 @@ const startApp = async () => {
         };
         if (userRoom) {
           io.to(userRoom.room).emit("exchangeMessage", submittedChatData);
+          const chatRoom = new chatRoomModel(submittedChatData);
+          console.log("db ...");
+          chatRoom.save();
         } else {
           console.log("User not found or missing room information.");
         }
@@ -85,7 +93,9 @@ const startApp = async () => {
       });
     });
 
+    // routes
     app.use("/auth", AuthRoute);
+    app.use("/room", chatRoomRoute);
     app.use(errorHandleMiddleware);
     HttpServer.listen(process.env.PORT, () => {
       console.log(`listening on port ${process.env.PORT}`);
