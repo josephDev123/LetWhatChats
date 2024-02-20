@@ -20,7 +20,7 @@ export default function FilterDropDown({
         initial={{ opacity: 1 }}
         animate={newRoomDropDownStatus ? "open" : "closed"}
         variants={createNewRoomDropDownVariant}
-        className="absolute bottom-0  right-0 top-6 p-4 drop-shadow-md rounded-md w-[200px] h-[250px] flex flex-col text-white bg-black/75 z-30"
+        className="absolute bottom-0  right-0 top-6 p-4 drop-shadow-md rounded-md w-[200px] h-[160px] flex flex-col text-white bg-black/75 z-30"
       >
         <h4 className="w-full text-xl mb-3">Filter chats by</h4>
 
@@ -30,14 +30,14 @@ export default function FilterDropDown({
             Unread
           </span>
 
-          <span className="flex gap-2 items-center cursor-pointer hover:text-white/80">
+          {/* <span className="flex gap-2 items-center cursor-pointer hover:text-white/80">
             <RiContactsLine />
             Contacts
           </span>
           <span className="flex gap-2 items-center cursor-pointer hover:text-white/80">
             <BsPeople />
             Non-Contacts
-          </span>
+          </span> */}
           <span className="flex gap-2 items-center cursor-pointer hover:text-white/80">
             <HiOutlineUserGroup />
             Groups

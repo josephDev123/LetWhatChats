@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { BsThreeDots } from "react-icons/bs";
 import { useState } from "react";
 import { convertToUrlFriendly } from "../generic/convertToUrlFreiendly";
+import { addRoomData } from "../../slice";
+import { useDispatch } from "react-redux";
 
 type MessageRoomCard = {
   item: messageRoomType;
@@ -11,6 +13,7 @@ type MessageRoomCard = {
 export default function MessageRoomCard({ item }: MessageRoomCard) {
   const [isOpenGroupLinkDropDown, setIsOpenGroupLinkDropDown] = useState(false);
   const redirect = useNavigate();
+  const dispatch = useDispatch();
 
   const handleCopyGroupLink = async (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -26,8 +29,11 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
 
   return (
     <motion.section
-      onClick={() => redirect(convertToUrlFriendly(`/${item.roomUniqueName}`))}
-      className="flex gap-2  items-center hover:bg-slate-200 sm:p-3 rounded-md cursor-pointer bg-green-50"
+      onClick={() => {
+        dispatch(addRoomData(item));
+        redirect(convertToUrlFriendly(`/${item.roomUniqueName}`));
+      }}
+      className="flex gap-2 items-center hover:bg-slate-200 sm:p-3 rounded-md cursor-pointer bg-green-50"
     >
       <img
         src={item.avatar}
@@ -38,9 +44,9 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
         className="sm:h-12 sm:w-12 w-8 h-8 rounded-full border border-black"
       />
 
-      <div className="flex flex-col">
+      <div className="flex flex-col ">
         <div className="flex justify-between gap-4 items-center">
-          <h5 className="font-semibold">{item.roomUniqueName}</h5>
+          <h5 className="font-semibold line-clamp-1">{item.roomUniqueName}</h5>
           <span className="text-green-500">{item.time}</span>
         </div>
 

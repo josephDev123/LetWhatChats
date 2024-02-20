@@ -3,21 +3,19 @@ import { messageRoomType } from "./type/messageRoomType";
 import { ChatDataType } from "./type/chatDataType";
 
 export type chatOrgType = {
-  roomCredential: messageRoomType[] | Object[];
+  roomCredential: messageRoomType | Object;
   chatData: ChatDataType[] | Object[];
 };
 
 const initialState: chatOrgType = {
-  roomCredential: [
-    // {
-    //   avatar: "",
-    //   roomUniqueName: "",
-    //   name: "",
-    //   content: "",
-    //   time: "",
-    // },
-  ],
-
+  roomCredential: {},
+  // {
+  //   avatar: "",
+  //   roomUniqueName: "",
+  //   name: "",
+  //   content: "",
+  //   time: "",
+  // },
   chatData: [
     // { name: "", room: "", chat: "", time: "" }
   ],
@@ -31,7 +29,7 @@ const chatSlice = createSlice({
       const payload = action.payload;
       return {
         ...state,
-        roomCredential: [...state.roomCredential, ...payload],
+        roomCredential: payload,
       };
     },
   },

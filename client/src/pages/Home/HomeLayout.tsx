@@ -8,12 +8,13 @@ import { useEffect, useState } from "react";
 import { socket } from "../../socketIo";
 import { useUser } from "../../customHooks/useUser";
 import MobileTopTab from "../../components/generic/MobileTopTab";
-import { addRoomData } from "../../slice";
+// import { addRoomData } from "../../slice";
 import { useSelector, useDispatch } from "react-redux";
 import { chatAppType } from "../../sliceType";
 import axios from "axios";
 import { messageRoomType } from "../../type/messageRoomType";
 import { useQuery } from "@tanstack/react-query";
+import { FaSpinner } from "react-icons/fa6";
 
 export default function HomeLayout({}: {}) {
   const [roomCredential, setroomCredential] = useState<messageRoomType[]>([]);
@@ -31,9 +32,7 @@ export default function HomeLayout({}: {}) {
   useEffect(() => {
     if (socket) {
       socket.on("getCreateRoom", (roomsCredential) => {
-        // console.log(roomsCredential);
         setroomCredential((prev) => [...prev, roomsCredential]);
-        // dispatch(addRoomData(roomsCredential));
       });
     }
 
@@ -54,7 +53,7 @@ export default function HomeLayout({}: {}) {
   //   })();
   // }, []);
 
-  const { isLoading, isError, data } = useQuery({
+  const { isLoading, isError } = useQuery({
     queryKey: ["roomCredential"],
     queryFn: async () => {
       const req = await axios({
@@ -79,7 +78,17 @@ export default function HomeLayout({}: {}) {
         </div>
 
         {/* large screen left panel */}
-        <div className="overflow-y-auto  sm:flex hidden flex-col mt-4 space-y-0.5">
+        <div className="overflow-y-auto  sm:flex hidden flex-col mt-4 space-y-0.5 h-full">
+          {isLoading && (
+            <div className="h-full flex flex-col justify-center items-center">
+              <FaSpinner className="animate-spin h-8 w-8" />
+            </div>
+          )}
+          {isError && (
+            <div className="h-full">
+              <span>Something went wrong</span>
+            </div>
+          )}
           {roomCredential.map((item, index) => (
             <MessageRoomCard key={index} item={item} />
           ))}

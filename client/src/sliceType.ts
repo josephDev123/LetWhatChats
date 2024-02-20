@@ -3,6 +3,6 @@ import { ChatDataType } from "./type/chatDataType";
 import { messageRoomType } from "./type/messageRoomType";
 
 export interface chatAppType {
-  roomCredential: messageRoomType[];
+  roomCredential: messageRoomType;
   chatData: ChatDataType[];
 }

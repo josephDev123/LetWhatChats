@@ -13,16 +13,20 @@ import moment from "moment";
 import { ChatDataType } from "../../type/chatDataType";
 import style from "../../styles/mobile_bg.module.css";
 import Emojipicker from "../../components/generic/EmojiPicker";
+import { useSelector } from "react-redux";
+import { chatAppType } from "../../sliceType";
 
 export default function ChatById() {
   const [toggleAttachment, setToggleAttachment] = useState(false);
   const [message, setMessage] = useState<ChatDataType[]>([]);
   const [isEmojiModalOpen, setisEmojiModalOpen] = useState(false);
+  const roomCredential = useSelector(
+    (state: chatAppType) => state.roomCredential
+  );
 
   const welcomeRef = useRef<HTMLDivElement>(null);
-  // const [socket, setSocket] = useState<any>();
   const [chat, setChat] = useState("");
-  // console.log(chat);
+
   const { room } = useParams();
   console.log(room);
   const user = useUser();
@@ -81,10 +85,15 @@ export default function ChatById() {
     >
       <div className="flex gap-2 items-center py-2 px-4 bg-black/40">
         <div className="sm:w-12 sm:h-12 h-10 w-10 rounded-full hover:">
-          <img src={Images.avatar_one_png} alt="" />
+          <img
+            src={roomCredential.avatar}
+            alt="avatar"
+            loading="lazy"
+            className="rounded-full"
+          />
         </div>
         <div className="flex flex-col leading-tight text-white/80">
-          <h5 className="font-bold text-sm sm:text-base ">{room}</h5>
+          <h5 className="font-bold text-sm sm:text-base">{room}</h5>
           <p className="text-sm sm:text-base ">
             breteke, garri, juwon, mercy, joshua
           </p>
