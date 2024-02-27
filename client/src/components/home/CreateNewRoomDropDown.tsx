@@ -31,6 +31,22 @@ export default function CreateNewRoomDropDown({
     if (!room || room.length < 1) {
       return;
     }
+    // try {
+    //   const res = await axios({
+    //     method: "post",
+    //     url: "http://localhost:7000/room/create",
+    //     data: {
+    //       userEmail: user.data.email,
+    //       roomUniqueName: convertToUrlFriendly(room),
+    //       avatar: user.data.profile_img,
+    //       time: currentTime,
+    //     },
+    //   });
+    //   const resData = res.data;
+    //   console.log(resData);
+    // } catch (error) {
+    //   console.log(error);
+    // }
 
     socket.emit("createRoom", {
       userEmail: user.data.email,
@@ -43,16 +59,17 @@ export default function CreateNewRoomDropDown({
   };
 
   useEffect(() => {
-    if (socket) {
-      socket.on("getCreateRoom", (roomsCredential) => {
-        setroomCredential((prev) => [...prev, roomsCredential]);
-      });
+    function onGetCreateRoom(roomsCredential: any) {
+      console.log(roomsCredential);
+      setroomCredential((prev) => [...prev, roomsCredential]);
     }
 
+    socket.on("getCreateRoom", onGetCreateRoom);
+
     return () => {
-      socket.off("getCreateRoom");
+      socket.off("getCreateRoom", onGetCreateRoom);
     };
-  }, [socket]);
+  }, []);
 
   const { isLoading, isError } = useQuery({
     queryKey: ["roomCredential"],
@@ -61,7 +78,7 @@ export default function CreateNewRoomDropDown({
         method: "get",
         url: `http://localhost:7000/room/${user.data.email}`,
       });
-      console.log(req.data);
+      // console.log(req.data);
       setroomCredential(req.data);
       // dispatch(addRoomData(req.data));
       return req.data;
@@ -95,7 +112,7 @@ export default function CreateNewRoomDropDown({
           <span className="text-white">Create Room</span>
         </button>
 
-        <h5 className="mt-2">All contacts</h5>
+        <h5 className="mt-2 text-white">All contacts</h5>
         <motion.div className="overflow-y-auto no-scrollbar space-y-0.5">
           {isLoading && (
             <div className="h-full flex flex-col justify-center items-center">

@@ -46,14 +46,13 @@ const startApp = async () => {
     io.on("connection", (socket) => {
       socket.on("createRoom", async (roomOption) => {
         socket.join(roomOption.roomUniqueName);
-        user.addUser(socket.id, roomOption.roomUniqueName);
-        const userRoom = user.getUser(roomOption.roomUniqueName);
 
-        if (userRoom) {
-          io.to(userRoom.room).emit("getCreateRoom", roomOption);
-          const roomModelDb = new roomModel(roomOption);
-          await roomModelDb.save();
-        }
+        console.log();
+
+        io.to(roomOption.roomUniqueName).emit("getCreateRoom", roomOption);
+
+        // const roomModelDb = new roomModel(roomOption);
+        // await roomModelDb.save();
       });
 
       socket.on("welcomeMessage", (room) => {
@@ -61,35 +60,31 @@ const startApp = async () => {
         user.addUser(socket.id, room.room);
         // console.log(room.room);
         const userRoom = user.getUser(room.room);
-        // console.log(userRoom);
 
         if (userRoom) {
-          socket
-            // .to(userRoom.room)
-            .emit("welcomeMessage", `welcome to ${room.room} room`);
+          io.to(userRoom.room).emit(
+            "welcomeMessage",
+            `welcome to ${room.room} room`
+          );
         } else {
           console.log("User not found or missing room information.");
         }
       });
 
-      socket.on("submitMessage", (data) => {
-        const userRoom = user.getUser(data.room);
+      socket.on("submitMessage", async (data) => {
+        socket.join(data.room);
+        // console.log(userRoom);
         const submittedChatData = {
           name: data.name,
           room: data.room,
           chat: data.chat,
           time: data.time,
         };
-        if (userRoom) {
-          io.to(userRoom.room).emit("exchangeMessage", submittedChatData);
-          const chatRoom = new chatRoomModel(submittedChatData);
-          console.log("db ...");
-          chatRoom.save();
-        } else {
-          console.log("User not found or missing room information.");
-        }
 
-        // socket.emit("exchangeMessage", data.chat);
+        io.to(data.room).emit("exchangeMessage", submittedChatData);
+        // const chatRoom = new chatRoomModel(submittedChatData);
+        // console.log("db ...");
+        // await chatRoom.save();
       });
     });
 

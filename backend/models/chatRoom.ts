@@ -2,13 +2,13 @@ import mongoose, { model, Schema, Types } from "mongoose";
 
 interface chatRoomType {
   name: string;
-  room: Types.ObjectId;
+  room: string;
   chat: string;
   time: string;
 }
 const chatRoomSchema = new Schema<chatRoomType>({
   name: { type: String },
-  room: { type: Schema.Types.ObjectId, ref: "Room" },
+  room: { type: String },
   chat: { type: String },
   time: { type: String },
 });

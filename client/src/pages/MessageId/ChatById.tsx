@@ -1,11 +1,10 @@
 import { useParams } from "react-router-dom";
-import { Images } from "../../../Images";
 import IncomingMessage from "../../components/messageId/IncomingMessage";
 import SentMessage from "../../components/messageId/SentMessage";
 import { GrEmoji } from "react-icons/gr";
 import { GrFormAttachment } from "react-icons/gr";
 import UploadFilePopUp from "../../components/messageId/UploadFilePopUp";
-import { FormEvent, Fragment, useRef, useState } from "react";
+import { FormEvent, Fragment, useEffect, useRef, useState } from "react";
 // import { io, Socket } from "socket.io-client";
 import { socket } from "../../socketIo";
 import { useUser } from "../../customHooks/useUser";
@@ -28,38 +27,34 @@ export default function ChatById() {
   const [chat, setChat] = useState("");
 
   const { room } = useParams();
-  console.log(room);
+
   const user = useUser();
 
-  function onConnect() {
-    socket.emit("welcomeMessage", { room });
-    console.log("client connected");
-  }
-
-  function disConnect() {
-    console.log("client disconnected");
-  }
-
-  socket.on("connect", onConnect);
-
-  socket.on("disconnect", disConnect);
-
-  socket.on("connect_error", (error: any) => {
-    console.error("Connection error:", error);
-  });
-
-  // useEffect(() => {
-  socket.on("welcomeMessage", (data) => {
-    // console.log(data);
-    if (welcomeRef.current) {
-      welcomeRef.current.innerHTML = data;
+  useEffect(() => {
+    function handleWelcomeMessage(data: any) {
+      if (welcomeRef.current) {
+        welcomeRef.current.innerHTML = data;
+      }
     }
-  });
-  // }, []);
+
+    function handleExchangeMessage(chat: any) {
+      console.log(chat);
+      setMessage((prevMessage) => [...prevMessage, chat]);
+    }
+    socket.on("welcomeMessage", handleWelcomeMessage);
+
+    // Handle incoming chat messages
+    socket.on("exchangeMessage", handleExchangeMessage);
+
+    return () => {
+      socket.off("welcomeMessage", handleWelcomeMessage);
+      socket.off("exchangeMessage", handleExchangeMessage);
+    };
+  }, []);
 
   function handleSubmitMessage(e: FormEvent) {
     e.preventDefault();
-    console.log(user.data.name, room, chat);
+    // console.log(user.data.name, room, chat);
     socket.emit("submitMessage", {
       name: user.data.name,
       room,
@@ -69,19 +64,9 @@ export default function ChatById() {
     setChat("");
   }
 
-  // useEffect(() => {
-  if (socket) {
-    // Handle incoming chat messages
-    socket.on("exchangeMessage", (chat) => {
-      console.log(chat);
-      setMessage([...message, chat]);
-    });
-  }
-  // }, [socket]);
-
   return (
     <section
-      className={`flex flex-col w-full h-full ${style.backgroundImageContainer}`}
+      className={`flex flex-col w-full h-full overflow-y-auto no-scrollbar ${style.backgroundImageContainer}`}
     >
       <div className="flex gap-2 items-center py-2 px-4 bg-black/40">
         <div className="sm:w-12 sm:h-12 h-10 w-10 rounded-full hover:">
@@ -100,7 +85,7 @@ export default function ChatById() {
         </div>
       </div>
 
-      <div className="flex flex-col justify-between gap-4 px-4 text-white/80 pt-8">
+      <div className="flex flex-col justify-between gap-4 px-4 text-white/80 pt-8 mb-2">
         <div ref={welcomeRef}></div>
 
         {message.map((item, i) => (
@@ -114,7 +99,7 @@ export default function ChatById() {
         ))}
       </div>
 
-      <div className="relative sm:text-white/80 text-black/50 font-semibold flex gap-4 mt-auto items-center py-2 px-4 bg-black/40">
+      <div className="relative sticky bottom-0  sm:text-white/80 text-black/50 font-semibold flex gap-4 mt-auto items-center py-2 px-4 bg-black/40">
         <GrEmoji
           onClick={() => setisEmojiModalOpen((prev) => !prev)}
           className="hover:bg-black/30 p-1 rounded-md text-3xl cursor-pointer"

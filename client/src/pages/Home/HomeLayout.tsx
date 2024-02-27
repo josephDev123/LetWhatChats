@@ -9,8 +9,8 @@ import { socket } from "../../socketIo";
 import { useUser } from "../../customHooks/useUser";
 import MobileTopTab from "../../components/generic/MobileTopTab";
 // import { addRoomData } from "../../slice";
-import { useSelector, useDispatch } from "react-redux";
-import { chatAppType } from "../../sliceType";
+// import { useSelector, useDispatch } from "react-redux";
+// import { chatAppType } from "../../sliceType";
 import axios from "axios";
 import { messageRoomType } from "../../type/messageRoomType";
 import { useQuery } from "@tanstack/react-query";
@@ -18,9 +18,11 @@ import { FaSpinner } from "react-icons/fa6";
 
 export default function HomeLayout({}: {}) {
   const [roomCredential, setroomCredential] = useState<messageRoomType[]>([]);
-  const dispatch = useDispatch();
-  const rooms = useSelector((state: chatAppType) => state.roomCredential);
-  console.log(rooms);
+  const [connectionStatus, setConnectionStatus] = useState<boolean>(
+    socket.connected
+  );
+
+  // console.log(connectionStatus);
   const redirect = useNavigate();
   const user = useUser();
   useEffect(() => {
@@ -30,28 +32,29 @@ export default function HomeLayout({}: {}) {
   }, []);
 
   useEffect(() => {
-    if (socket) {
-      socket.on("getCreateRoom", (roomsCredential) => {
-        setroomCredential((prev) => [...prev, roomsCredential]);
-      });
+    function onGetCreateRoom(roomsCredential: any) {
+      console.log(roomsCredential);
+      setroomCredential((prev) => [...prev, roomsCredential]);
     }
 
-    return () => {
-      socket.off("getCreateRoom");
-    };
-  }, [rooms, dispatch, socket]);
+    function OnConnect() {
+      setConnectionStatus(true);
+    }
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const req = await axios({
-  //       method: "get",
-  //       url: `http://localhost:7000/room/${user.data.email}`,
-  //     });
-  //     console.log(req.data);
-  //     setroomCredential(req.data);
-  //     // dispatch(addRoomData(req.data));
-  //   })();
-  // }, []);
+    function OnDisConnect() {
+      setConnectionStatus(false);
+    }
+
+    socket.on("connect", OnConnect);
+    socket.on("disconnect", OnDisConnect);
+    socket.on("getCreateRoom", onGetCreateRoom);
+
+    return () => {
+      socket.off("getCreateRoom", onGetCreateRoom);
+      socket.off("connect", OnConnect);
+      socket.off("disconnect", OnDisConnect);
+    };
+  }, []);
 
   const { isLoading, isError } = useQuery({
     queryKey: ["roomCredential"],
@@ -60,9 +63,8 @@ export default function HomeLayout({}: {}) {
         method: "get",
         url: `http://localhost:7000/room/${user.data.email}`,
       });
-      console.log(req.data);
+      // console.log(req.data);
       setroomCredential(req.data);
-      // dispatch(addRoomData(req.data));
       return req.data;
     },
   });
@@ -79,6 +81,7 @@ export default function HomeLayout({}: {}) {
 
         {/* large screen left panel */}
         <div className="overflow-y-auto  sm:flex hidden flex-col mt-4 space-y-0.5 h-full">
+          <span>Connection status: {connectionStatus}</span>
           {isLoading && (
             <div className="h-full flex flex-col justify-center items-center">
               <FaSpinner className="animate-spin h-8 w-8" />
@@ -86,7 +89,7 @@ export default function HomeLayout({}: {}) {
           )}
           {isError && (
             <div className="h-full">
-              <span>Something went wrong</span>
+              <span className="text-red-400">Something went wrong</span>
             </div>
           )}
           {roomCredential.map((item, index) => (

@@ -8,7 +8,7 @@ interface Room {
 }
 
 const RoomSchema = new Schema<Room>({
-  userEmail: String,
+  userEmail: { type: String },
   roomUniqueName: String,
   avatar: String,
   time: String,
