@@ -88,7 +88,7 @@ export default function HomeLayout({}: {}) {
             </div>
           )}
           {isError && (
-            <div className="h-full">
+            <div className="">
               <span className="text-red-400">Something went wrong</span>
             </div>
           )}

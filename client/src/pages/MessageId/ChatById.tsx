@@ -14,10 +14,14 @@ import style from "../../styles/mobile_bg.module.css";
 import Emojipicker from "../../components/generic/EmojiPicker";
 import { useSelector } from "react-redux";
 import { chatAppType } from "../../sliceType";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { FaSpinner } from "react-icons/fa6";
 
 export default function ChatById() {
   const [toggleAttachment, setToggleAttachment] = useState(false);
   const [message, setMessage] = useState<ChatDataType[]>([]);
+  console.log(message);
   const [isEmojiModalOpen, setisEmojiModalOpen] = useState(false);
   const roomCredential = useSelector(
     (state: chatAppType) => state.roomCredential
@@ -38,11 +42,10 @@ export default function ChatById() {
     }
 
     function handleExchangeMessage(chat: any) {
-      console.log(chat);
+      // console.log(chat);
       setMessage((prevMessage) => [...prevMessage, chat]);
     }
     socket.on("welcomeMessage", handleWelcomeMessage);
-
     // Handle incoming chat messages
     socket.on("exchangeMessage", handleExchangeMessage);
 
@@ -51,6 +54,22 @@ export default function ChatById() {
       socket.off("exchangeMessage", handleExchangeMessage);
     };
   }, []);
+
+  const { isLoading, isError } = useQuery({
+    queryKey: ["msg"],
+    queryFn: async () => {
+      // try {
+      const res = await axios.get(`http://localhost:7000/chat/message/${room}`);
+
+      const result = res.data;
+      // console.log(result.data);
+      setMessage(result.data);
+      return result.data;
+      // } catch (error: any) {
+      //   return error.message;
+      // }
+    },
+  });
 
   function handleSubmitMessage(e: FormEvent) {
     e.preventDefault();
@@ -64,6 +83,7 @@ export default function ChatById() {
     setChat("");
   }
 
+  // console.log(isLoading, isError);
   return (
     <section
       className={`flex flex-col w-full h-full overflow-y-auto no-scrollbar ${style.backgroundImageContainer}`}
@@ -88,15 +108,28 @@ export default function ChatById() {
       <div className="flex flex-col justify-between gap-4 px-4 text-white/80 pt-8 mb-2">
         <div ref={welcomeRef}></div>
 
-        {message.map((item, i) => (
-          <Fragment key={i}>
-            {item.name !== user.data.name ? (
-              <IncomingMessage item={item} />
-            ) : (
-              <SentMessage item={item} />
-            )}
-          </Fragment>
-        ))}
+        {isLoading && (
+          <div className="flex justify-center items-center">
+            <FaSpinner className="animate-spin h-8 w-8 text-white text-center" />
+          </div>
+        )}
+
+        {isError && (
+          <span className="text-sm text-red-400">Something went wrong</span>
+        )}
+        <>
+          {message
+            .filter((itemRoom) => itemRoom.room === room)
+            .map((item, i) => (
+              <Fragment key={i}>
+                {item.name !== user.data.name ? (
+                  <IncomingMessage item={item} />
+                ) : (
+                  <SentMessage item={item} />
+                )}
+              </Fragment>
+            ))}
+        </>
       </div>
 
       <div className="relative sticky bottom-0  sm:text-white/80 text-black/50 font-semibold flex gap-4 mt-auto items-center py-2 px-4 bg-black/40">

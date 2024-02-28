@@ -1,16 +1,17 @@
 import mongoose, { model, Schema, Types } from "mongoose";
 
-interface chatRoomType {
+export interface chatMsgType {
   name: string;
   room: string;
   chat: string;
   time: string;
 }
-const chatRoomSchema = new Schema<chatRoomType>({
+
+const chatRoomSchema = new Schema<chatMsgType>({
   name: { type: String },
   room: { type: String },
   chat: { type: String },
   time: { type: String },
 });
 
-export const chatRoomModel = model("chatRoom", chatRoomSchema);
+export const chatMsgModel = model("chatMsg", chatRoomSchema);

@@ -8,7 +8,8 @@ import { authenticateToken } from "./middleware/authenticateToken";
 import { Server } from "socket.io";
 import { createServer } from "http";
 import { User } from "./utils/User";
-import { chatRoomModel } from "./models/chatRoom";
+import { chatMsgModel } from "./models/chatMsg";
+import { chatMsgRoute } from "./routes/chat/chatMsg";
 import { errorHandleMiddleware } from "./middleware/errorHandlerMiddleware";
 import { roomModel } from "./models/rooms";
 import { chatRoomRoute } from "./routes/Chatroom/chatRoom";
@@ -82,15 +83,15 @@ const startApp = async () => {
         };
 
         io.to(data.room).emit("exchangeMessage", submittedChatData);
-        // const chatRoom = new chatRoomModel(submittedChatData);
-        // console.log("db ...");
-        // await chatRoom.save();
+        const chatMsg = new chatMsgModel(submittedChatData);
+        await chatMsg.save();
       });
     });
 
     // routes
     app.use("/auth", AuthRoute);
     app.use("/room", chatRoomRoute);
+    app.use("/chat", chatMsgRoute);
     app.use(errorHandleMiddleware);
     HttpServer.listen(process.env.PORT, () => {
       console.log(`listening on port ${process.env.PORT}`);
