@@ -6,6 +6,7 @@ import { useState } from "react";
 import { convertToUrlFriendly } from "../generic/convertToUrlFreiendly";
 import { addRoomData } from "../../slice";
 import { useDispatch } from "react-redux";
+import { generateRandomAlphaNumeric } from "../../utils/longAlphaNumericString";
 
 type MessageRoomCard = {
   item: messageRoomType;
@@ -23,7 +24,12 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
     if (!window.navigator.clipboard) {
       return alert("Your browser does not support this");
     }
-    await window.navigator.clipboard.writeText(roomName);
+    await window.navigator.clipboard.writeText(
+      `${
+        import.meta.env.VITE_HOSTNAME
+      }/${roomName}/link/${generateRandomAlphaNumeric(20)}`
+    );
+
     setIsOpenGroupLinkDropDown(false);
   };
 

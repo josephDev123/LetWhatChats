@@ -21,6 +21,12 @@ import { FaSpinner } from "react-icons/fa6";
 export default function ChatById() {
   const [toggleAttachment, setToggleAttachment] = useState(false);
   const [message, setMessage] = useState<ChatDataType[]>([]);
+  const unique_channelMember = Array.from(
+    new Set(message.map((item) => JSON.stringify(item.name)))
+  ).map((item) => JSON.parse(item));
+  const channel_members = unique_channelMember.splice(0, 3);
+
+  console.log(unique_channelMember);
   const [messageStatus, setmessageStatus] = useState("idle");
 
   const [isEmojiModalOpen, setisEmojiModalOpen] = useState(false);
@@ -105,7 +111,12 @@ export default function ChatById() {
         <div className="flex flex-col leading-tight text-white/80">
           <h5 className="font-bold text-sm sm:text-base">{room}</h5>
           <p className="text-sm sm:text-base ">
-            breteke, garri, juwon, mercy, joshua
+            {/* breteke, garri, juwon, mercy, joshua */}
+            <div className="flex justify-between gap-2 items-center">
+              {channel_members.map((item, index) => (
+                <p key={index}>{item},</p>
+              ))}
+            </div>
           </p>
         </div>
       </div>
