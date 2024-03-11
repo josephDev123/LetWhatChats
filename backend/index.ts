@@ -47,9 +47,6 @@ const startApp = async () => {
     io.on("connection", (socket) => {
       socket.on("createRoom", async (roomOption) => {
         socket.join(roomOption.roomUniqueName);
-
-        console.log();
-
         io.to(roomOption.roomUniqueName).emit("getCreateRoom", roomOption);
 
         // const roomModelDb = new roomModel(roomOption);

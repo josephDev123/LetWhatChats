@@ -1,4 +1,4 @@
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import LeftPanelHeading from "../../components/home/LeftPanelHeading";
 import SearchChat from "../../components/home/SearchChat";
@@ -21,6 +21,41 @@ export default function HomeLayout({}: {}) {
   const [connectionStatus, setConnectionStatus] = useState<boolean>(
     socket.connected
   );
+  const location = useLocation();
+  const [pathname] = location.pathname.split("/");
+  console.log(pathname);
+  const fetchChannel = async () => {
+    try {
+      const req = await axios({
+        method: "get",
+        url: `http://localhost:7000/room/${pathname}`,
+      });
+      const channel = req.data;
+      if (channel.length > 0) {
+        return;
+      } else {
+        socket.emit("welcomeMessage", {
+          userEmail: user.data.email,
+          // roomUniqueName: convertToUrlFriendly(room),
+          // avatar: user.data.profile_img,
+          // time: currentTime,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // step for invite
+  // 1.authentic the  invite link
+  // 2.check if the user is already a group member
+  // 3.Add user to group if the user is not in group
+
+  useEffect(() => {
+    if (location.pathname.includes("invite")) {
+      fetchChannel();
+    }
+  }, []);
 
   // console.log(connectionStatus);
   const redirect = useNavigate();

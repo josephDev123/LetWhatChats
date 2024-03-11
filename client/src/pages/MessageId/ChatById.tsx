@@ -36,9 +36,7 @@ export default function ChatById() {
 
   const welcomeRef = useRef<HTMLDivElement>(null);
   const [chat, setChat] = useState("");
-
   const { room } = useParams();
-
   const user = useUser();
 
   useEffect(() => {

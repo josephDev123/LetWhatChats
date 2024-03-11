@@ -27,7 +27,7 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
     await window.navigator.clipboard.writeText(
       `${
         import.meta.env.VITE_HOSTNAME
-      }/${roomName}/link/${generateRandomAlphaNumeric(20)}`
+      }/${roomName}/invite/${generateRandomAlphaNumeric(20)}`
     );
 
     setIsOpenGroupLinkDropDown(false);
