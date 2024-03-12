@@ -5,6 +5,7 @@ interface Room {
   roomUniqueName: string;
   avatar: string;
   time: string;
+  join: string[];
 }
 
 const RoomSchema = new Schema<Room>({
@@ -12,6 +13,7 @@ const RoomSchema = new Schema<Room>({
   roomUniqueName: String,
   avatar: String,
   time: String,
+  join: [],
 });
 
 export const roomModel = model("Room", RoomSchema);

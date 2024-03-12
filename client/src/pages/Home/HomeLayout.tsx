@@ -15,6 +15,8 @@ import axios from "axios";
 import { messageRoomType } from "../../type/messageRoomType";
 import { useQuery } from "@tanstack/react-query";
 import { FaSpinner } from "react-icons/fa6";
+import { convertToUrlFriendly } from "../../components/generic/convertToUrlFreiendly";
+import moment from "moment";
 
 export default function HomeLayout({}: {}) {
   const [roomCredential, setroomCredential] = useState<messageRoomType[]>([]);
@@ -23,6 +25,7 @@ export default function HomeLayout({}: {}) {
   );
   const location = useLocation();
   const [pathname] = location.pathname.split("/");
+  const currentTime = moment().format("h:mma");
   console.log(pathname);
   const fetchChannel = async () => {
     try {
@@ -34,11 +37,11 @@ export default function HomeLayout({}: {}) {
       if (channel.length > 0) {
         return;
       } else {
-        socket.emit("welcomeMessage", {
+        socket.emit("JoinInviteRoom", {
           userEmail: user.data.email,
-          // roomUniqueName: convertToUrlFriendly(room),
-          // avatar: user.data.profile_img,
-          // time: currentTime,
+          roomUniqueName: convertToUrlFriendly(pathname),
+          avatar: user.data.profile_img,
+          time: currentTime,
         });
       }
     } catch (error) {

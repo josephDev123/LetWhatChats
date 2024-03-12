@@ -53,6 +53,10 @@ const startApp = async () => {
         // await roomModelDb.save();
       });
 
+      socket.on("JoinInviteRoom", (data) => {
+        socket.join(data);
+      });
+
       socket.on("welcomeMessage", (room) => {
         socket.join(room.room);
         user.addUser(socket.id, room.room);
