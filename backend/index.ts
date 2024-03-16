@@ -49,12 +49,27 @@ const startApp = async () => {
         socket.join(roomOption.roomUniqueName);
         io.to(roomOption.roomUniqueName).emit("getCreateRoom", roomOption);
 
-        // const roomModelDb = new roomModel(roomOption);
-        // await roomModelDb.save();
+        const roomModelDb = new roomModel(roomOption);
+        await roomModelDb.save();
       });
 
-      socket.on("JoinInviteRoom", (data) => {
-        socket.join(data);
+      socket.on("JoinInviteRoom", async (data) => {
+        console.log(data.roomUniqueName);
+        try {
+          await roomModel.updateOne(
+            { roomUniqueName: data.roomUniqueName },
+            { $addToSet: { join: data } }
+          );
+        } catch (error) {
+          console.log(error);
+        }
+
+        // const personInvitedData = {
+        //   userEmail: data.userEmail,
+        //   roomUniqueName: data.roomUniqueName,
+        //   avatar: data.avatar,
+        //   time: data.time,
+        // };
       });
 
       socket.on("welcomeMessage", (room) => {

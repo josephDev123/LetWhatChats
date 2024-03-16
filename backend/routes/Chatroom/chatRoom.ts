@@ -35,7 +35,10 @@ chatRoomRoute.get(
   async function (req: Request, res: Response, next: NextFunction) {
     try {
       const { email } = req.params;
-      const resp = await roomModel.find({ userEmail: email });
+      const resp = await roomModel.find({
+        $or: [{ userEmail: email }, { join: { userEmail: email } }],
+      });
+
       return res.status(200).json(resp);
     } catch (error) {
       const errorHandler = new GlobalError(
@@ -48,3 +51,36 @@ chatRoomRoute.get(
     }
   }
 );
+
+// chatRoomRoute.put(
+//   "/:room",
+//   async function (req: Request, res: Response, next: NextFunction) {
+//     try {
+//       const { room } = req.params;
+//       const roomResp = await roomModel.find(
+//         { room: room },
+//         { join: { $add: [] } }
+//       );
+//       // if (!roomResp) {
+//       //   const errorHandler = new GlobalError(
+//       //     "You cannot joined un-existed room",
+//       //     "RoomError",
+//       //     500,
+//       //     true
+//       //   );
+//       //   return next(errorHandler);
+//       // }
+//       return res
+//         .status(200)
+//         .json({ data: roomResp, message: "invite successful" });
+//     } catch (error) {
+//       const errorHandler = new GlobalError(
+//         "something went wrong",
+//         "UnknownError",
+//         500,
+//         false
+//       );
+//       return next(errorHandler);
+//     }
+//   }
+// );

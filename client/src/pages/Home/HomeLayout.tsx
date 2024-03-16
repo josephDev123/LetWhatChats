@@ -23,19 +23,25 @@ export default function HomeLayout({}: {}) {
   const [connectionStatus, setConnectionStatus] = useState<boolean>(
     socket.connected
   );
+  const [status, setStatus] = useState("idle");
   const location = useLocation();
-  const [pathname] = location.pathname.split("/");
+
+  const [pathnameOne, pathname] = location.pathname.split("/");
   const currentTime = moment().format("h:mma");
-  console.log(pathname);
+  const redirect = useNavigate();
+  const user = useUser();
+
   const fetchChannel = async () => {
+    setStatus("loading");
     try {
       const req = await axios({
         method: "get",
-        url: `http://localhost:7000/room/${pathname}`,
+        url: `http://localhost:7000/room/${user.data.email}`,
       });
       const channel = req.data;
-      if (channel.length > 0) {
-        return;
+
+      if (channel.length < 1) {
+        return redirect("/");
       } else {
         socket.emit("JoinInviteRoom", {
           userEmail: user.data.email,
@@ -43,6 +49,7 @@ export default function HomeLayout({}: {}) {
           avatar: user.data.profile_img,
           time: currentTime,
         });
+        setStatus("data");
       }
     } catch (error) {
       console.log(error);
@@ -61,8 +68,6 @@ export default function HomeLayout({}: {}) {
   }, []);
 
   // console.log(connectionStatus);
-  const redirect = useNavigate();
-  const user = useUser();
   useEffect(() => {
     if (!user.data || user.data.email === "undefined") {
       return redirect("/login");
@@ -109,6 +114,11 @@ export default function HomeLayout({}: {}) {
 
   return (
     <section className="flex w-full h-full gap-1">
+      {status === "loading" && (
+        <section className="fixed h-full w-full text-white flex flex-col items-center justify-center">
+          loading ...
+        </section>
+      )}
       {/* left section */}
       <div className="md:w-[30%] sm:w-[40%] w-full flex flex-col h-screen sm:p-2">
         <div className="sm:bg-transparent bg-[#075E55] p-2 sm:text-inherit text-white/75">
