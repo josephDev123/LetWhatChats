@@ -24,6 +24,7 @@ export default function HomeLayout({}: {}) {
     socket.connected
   );
   const [status, setStatus] = useState("idle");
+
   const location = useLocation();
 
   const [pathnameOne, pathname] = location.pathname.split("/");
@@ -36,11 +37,12 @@ export default function HomeLayout({}: {}) {
     try {
       const req = await axios({
         method: "get",
-        url: `http://localhost:7000/room/${user.data.email}`,
+        url: `http://localhost:7000/room/channel/${pathname}`,
       });
       const channel = req.data;
 
       if (channel.length < 1) {
+        // console.log("redirect");
         return redirect("/");
       } else {
         socket.emit("JoinInviteRoom", {
@@ -50,6 +52,7 @@ export default function HomeLayout({}: {}) {
           time: currentTime,
         });
         setStatus("data");
+        return redirect(`/${pathname}`);
       }
     } catch (error) {
       console.log(error);
@@ -58,8 +61,8 @@ export default function HomeLayout({}: {}) {
 
   // step for invite
   // 1.authentic the  invite link
-  // 2.check if the user is already a group member
-  // 3.Add user to group if the user is not in group
+  // 2.check if the room is already exist
+  // 3.join  user to the group if the user is not in group
 
   useEffect(() => {
     if (location.pathname.includes("invite")) {
@@ -106,7 +109,7 @@ export default function HomeLayout({}: {}) {
         method: "get",
         url: `http://localhost:7000/room/${user.data.email}`,
       });
-      // console.log(req.data);
+      console.log(req.data);
       setroomCredential(req.data);
       return req.data;
     },

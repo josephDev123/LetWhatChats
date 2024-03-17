@@ -54,22 +54,37 @@ const startApp = async () => {
       });
 
       socket.on("JoinInviteRoom", async (data) => {
-        console.log(data.roomUniqueName);
         try {
-          await roomModel.updateOne(
-            { roomUniqueName: data.roomUniqueName },
-            { $addToSet: { join: data } }
-          );
+          // await roomModel.updateOne(
+          //   { roomUniqueName: data.roomUniqueName },
+          //   { $addToSet: { join: data } }
+          // );
+
+          socket.join(data.roomUniqueName);
+          const existingRooms = await roomModel.find({
+            roomUniqueName: data.roomUniqueName,
+          });
+
+          existingRooms.forEach(async (existingRoom) => {
+            const userEmailExists = existingRoom.join.some(
+              (joinData: any) => joinData.userEmail === data.userEmail
+            );
+
+            if (!userEmailExists) {
+              await roomModel.updateOne(
+                { roomUniqueName: data.roomUniqueName },
+                { $addToSet: { join: data } }
+              );
+            } else {
+              console.log(
+                "User email already exists in the join array for room:",
+                existingRoom.roomUniqueName
+              );
+            }
+          });
         } catch (error) {
           console.log(error);
         }
-
-        // const personInvitedData = {
-        //   userEmail: data.userEmail,
-        //   roomUniqueName: data.roomUniqueName,
-        //   avatar: data.avatar,
-        //   time: data.time,
-        // };
       });
 
       socket.on("welcomeMessage", (room) => {

@@ -35,10 +35,36 @@ chatRoomRoute.get(
   async function (req: Request, res: Response, next: NextFunction) {
     try {
       const { email } = req.params;
+
       const resp = await roomModel.find({
-        $or: [{ userEmail: email }, { join: { userEmail: email } }],
+        $or: [
+          { userEmail: email },
+          { join: { $elemMatch: { userEmail: email } } },
+        ],
       });
 
+      // console.log("hello" + resp);
+      return res.status(200).json(resp);
+    } catch (error) {
+      const errorHandler = new GlobalError(
+        "something went wrong",
+        "UnknownError",
+        500,
+        false
+      );
+      return next(errorHandler);
+    }
+  }
+);
+
+chatRoomRoute.get(
+  "/channel/:channel",
+  async function (req: Request, res: Response, next: NextFunction) {
+    try {
+      const { channel } = req.params;
+
+      const resp = await roomModel.find({ roomUniqueName: channel });
+      console.log(resp);
       return res.status(200).json(resp);
     } catch (error) {
       const errorHandler = new GlobalError(
