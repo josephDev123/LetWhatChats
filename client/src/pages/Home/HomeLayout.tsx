@@ -13,7 +13,7 @@ import MobileTopTab from "../../components/generic/MobileTopTab";
 // import { chatAppType } from "../../sliceType";
 import axios from "axios";
 import { messageRoomType } from "../../type/messageRoomType";
-import { useQuery } from "@tanstack/react-query";
+// import { useQuery } from "@tanstack/react-query";
 import { FaSpinner } from "react-icons/fa6";
 import { convertToUrlFriendly } from "../../components/generic/convertToUrlFreiendly";
 import moment from "moment";
@@ -51,8 +51,11 @@ export default function HomeLayout({}: {}) {
           avatar: user.data.profile_img,
           time: currentTime,
         });
+
+        // setTimeout(() => {
         setStatus("data");
         return redirect(`/${pathname}`);
+        // }, 2000);
       }
     } catch (error) {
       console.log(error);
@@ -102,19 +105,38 @@ export default function HomeLayout({}: {}) {
     };
   }, []);
 
-  const { isLoading, isError } = useQuery({
-    queryKey: ["roomCredential"],
-    queryFn: async () => {
+  // const { isLoading, isError } = useQuery({
+  //   queryKey: ["roomCredential"],
+  //   queryFn: async () => {
+  //     const req = await axios({
+  //       method: "get",
+  //       url: `http://localhost:7000/room/${user.data.email}`,
+  //     });
+  //     console.log(req.data);
+  //     setroomCredential(req.data);
+  //     return req.data;
+  //   },
+  // });
+
+  async function getRoomsDB() {
+    try {
       const req = await axios({
         method: "get",
         url: `http://localhost:7000/room/${user.data.email}`,
       });
       console.log(req.data);
       setroomCredential(req.data);
-      return req.data;
-    },
-  });
+    } catch (error) {
+      setStatus("error");
+    }
+  }
 
+  useEffect(() => {
+    getRoomsDB();
+    return () => {
+      getRoomsDB();
+    };
+  });
   return (
     <section className="flex w-full h-full gap-1">
       {status === "loading" && (
@@ -133,12 +155,12 @@ export default function HomeLayout({}: {}) {
         {/* large screen left panel */}
         <div className="overflow-y-auto  sm:flex hidden flex-col mt-4 space-y-0.5 h-full">
           <span>Connection status: {connectionStatus}</span>
-          {isLoading && (
+          {status === "loading" && (
             <div className="h-full flex flex-col justify-center items-center">
               <FaSpinner className="animate-spin h-8 w-8" />
             </div>
           )}
-          {isError && (
+          {status === "error" && (
             <div className="">
               <span className="text-red-400">Something went wrong</span>
             </div>
