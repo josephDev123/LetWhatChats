@@ -82,7 +82,7 @@ export default function HomeLayout({}: {}) {
 
   useEffect(() => {
     function onGetCreateRoom(roomsCredential: any) {
-      console.log(roomsCredential);
+      // console.log(roomsCredential);
       setroomCredential((prev) => [...prev, roomsCredential]);
     }
 
@@ -124,7 +124,7 @@ export default function HomeLayout({}: {}) {
         method: "get",
         url: `http://localhost:7000/room/${user.data.email}`,
       });
-      console.log(req.data);
+      // console.log(req.data);
       setroomCredential(req.data);
     } catch (error) {
       setStatus("error");

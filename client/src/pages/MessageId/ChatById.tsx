@@ -28,7 +28,8 @@ export default function ChatById() {
 
   console.log(unique_channelMember);
   const [messageStatus, setmessageStatus] = useState("idle");
-
+  const [isPollModalOpen, setPollModalOpen] = useState(false);
+  console.log(isPollModalOpen);
   const [isEmojiModalOpen, setisEmojiModalOpen] = useState(false);
   const roomCredential = useSelector(
     (state: chatAppType) => state.roomCredential
@@ -168,6 +169,7 @@ export default function ChatById() {
           <button type="submit">Send</button>
         </form>
       </div>
+      {/* modals */}
       {isEmojiModalOpen && (
         <span className="absolute bottom-12">
           <Emojipicker
@@ -179,7 +181,18 @@ export default function ChatById() {
           />
         </span>
       )}
-      {toggleAttachment && <UploadFilePopUp />}
+
+      {isPollModalOpen && (
+        <span className="absolute bottom-12 text-white">Poll coming ...</span>
+      )}
+      {toggleAttachment && (
+        <UploadFilePopUp
+          openPollModal={() => {
+            setPollModalOpen(true);
+            setToggleAttachment(false);
+          }}
+        />
+      )}
     </section>
   );
 }
