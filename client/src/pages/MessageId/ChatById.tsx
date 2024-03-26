@@ -17,6 +17,7 @@ import { chatAppType } from "../../sliceType";
 // import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { FaSpinner } from "react-icons/fa6";
+import PollingModal from "../../components/generic/PollingModal";
 
 export default function ChatById() {
   const [toggleAttachment, setToggleAttachment] = useState(false);
@@ -183,7 +184,9 @@ export default function ChatById() {
       )}
 
       {isPollModalOpen && (
-        <span className="absolute bottom-12 text-white">Poll coming ...</span>
+        <span className="absolute bottom-12 ml-2">
+          <PollingModal />
+        </span>
       )}
       {toggleAttachment && (
         <UploadFilePopUp
