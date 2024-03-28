@@ -14,7 +14,6 @@ import style from "../../styles/mobile_bg.module.css";
 import Emojipicker from "../../components/generic/EmojiPicker";
 import { useSelector } from "react-redux";
 import { chatAppType } from "../../sliceType";
-// import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { FaSpinner } from "react-icons/fa6";
 import PollingModal from "../../components/generic/PollingModal";

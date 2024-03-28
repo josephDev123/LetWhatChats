@@ -13,6 +13,7 @@ import { chatMsgRoute } from "./routes/chat/chatMsg";
 import { errorHandleMiddleware } from "./middleware/errorHandlerMiddleware";
 import { roomModel } from "./models/rooms";
 import { chatRoomRoute } from "./routes/Chatroom/chatRoom";
+import { PollModel } from "./models/Polling";
 
 dotenv.config();
 
@@ -116,6 +117,29 @@ const startApp = async () => {
         io.to(data.room).emit("exchangeMessage", submittedChatData);
         const chatMsg = new chatMsgModel(submittedChatData);
         await chatMsg.save();
+      });
+
+      socket.on("createPoll", async (data) => {
+        console.log(data);
+        try {
+          const pollResp = await new PollModel({
+            question: data.question,
+            options: [data.optionOne, data.optionTwo],
+            multiple_answer: data.multipleAnswer,
+          });
+          await pollResp.save();
+          const chatMessageModel = await new chatMsgModel({
+            name: data.user.data.name,
+            room: data.room,
+            // chat: { type: String },
+            // time: { type: String },
+            poll_id: pollResp._id,
+          });
+
+          await chatMessageModel.save();
+        } catch (error) {
+          console.log(error);
+        }
       });
     });
 

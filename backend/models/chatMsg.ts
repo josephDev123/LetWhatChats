@@ -5,6 +5,7 @@ export interface chatMsgType {
   room: string;
   chat: string;
   time: string;
+  poll_id?: string;
 }
 
 const chatRoomSchema = new Schema<chatMsgType>({
@@ -12,6 +13,7 @@ const chatRoomSchema = new Schema<chatMsgType>({
   room: { type: String },
   chat: { type: String },
   time: { type: String },
+  poll_id: { type: Schema.Types.ObjectId, ref: "Poll" },
 });
 
 export const chatMsgModel = model("chatMsg", chatRoomSchema);
