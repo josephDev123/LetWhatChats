@@ -93,7 +93,7 @@ export default function ChatById() {
     });
     setChat("");
   }
-
+  console.log(message);
   return (
     <section
       className={`flex flex-col w-full h-full overflow-y-auto no-scrollbar ${style.backgroundImageContainer}`}

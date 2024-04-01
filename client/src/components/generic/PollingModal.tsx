@@ -7,7 +7,10 @@ import { socket } from "../../socketIo";
 import { useParams } from "react-router-dom";
 import { useUser } from "../../customHooks/useUser";
 
-export default function PollingModal() {
+interface PollingModalProps {
+  closeModal?: () => void;
+}
+export default function PollingModal({ closeModal }: PollingModalProps) {
   type polling = z.infer<typeof pollingType>;
   const { room } = useParams();
   const user = useUser();

@@ -120,17 +120,17 @@ const startApp = async () => {
       });
 
       socket.on("createPoll", async (data) => {
-        console.log(data);
         try {
           const pollResp = await new PollModel({
             question: data.question,
-            options: [data.optionOne, data.optionTwo],
+            options: [{ option: data.optionOne }, { option: data.optionTwo }],
             multiple_answer: data.multipleAnswer,
           });
           await pollResp.save();
           const chatMessageModel = await new chatMsgModel({
             name: data.user.data.name,
             room: data.room,
+            type: data.type,
             // chat: { type: String },
             // time: { type: String },
             poll_id: pollResp._id,
