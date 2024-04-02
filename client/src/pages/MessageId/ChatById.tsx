@@ -17,6 +17,7 @@ import { chatAppType } from "../../sliceType";
 import axios from "axios";
 import { FaSpinner } from "react-icons/fa6";
 import PollingModal from "../../components/generic/PollingModal";
+import Poll from "../../components/messageId/Poll";
 
 export default function ChatById() {
   const [toggleAttachment, setToggleAttachment] = useState(false);
@@ -136,9 +137,19 @@ export default function ChatById() {
               .map((item, i) => (
                 <Fragment key={i}>
                   {item.name !== user.data.name ? (
-                    <IncomingMessage item={item} />
+                    <>
+                      <IncomingMessage item={item} />
+                      {item.type === "poll" && (
+                        <Poll className="justify-start" item={item.poll_id} />
+                      )}
+                    </>
                   ) : (
-                    <SentMessage item={item} />
+                    <>
+                      <SentMessage item={item} />
+                      {item.type === "poll" && (
+                        <Poll className="justify-end" item={item.poll_id} />
+                      )}
+                    </>
                   )}
                 </Fragment>
               ))}
@@ -184,7 +195,7 @@ export default function ChatById() {
 
       {isPollModalOpen && (
         <span className="absolute bottom-12 ml-2">
-          <PollingModal />
+          <PollingModal closeModal={() => setPollModalOpen(false)} />
         </span>
       )}
       {toggleAttachment && (

@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 import { useUser } from "../../customHooks/useUser";
 
 interface PollingModalProps {
-  closeModal?: () => void;
+  closeModal: () => void;
 }
 export default function PollingModal({ closeModal }: PollingModalProps) {
   type polling = z.infer<typeof pollingType>;
@@ -29,6 +29,7 @@ export default function PollingModal({ closeModal }: PollingModalProps) {
       room: room,
       user: user,
     });
+    closeModal();
   };
   return (
     <section className="rounded-md flex flex-col bg-black p-6 w-[400px]">
