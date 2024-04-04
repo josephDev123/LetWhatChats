@@ -121,13 +121,16 @@ const startApp = async () => {
 
       socket.on("createPoll", async (data) => {
         try {
+          socket.join(data.room);
+
           const pollObj = {
             question: data.question,
             options: [{ option: data.optionOne }, { option: data.optionTwo }],
             multiple_answer: data.multipleAnswer,
           };
+          io.to(data.room).emit("listenToCreatePoll", pollObj);
           const pollResp = await new PollModel({
-            pollObj,
+            ...pollObj,
           });
           await pollResp.save();
           const chatMessageModel = await new chatMsgModel({
@@ -140,8 +143,6 @@ const startApp = async () => {
           });
 
           await chatMessageModel.save();
-
-          socket.emit("PollEvent", pollObj);
         } catch (error) {
           console.log(error);
         }

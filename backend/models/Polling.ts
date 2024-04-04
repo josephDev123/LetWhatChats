@@ -12,10 +12,13 @@ type SchemaType = {
   multiple_answer: boolean;
 };
 
-const pollingSchema = new Schema<SchemaType>({
-  question: String,
-  options: [{ option: String, count: { type: Number, default: 0 } }],
-  multiple_answer: Boolean,
-});
+const pollingSchema = new Schema<SchemaType>(
+  {
+    question: String,
+    options: [{ option: String, count: { type: Number, default: 0 } }],
+    multiple_answer: Boolean,
+  },
+  { timestamps: true }
+);
 
 export const PollModel = model<SchemaType>("Poll", pollingSchema);

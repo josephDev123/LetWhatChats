@@ -1,5 +1,6 @@
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { pollType } from "../../type/chatDataType";
+import moment from "moment";
 
 interface PollProps {
   className?: string;
@@ -25,12 +26,12 @@ export default function Poll({ className, item }: PollProps) {
           <div className="flex gap-2">
             <input
               type="checkbox"
-              className="accent-green-700  rounded-full h-4 w-4 mt-1"
+              className="accent-green-700 cursor-pointer rounded-full h-4 w-4 mt-1"
               name=""
               id=""
             />
             <div className="flex flex-col space-y-2 w-full">
-              <span className="flex justify-between items-center">
+              <span className="flex justify-between items-center text-sm">
                 <h5>{item.option}</h5>
                 {item.count}
               </span>
@@ -46,6 +47,10 @@ export default function Poll({ className, item }: PollProps) {
             </div>
           </div>
         ))}
+
+        <span className="text-xs text-end">
+          {moment(item.createdAt).format("hh:m")}
+        </span>
       </div>
     </section>
   );

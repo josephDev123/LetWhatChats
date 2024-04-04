@@ -18,6 +18,7 @@ import axios from "axios";
 import { FaSpinner } from "react-icons/fa6";
 import PollingModal from "../../components/generic/PollingModal";
 import Poll from "../../components/messageId/Poll";
+import { Socket } from "socket.io-client";
 
 export default function ChatById() {
   const [toggleAttachment, setToggleAttachment] = useState(false);
@@ -26,11 +27,8 @@ export default function ChatById() {
     new Set(message.map((item) => JSON.stringify(item.name)))
   ).map((item) => JSON.parse(item));
   const channel_members = unique_channelMember.splice(0, 3);
-
-  console.log(unique_channelMember);
   const [messageStatus, setmessageStatus] = useState("idle");
   const [isPollModalOpen, setPollModalOpen] = useState(false);
-  console.log(isPollModalOpen);
   const [isEmojiModalOpen, setisEmojiModalOpen] = useState(false);
   const roomCredential = useSelector(
     (state: chatAppType) => state.roomCredential
@@ -56,6 +54,10 @@ export default function ChatById() {
     socket.on("welcomeMessage", handleWelcomeMessage);
     // Handle incoming chat messages
     socket.on("exchangeMessage", handleExchangeMessage);
+    socket.on("listenToCreatePoll", (data: any) => {
+      setMessage((prev) => [...prev, data]);
+      // console.log(data);
+    });
 
     return () => {
       socket.off("welcomeMessage", handleWelcomeMessage);
@@ -94,7 +96,7 @@ export default function ChatById() {
     });
     setChat("");
   }
-  console.log(message);
+  // console.log(message);
   return (
     <section
       className={`flex flex-col w-full h-full overflow-y-auto no-scrollbar ${style.backgroundImageContainer}`}

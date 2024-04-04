@@ -13,7 +13,7 @@ chatMsgRoute.get(
       const chatMsg = await chatMsgModel
         .find({ room: channel })
         .populate("poll_id");
-      console.log(chatMsg);
+      // console.log(chatMsg);
       return res.status(200).json({ data: chatMsg });
     } catch (error) {
       const errorHandler = new GlobalError(
