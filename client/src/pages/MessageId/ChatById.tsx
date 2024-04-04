@@ -18,7 +18,6 @@ import axios from "axios";
 import { FaSpinner } from "react-icons/fa6";
 import PollingModal from "../../components/generic/PollingModal";
 import Poll from "../../components/messageId/Poll";
-import { Socket } from "socket.io-client";
 
 export default function ChatById() {
   const [toggleAttachment, setToggleAttachment] = useState(false);
@@ -49,19 +48,21 @@ export default function ChatById() {
     function handleExchangeMessage(chat: any) {
       // console.log(chat);
       setMessage((prevMessage) => [...prevMessage, chat]);
-      console.log("socket message: " + message);
+    }
+
+    function handlePollMessage(data: ChatDataType) {
+      setMessage((prev) => [...prev, data]);
+      // console.log(data);
     }
     socket.on("welcomeMessage", handleWelcomeMessage);
     // Handle incoming chat messages
     socket.on("exchangeMessage", handleExchangeMessage);
-    socket.on("listenToCreatePoll", (data: any) => {
-      setMessage((prev) => [...prev, data]);
-      // console.log(data);
-    });
+    socket.on("listenToCreatePoll", handlePollMessage);
 
     return () => {
       socket.off("welcomeMessage", handleWelcomeMessage);
       socket.off("exchangeMessage", handleExchangeMessage);
+      socket.off("listenToCreatePoll", handlePollMessage);
     };
   }, []);
 

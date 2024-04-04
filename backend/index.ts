@@ -124,16 +124,27 @@ const startApp = async () => {
           socket.join(data.room);
 
           const pollObj = {
+            name: data.user.data.name,
+            room: data.room,
+            type: data.type,
+            poll_id: {
+              question: data.question,
+              options: [{ option: data.optionOne }, { option: data.optionTwo }],
+              multiple_answer: data.multipleAnswer,
+            },
+          };
+
+          const pollObjDb = {
             question: data.question,
             options: [{ option: data.optionOne }, { option: data.optionTwo }],
             multiple_answer: data.multipleAnswer,
           };
           io.to(data.room).emit("listenToCreatePoll", pollObj);
-          const pollResp = await new PollModel({
-            ...pollObj,
+          const pollResp = new PollModel({
+            ...pollObjDb,
           });
           await pollResp.save();
-          const chatMessageModel = await new chatMsgModel({
+          const chatMessageModel = new chatMsgModel({
             name: data.user.data.name,
             room: data.room,
             type: data.type,

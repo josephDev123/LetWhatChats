@@ -23,7 +23,7 @@ export default function Poll({ className, item }: PollProps) {
 
       <div className="flex flex-col gap-1">
         {item.options.map((item, i) => (
-          <div className="flex gap-2">
+          <div key={i} className="flex gap-2">
             <input
               type="checkbox"
               className="accent-green-700 cursor-pointer rounded-full h-4 w-4 mt-1"
@@ -33,7 +33,7 @@ export default function Poll({ className, item }: PollProps) {
             <div className="flex flex-col space-y-2 w-full">
               <span className="flex justify-between items-center text-sm">
                 <h5>{item.option}</h5>
-                {item.count}
+                {!item?.count ? "" : item.count}
               </span>
 
               <input
@@ -49,7 +49,7 @@ export default function Poll({ className, item }: PollProps) {
         ))}
 
         <span className="text-xs text-end">
-          {moment(item.createdAt).format("hh:m")}
+          {!item.createdAt ? "" : moment(item.createdAt).format("hh:m")}
         </span>
       </div>
     </section>
