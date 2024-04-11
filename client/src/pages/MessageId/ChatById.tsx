@@ -141,16 +141,16 @@ export default function ChatById() {
                 <Fragment key={i}>
                   {item.name !== user.data.name ? (
                     <>
-                      <IncomingMessage item={item} />
+                      {!item.chat ? "" : <IncomingMessage item={item} />}
                       {item.type === "poll" && (
-                        <Poll className="justify-start" item={item.poll_id} />
+                        <Poll className="self-start" item={item.poll_id} />
                       )}
                     </>
                   ) : (
                     <>
-                      <SentMessage item={item} />
+                      {!item.chat ? "" : <SentMessage item={item} />}
                       {item.type === "poll" && (
-                        <Poll className="justify-end" item={item.poll_id} />
+                        <Poll className="self-end" item={item.poll_id} />
                       )}
                     </>
                   )}

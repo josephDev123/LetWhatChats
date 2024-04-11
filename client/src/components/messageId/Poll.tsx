@@ -8,6 +8,7 @@ interface PollProps {
 }
 
 export default function Poll({ className, item }: PollProps) {
+  console.log(item);
   return (
     <section
       className={`flex flex-col space-y-2 bg-black/30 sm:w-[40%] w-[80%] rounded-l-md p-2 rounded-br-md ${className}`}
@@ -33,7 +34,7 @@ export default function Poll({ className, item }: PollProps) {
             <div className="flex flex-col space-y-2 w-full">
               <span className="flex justify-between items-center text-sm">
                 <h5>{item.option}</h5>
-                {!item?.count ? "" : item.count}
+                {item?.count === undefined ? "" : item.count}
               </span>
 
               <input

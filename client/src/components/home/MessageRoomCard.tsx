@@ -67,7 +67,7 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
       </div>
       <div className="ms-auto relative">
         <BsThreeDots
-          className=""
+          className="hover:bg-green-400 rounded-full p-1 text-xl"
           onClick={(e: any) => {
             e.stopPropagation();
             setIsOpenGroupLinkDropDown((prev) => !prev);

@@ -40,7 +40,7 @@ export default function HomeLayout({}: {}) {
         url: `http://localhost:7000/room/channel/${pathname}`,
       });
       const channel = req.data;
-
+      setStatus("data");
       if (channel.length < 1) {
         // console.log("redirect");
         return redirect("/");
@@ -58,6 +58,7 @@ export default function HomeLayout({}: {}) {
         // }, 2000);
       }
     } catch (error) {
+      setStatus("error");
       console.log(error);
     }
   };
@@ -154,7 +155,7 @@ export default function HomeLayout({}: {}) {
 
         {/* large screen left panel */}
         <div className="overflow-y-auto  sm:flex hidden flex-col mt-4 space-y-0.5 h-full">
-          <span>Connection status: {connectionStatus}</span>
+          {/* <span>Connection status: {connectionStatus}</span> */}
           {status === "loading" && (
             <div className="h-full flex flex-col justify-center items-center">
               <FaSpinner className="animate-spin h-8 w-8" />

@@ -129,7 +129,10 @@ const startApp = async () => {
             type: data.type,
             poll_id: {
               question: data.question,
-              options: [{ option: data.optionOne }, { option: data.optionTwo }],
+              options: [
+                { option: data.optionOne, count: 0 },
+                { option: data.optionTwo, count: 0 },
+              ],
               multiple_answer: data.multipleAnswer,
             },
           };

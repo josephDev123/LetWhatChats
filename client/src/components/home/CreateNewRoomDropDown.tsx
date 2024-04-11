@@ -116,7 +116,7 @@ export default function CreateNewRoomDropDown({
         <motion.div className="overflow-y-auto no-scrollbar space-y-0.5">
           {isLoading && (
             <div className="h-full flex flex-col justify-center items-center">
-              <FaSpinner className="animate-spin h-12 w-12 bg-white" />
+              <FaSpinner className="animate-spin h-12 w-12 text-white" />
             </div>
           )}
           {isError && (
