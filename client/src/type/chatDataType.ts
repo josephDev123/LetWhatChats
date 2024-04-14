@@ -1,10 +1,11 @@
 export interface pollType {
   _id: string;
   question: string;
-  options: { option: string; count: number }[];
+  options: { option: string; count: number; _id: string }[];
   multiple_answer: boolean;
   createdAt: string;
   updatedAt: string;
+  peopleWhovoted: string[];
 }
 
 export type ChatDataType = {

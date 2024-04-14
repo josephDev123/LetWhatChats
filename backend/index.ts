@@ -14,6 +14,7 @@ import { errorHandleMiddleware } from "./middleware/errorHandlerMiddleware";
 import { roomModel } from "./models/rooms";
 import { chatRoomRoute } from "./routes/Chatroom/chatRoom";
 import { PollModel } from "./models/Polling";
+import { VoteRouter } from "./routes/votePoll";
 
 dotenv.config();
 
@@ -161,12 +162,36 @@ const startApp = async () => {
           console.log(error);
         }
       });
+
+      socket.on("onVoted", (data) => {
+        const newChat = data.chats.map((chat: any) => {
+          if (chat.poll_id && chat.poll_id.options) {
+            chat.poll_id.options = chat.poll_id.options.map((option: any) => {
+              if (option._id === data.whatToUpdateId) {
+                // Increment count by 1
+                option.count = (option.count || 0) + 1;
+                // Add user to peopleWhovoted array if not already present
+                if (!chat.poll_id.peopleWhovoted.includes(data.user)) {
+                  chat.poll_id.peopleWhovoted.push(data.user);
+                }
+              }
+              return option;
+            });
+          }
+          return chat;
+        });
+
+        // Now newChat contains the updated data structure with count and peopleWhovoted updated
+        // console.log(newChat);
+        socket.emit("listToOnVoted", newChat);
+      });
     });
 
     // routes
     app.use("/auth", AuthRoute);
     app.use("/room", chatRoomRoute);
     app.use("/chat", chatMsgRoute);
+    app.use("/vote", VoteRouter);
     app.use(errorHandleMiddleware);
     HttpServer.listen(process.env.PORT, () => {
       console.log(`listening on port ${process.env.PORT}`);

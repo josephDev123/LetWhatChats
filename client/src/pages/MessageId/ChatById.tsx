@@ -143,14 +143,24 @@ export default function ChatById() {
                     <>
                       {!item.chat ? "" : <IncomingMessage item={item} />}
                       {item.type === "poll" && (
-                        <Poll className="self-start" item={item.poll_id} />
+                        <Poll
+                          className="self-start"
+                          item={item.poll_id}
+                          chat={message}
+                          setChat={setMessage}
+                        />
                       )}
                     </>
                   ) : (
                     <>
                       {!item.chat ? "" : <SentMessage item={item} />}
                       {item.type === "poll" && (
-                        <Poll className="self-end" item={item.poll_id} />
+                        <Poll
+                          className="self-end"
+                          item={item.poll_id}
+                          chat={message}
+                          setChat={setMessage}
+                        />
                       )}
                     </>
                   )}
