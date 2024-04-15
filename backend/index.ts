@@ -35,11 +35,6 @@ app.use(cors(corsOption));
 app.use(express.json());
 app.use(cookieParser());
 
-// app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-//   console.error(err.stack);
-//   res.status(500).send("Something went wrong!");
-// });
-
 const startApp = async () => {
   try {
     const user = new User();
@@ -123,27 +118,12 @@ const startApp = async () => {
       socket.on("createPoll", async (data) => {
         try {
           socket.join(data.room);
-
-          const pollObj = {
-            name: data.user.data.name,
-            room: data.room,
-            type: data.type,
-            poll_id: {
-              question: data.question,
-              options: [
-                { option: data.optionOne, count: 0 },
-                { option: data.optionTwo, count: 0 },
-              ],
-              multiple_answer: data.multipleAnswer,
-            },
-          };
-
           const pollObjDb = {
             question: data.question,
             options: [{ option: data.optionOne }, { option: data.optionTwo }],
             multiple_answer: data.multipleAnswer,
           };
-          io.to(data.room).emit("listenToCreatePoll", pollObj);
+
           const pollResp = new PollModel({
             ...pollObjDb,
           });
@@ -158,32 +138,61 @@ const startApp = async () => {
           });
 
           await chatMessageModel.save();
+
+          const pollObj = {
+            name: data.user.data.name,
+            room: data.room,
+            type: data.type,
+            poll_id: {
+              _id: pollResp._id,
+              question: data.question,
+              options: [
+                { option: data.optionOne, count: 0 },
+                { option: data.optionTwo, count: 0 },
+              ],
+              multiple_answer: data.multipleAnswer,
+              peopleWhovoted: [],
+            },
+          };
+          console.log(pollObj);
+          io.to(data.room).emit("listenToCreatePoll", pollObj);
         } catch (error) {
           console.log(error);
         }
       });
 
-      socket.on("onVoted", (data) => {
-        const newChat = data.chats.map((chat: any) => {
-          if (chat.poll_id && chat.poll_id.options) {
-            chat.poll_id.options = chat.poll_id.options.map((option: any) => {
-              if (option._id === data.whatToUpdateId) {
-                // Increment count by 1
-                option.count = (option.count || 0) + 1;
-                // Add user to peopleWhovoted array if not already present
-                if (!chat.poll_id.peopleWhovoted.includes(data.user)) {
-                  chat.poll_id.peopleWhovoted.push(data.user);
+      socket.on("onVoted", async (data) => {
+        try {
+          // real-time update
+          const newChat = data.chats.map((chat: any) => {
+            if (chat.poll_id && chat.poll_id.options) {
+              chat.poll_id.options = chat.poll_id.options.map((option: any) => {
+                if (option._id === data.whatToUpdateId) {
+                  // Increment count by 1
+                  option.count = (option.count || 0) + 1;
+                  // Add user to peopleWhovoted array if not already present
+                  if (!chat.poll_id.peopleWhovoted.includes(data.user)) {
+                    chat.poll_id.peopleWhovoted.push(data.user);
+                  }
                 }
-              }
-              return option;
-            });
-          }
-          return chat;
-        });
+                return option;
+              });
+            }
+            return chat;
+          });
 
-        // Now newChat contains the updated data structure with count and peopleWhovoted updated
-        // console.log(newChat);
-        socket.emit("listToOnVoted", newChat);
+          socket.emit("listToOnVoted", newChat);
+          // update the db
+          await PollModel.updateOne(
+            { _id: data.item._id, "options.option": data.optionToUpdate },
+            {
+              $inc: { "options.$.count": 1 },
+              $push: { peopleWhovoted: data.user },
+            }
+          );
+        } catch (error) {
+          console.log(error);
+        }
       });
     });
 

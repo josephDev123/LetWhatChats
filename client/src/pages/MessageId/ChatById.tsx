@@ -51,8 +51,8 @@ export default function ChatById() {
     }
 
     function handlePollMessage(data: ChatDataType) {
-      setMessage((prev) => [...prev, data]);
       // console.log(data);
+      setMessage((prev) => [...prev, data]);
     }
     socket.on("welcomeMessage", handleWelcomeMessage);
     // Handle incoming chat messages
@@ -97,7 +97,7 @@ export default function ChatById() {
     });
     setChat("");
   }
-  // console.log(message);
+  console.log(message);
   return (
     <section
       className={`flex flex-col w-full h-full overflow-y-auto no-scrollbar ${style.backgroundImageContainer}`}

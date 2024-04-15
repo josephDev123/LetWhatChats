@@ -15,8 +15,8 @@ interface PollProps {
 
 export default function Poll({ className, item, chat, setChat }: PollProps) {
   const user = useUser();
-  // console.log(item);
-  function handleVote(whatToUpdateId: string) {
+  console.log(item);
+  function handleVote(whatToUpdateId: string, optionToUpdate: string) {
     if (item.peopleWhovoted.includes(user.data.email)) {
       return errorAlert("You can't unvote and revote again. you vote once");
     } else {
@@ -25,6 +25,7 @@ export default function Poll({ className, item, chat, setChat }: PollProps) {
         whatToUpdateId: whatToUpdateId,
         item: item,
         user: user.data.email,
+        optionToUpdate,
       });
     }
   }
@@ -57,7 +58,7 @@ export default function Poll({ className, item, chat, setChat }: PollProps) {
         {item.options.map((pollItem, i) => (
           <div key={i} className="flex gap-2">
             <input
-              onChange={() => handleVote(pollItem._id)}
+              onChange={() => handleVote(pollItem._id, pollItem.option)}
               type="checkbox"
               className={`accent-green-700 rounded-full h-4 w-4 mt-1 ${
                 item.peopleWhovoted.includes(user.data.email)
