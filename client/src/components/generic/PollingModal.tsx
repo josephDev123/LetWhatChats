@@ -15,7 +15,6 @@ export default function PollingModal({ closeModal }: PollingModalProps) {
   const { room } = useParams();
   const user = useUser();
 
-  console.log(room, user);
   const {
     register,
     handleSubmit,

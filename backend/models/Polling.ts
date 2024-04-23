@@ -2,6 +2,7 @@ import { options } from "joi";
 import { Model, Schema, model } from "mongoose";
 
 type optionFormatType = {
+  _id: string;
   option: string;
   count: number;
 };
@@ -16,7 +17,9 @@ type SchemaType = {
 const pollingSchema = new Schema<SchemaType>(
   {
     question: String,
-    options: [{ option: String, count: { type: Number, default: 0 } }],
+    options: [
+      { _id: String, option: String, count: { type: Number, default: 0 } },
+    ],
     multiple_answer: Boolean,
     peopleWhovoted: [String],
   },

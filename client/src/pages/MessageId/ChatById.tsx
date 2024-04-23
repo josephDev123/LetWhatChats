@@ -18,6 +18,7 @@ import axios from "axios";
 import { FaSpinner } from "react-icons/fa6";
 import PollingModal from "../../components/generic/PollingModal";
 import Poll from "../../components/messageId/Poll";
+import { HiOutlineVideoCamera } from "react-icons/hi2";
 
 export default function ChatById() {
   const [toggleAttachment, setToggleAttachment] = useState(false);
@@ -102,25 +103,30 @@ export default function ChatById() {
     <section
       className={`flex flex-col w-full h-full overflow-y-auto no-scrollbar ${style.backgroundImageContainer}`}
     >
-      <div className="flex gap-2 items-center py-2 px-4 bg-black/40">
-        <div className="sm:w-12 sm:h-12 h-10 w-10 rounded-full hover:">
-          <img
-            src={roomCredential.avatar}
-            alt="avatar"
-            loading="lazy"
-            className="rounded-full"
-          />
+      <div className="flex justify-between items-center py-2 px-4 bg-black/40">
+        <div className="flex  gap-2">
+          <div className="sm:w-12 sm:h-12 h-10 w-10 rounded-full hover:">
+            <img
+              src={roomCredential.avatar}
+              alt="avatar"
+              loading="lazy"
+              className="rounded-full"
+            />
+          </div>
+          <div className="flex flex-col leading-tight text-white/80">
+            <h5 className="font-bold text-sm sm:text-base">{room}</h5>
+            <p className="text-sm sm:text-base ">
+              {/* breteke, garri, juwon, mercy, joshua */}
+              <div className="flex justify-between gap-2 items-center">
+                {channel_members.map((item, index) => (
+                  <p key={index}>{item},</p>
+                ))}
+              </div>
+            </p>
+          </div>
         </div>
-        <div className="flex flex-col leading-tight text-white/80">
-          <h5 className="font-bold text-sm sm:text-base">{room}</h5>
-          <p className="text-sm sm:text-base ">
-            {/* breteke, garri, juwon, mercy, joshua */}
-            <div className="flex justify-between gap-2 items-center">
-              {channel_members.map((item, index) => (
-                <p key={index}>{item},</p>
-              ))}
-            </div>
-          </p>
+        <div>
+          <HiOutlineVideoCamera className="text-white text-3xl cursor-pointer hover:bg-gray-50/25 rounded-md p-1" />
         </div>
       </div>
 

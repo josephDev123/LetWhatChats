@@ -15,8 +15,9 @@ interface PollProps {
 
 export default function Poll({ className, item, chat, setChat }: PollProps) {
   const user = useUser();
-  console.log(item);
+  // console.log(item);
   function handleVote(whatToUpdateId: string, optionToUpdate: string) {
+    console.log(whatToUpdateId);
     if (item.peopleWhovoted.includes(user.data.email)) {
       return errorAlert("You can't unvote and revote again. you vote once");
     } else {

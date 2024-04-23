@@ -116,24 +116,28 @@ const startApp = async () => {
       });
 
       socket.on("createPoll", async (data) => {
+        const idA = String(Math.floor(Math.random() * 1000));
+        const idB = String(Math.floor(Math.random() * 1000));
         try {
           socket.join(data.room);
           const pollObjDb = {
             question: data.question,
-            options: [{ option: data.optionOne }, { option: data.optionTwo }],
+            options: [
+              { _id: idA, option: data.optionOne },
+              { _id: idB, option: data.optionTwo },
+            ],
             multiple_answer: data.multipleAnswer,
           };
 
           const pollResp = new PollModel({
             ...pollObjDb,
           });
+          // console.log(pollResp);
           await pollResp.save();
           const chatMessageModel = new chatMsgModel({
             name: data.user.data.name,
             room: data.room,
             type: data.type,
-            // chat: { type: String },
-            // time: { type: String },
             poll_id: pollResp._id,
           });
 
@@ -147,14 +151,14 @@ const startApp = async () => {
               _id: pollResp._id,
               question: data.question,
               options: [
-                { option: data.optionOne, count: 0 },
-                { option: data.optionTwo, count: 0 },
+                { _id: idA, option: data.optionOne, count: 0 },
+                { _id: idB, option: data.optionTwo, count: 0 },
               ],
               multiple_answer: data.multipleAnswer,
               peopleWhovoted: [],
             },
           };
-          console.log(pollObj);
+          // console.log(pollObj);
           io.to(data.room).emit("listenToCreatePoll", pollObj);
         } catch (error) {
           console.log(error);
@@ -164,10 +168,12 @@ const startApp = async () => {
       socket.on("onVoted", async (data) => {
         try {
           // real-time update
+
           const newChat = data.chats.map((chat: any) => {
             if (chat.poll_id && chat.poll_id.options) {
               chat.poll_id.options = chat.poll_id.options.map((option: any) => {
                 if (option._id === data.whatToUpdateId) {
+                  console.log(chat.whatToUpdateId);
                   // Increment count by 1
                   option.count = (option.count || 0) + 1;
                   // Add user to peopleWhovoted array if not already present
