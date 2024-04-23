@@ -1,11 +1,11 @@
 import { SubmitHandler, useForm } from "react-hook-form";
 import { VscSend } from "react-icons/vsc";
-import { pollingType } from "../../zodTypes/pollingdataType";
+import { pollingType } from "../zodTypes/pollingdataType";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { socket } from "../../socketIo";
+import { socket } from "../socketIo";
 import { useParams } from "react-router-dom";
-import { useUser } from "../../customHooks/useUser";
+import { useUser } from "../customHooks/useUser";
 
 interface PollingModalProps {
   closeModal: () => void;

@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { createNewRoomDropDownVariant } from "../../framerMotion_variants/newRoomDropDownVariants";
+import { createNewRoomDropDownVariant } from "../../../framerMotion_variants/newRoomDropDownVariants";
 import { CiUnread } from "react-icons/ci";
 import { RiContactsLine } from "react-icons/ri";
 import { BsPeople } from "react-icons/bs";

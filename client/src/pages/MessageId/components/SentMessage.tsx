@@ -1,4 +1,4 @@
-import { ChatDataType } from "../../type/chatDataType";
+import { ChatDataType } from "../../../type/chatDataType";
 
 type SentMessageType = {
   item: ChatDataType;

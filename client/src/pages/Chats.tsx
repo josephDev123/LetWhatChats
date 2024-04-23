@@ -1,5 +1,5 @@
 import { socket } from "../socketIo";
-import MessageRoomCard from "../components/home/MessageRoomCard";
+import MessageRoomCard from "./Home/components/MessageRoomCard";
 import { useSelector, useDispatch } from "react-redux";
 import { chatAppType } from "../sliceType";
 import { addRoomData } from "../slice";

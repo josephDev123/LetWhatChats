@@ -1,10 +1,10 @@
 import { IoCheckmarkCircle } from "react-icons/io5";
-import { ChatDataType, pollType } from "../../type/chatDataType";
+import { ChatDataType, pollType } from "../../../type/chatDataType";
 import moment from "moment";
-import { socket } from "../../socketIo";
-import { useUser } from "../../customHooks/useUser";
+import { socket } from "../../../socketIo";
+import { useUser } from "../../../customHooks/useUser";
 import { SetStateAction, useEffect } from "react";
-import { errorAlert } from "../../utils/errorAlert";
+import { errorAlert } from "../../../utils/errorAlert";
 
 interface PollProps {
   className?: string;

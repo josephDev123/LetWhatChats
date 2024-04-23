@@ -8,7 +8,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { axiosInstance } from "../../axios/axiosInstance";
-import LoadingModal from "../../components/generic/LoadingModal";
+import LoadingModal from "../../generic/LoadingModal";
 import { loginSchema } from "../../zodTypes/registerType";
 import { useNavigate } from "react-router-dom";
 import { LuUserCircle2 } from "react-icons/lu";

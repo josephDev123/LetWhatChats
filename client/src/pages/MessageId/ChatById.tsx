@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
-import IncomingMessage from "../../components/messageId/IncomingMessage";
-import SentMessage from "../../components/messageId/SentMessage";
+import IncomingMessage from "./components/IncomingMessage";
+import SentMessage from "./components/SentMessage";
 import { GrEmoji } from "react-icons/gr";
 import { GrFormAttachment } from "react-icons/gr";
-import UploadFilePopUp from "../../components/messageId/UploadFilePopUp";
+import UploadFilePopUp from "./components/UploadFilePopUp";
 import { FormEvent, Fragment, useEffect, useRef, useState } from "react";
 // import { io, Socket } from "socket.io-client";
 import { socket } from "../../socketIo";
@@ -11,13 +11,13 @@ import { useUser } from "../../customHooks/useUser";
 import moment from "moment";
 import { ChatDataType } from "../../type/chatDataType";
 import style from "../../styles/mobile_bg.module.css";
-import Emojipicker from "../../components/generic/EmojiPicker";
+import Emojipicker from "../../generic/EmojiPicker";
 import { useSelector } from "react-redux";
 import { chatAppType } from "../../sliceType";
 import axios from "axios";
 import { FaSpinner } from "react-icons/fa6";
-import PollingModal from "../../components/generic/PollingModal";
-import Poll from "../../components/messageId/Poll";
+import PollingModal from "../../generic/PollingModal";
+import Poll from "./components/Poll";
 import { HiOutlineVideoCamera } from "react-icons/hi2";
 
 export default function ChatById() {

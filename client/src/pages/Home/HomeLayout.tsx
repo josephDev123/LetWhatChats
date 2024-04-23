@@ -1,13 +1,13 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
-import LeftPanelHeading from "../../components/home/LeftPanelHeading";
-import SearchChat from "../../components/home/SearchChat";
-import MessageRoomCard from "../../components/home/MessageRoomCard";
+import LeftPanelHeading from "./components/LeftPanelHeading";
+import SearchChat from "./components/SearchChat";
+import MessageRoomCard from "./components/MessageRoomCard";
 import { Images } from "../../../Images";
 import { useEffect, useState } from "react";
 import { socket } from "../../socketIo";
 import { useUser } from "../../customHooks/useUser";
-import MobileTopTab from "../../components/generic/MobileTopTab";
+import MobileTopTab from "../../generic/MobileTopTab";
 // import { addRoomData } from "../../slice";
 // import { useSelector, useDispatch } from "react-redux";
 // import { chatAppType } from "../../sliceType";
@@ -15,7 +15,7 @@ import axios from "axios";
 import { messageRoomType } from "../../type/messageRoomType";
 // import { useQuery } from "@tanstack/react-query";
 import { FaSpinner } from "react-icons/fa6";
-import { convertToUrlFriendly } from "../../components/generic/convertToUrlFreiendly";
+import { convertToUrlFriendly } from "../../generic/convertToUrlFreiendly";
 import moment from "moment";
 
 export default function HomeLayout({}: {}) {

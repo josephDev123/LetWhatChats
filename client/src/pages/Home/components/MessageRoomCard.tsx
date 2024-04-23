@@ -1,12 +1,12 @@
-import { messageRoomType } from "../../type/messageRoomType";
+import { messageRoomType } from "../../../type/messageRoomType";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { BsThreeDots } from "react-icons/bs";
 import { useState } from "react";
-import { convertToUrlFriendly } from "../generic/convertToUrlFreiendly";
-import { addRoomData } from "../../slice";
+import { convertToUrlFriendly } from "../../../generic/convertToUrlFreiendly";
+import { addRoomData } from "../../../slice";
 import { useDispatch } from "react-redux";
-import { generateRandomAlphaNumeric } from "../../utils/longAlphaNumericString";
+import { generateRandomAlphaNumeric } from "../../../utils/longAlphaNumericString";
 
 type MessageRoomCard = {
   item: messageRoomType;

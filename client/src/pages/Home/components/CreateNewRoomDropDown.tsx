@@ -1,15 +1,15 @@
 import { motion, AnimatePresence } from "framer-motion";
 import MessageRoomCard from "./MessageRoomCard";
-import { messageRoomData } from "../../dummyData/messageRoom_data";
+import { messageRoomData } from "../../../dummyData/messageRoom_data";
 import { IoPeopleOutline } from "react-icons/io5";
-import { createNewRoomDropDownVariant } from "../../framerMotion_variants/newRoomDropDownVariants";
-import { socket } from "../../socketIo";
+import { createNewRoomDropDownVariant } from "../../../framerMotion_variants/newRoomDropDownVariants";
+import { socket } from "../../../socketIo";
 import { useEffect, useState } from "react";
-import { useUser } from "../../customHooks/useUser";
+import { useUser } from "../../../customHooks/useUser";
 import moment from "moment";
-import { convertToUrlFriendly } from "../generic/convertToUrlFreiendly";
+import { convertToUrlFriendly } from "../../../generic/convertToUrlFreiendly";
 import axios from "axios";
-import { messageRoomType } from "../../type/messageRoomType";
+import { messageRoomType } from "../../../type/messageRoomType";
 import { useQuery } from "@tanstack/react-query";
 import { FaSpinner } from "react-icons/fa6";
 
