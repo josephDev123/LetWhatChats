@@ -1,9 +1,5 @@
 import { socket } from "../socketIo";
 import MessageRoomCard from "./Home/components/MessageRoomCard";
-import { useSelector, useDispatch } from "react-redux";
-import { chatAppType } from "../sliceType";
-import { addRoomData } from "../slice";
-import { ChatDataType } from "../type/chatDataType";
 import { useEffect, useState } from "react";
 import { messageRoomType } from "../type/messageRoomType";
 import axios from "axios";
@@ -28,17 +24,6 @@ export default function Chats() {
       getRoomsDB();
     };
   }, []);
-  // const handleGetCreateRoom = (roomsCredential: any) => {
-  //   setroomCredential(roomsCredential);
-  // };
-
-  // if (socket) {
-  //   socket.on("getCreateRoom", handleGetCreateRoom);
-  // }
-
-  // if (socket) {
-  //   socket.off("getCreateRoom", handleGetCreateRoom);
-  // }
 
   async function getRoomsDB() {
     setStatus("loading");
@@ -54,13 +39,6 @@ export default function Chats() {
       setStatus("error");
     }
   }
-
-  // useEffect(() => {
-  //   getRoomsDB();
-  //   return () => {
-  //     getRoomsDB();
-  //   };
-  // });
 
   return (
     <div className="flex flex-col h-full space-y-4 p-2">
