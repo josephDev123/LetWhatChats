@@ -8,24 +8,24 @@ import { useEffect, useState } from "react";
 import { messageRoomType } from "../type/messageRoomType";
 import axios from "axios";
 import { useUser } from "../customHooks/useUser";
+import { FaSpinner } from "react-icons/fa6";
 
 export default function Chats() {
-  const dispatch = useDispatch();
   const [roomCredential, setroomCredential] = useState<messageRoomType[]>([]);
   const [status, setStatus] = useState("idle");
+  console.log(status);
 
   const user = useUser();
 
-  // const rooms = useSelector((state: chatAppType) => state.roomCredential);
-
+  const handleGetCreateRoom = (roomsCredential: any) => {
+    setroomCredential(roomsCredential);
+  };
   useEffect(() => {
-    const handleGetCreateRoom = (roomsCredential: any) => {
-      setroomCredential(roomsCredential);
-    };
     socket.on("getCreateRoom", handleGetCreateRoom);
-
+    getRoomsDB();
     return () => {
       socket.off("getCreateRoom", handleGetCreateRoom);
+      getRoomsDB();
     };
   }, []);
   // const handleGetCreateRoom = (roomsCredential: any) => {
@@ -41,6 +41,7 @@ export default function Chats() {
   // }
 
   async function getRoomsDB() {
+    setStatus("loading");
     try {
       const req = await axios({
         method: "get",
@@ -48,23 +49,34 @@ export default function Chats() {
       });
       // console.log(req.data);
       setroomCredential(req.data);
+      setStatus("data");
     } catch (error) {
       setStatus("error");
     }
   }
 
-  useEffect(() => {
-    getRoomsDB();
-    return () => {
-      getRoomsDB();
-    };
-  });
+  // useEffect(() => {
+  //   getRoomsDB();
+  //   return () => {
+  //     getRoomsDB();
+  //   };
+  // });
 
   return (
     <div className="flex flex-col h-full space-y-4 p-2">
-      {roomCredential.map((item, index) => (
-        <MessageRoomCard key={index} item={item} />
-      ))}
+      {status === "loading" ? (
+        <div className="flex justify-center items-center">
+          <FaSpinner className="animate-spin h-8 w-8 text-center" />
+        </div>
+      ) : status === "error" ? (
+        <span className="text-sm text-red-400">Something went wrong</span>
+      ) : (
+        <>
+          {roomCredential.map((item, index) => (
+            <MessageRoomCard key={index} item={item} />
+          ))}
+        </>
+      )}
     </div>
   );
 }

@@ -39,7 +39,7 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
         dispatch(addRoomData(item));
         redirect(convertToUrlFriendly(`/${item.roomUniqueName}`));
       }}
-      className="flex gap-2 items-center hover:bg-slate-200 sm:p-3 rounded-md cursor-pointer bg-green-50"
+      className="flex gap-2 items-center hover:bg-slate-200 p-3 rounded-md cursor-pointer bg-green-50"
     >
       <img
         src={item.avatar}
