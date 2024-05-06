@@ -15,6 +15,7 @@ import ChatById from "./pages/MessageId/ChatById";
 import Community from "./pages/Community";
 import Chats from "./pages/Chats";
 import Calls from "./pages/Calls";
+import Index from "./pages/Home/Index";
 
 export const mainroutes = createBrowserRouter([
   {
@@ -25,7 +26,7 @@ export const mainroutes = createBrowserRouter([
       {
         // path: "/",
         index: true,
-        element: "welcome",
+        element: <Index />,
         errorElement: "error",
       },
 

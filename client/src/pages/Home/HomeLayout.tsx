@@ -8,12 +8,8 @@ import { useEffect, useState } from "react";
 import { socket } from "../../socketIo";
 import { useUser } from "../../customHooks/useUser";
 import MobileTopTab from "../../generic/MobileTopTab";
-// import { addRoomData } from "../../slice";
-// import { useSelector, useDispatch } from "react-redux";
-// import { chatAppType } from "../../sliceType";
 import axios from "axios";
 import { messageRoomType } from "../../type/messageRoomType";
-// import { useQuery } from "@tanstack/react-query";
 import { FaSpinner } from "react-icons/fa6";
 import { convertToUrlFriendly } from "../../generic/convertToUrlFreiendly";
 import moment from "moment";
@@ -105,19 +101,6 @@ export default function HomeLayout({}: {}) {
       socket.off("disconnect", OnDisConnect);
     };
   }, []);
-
-  // const { isLoading, isError } = useQuery({
-  //   queryKey: ["roomCredential"],
-  //   queryFn: async () => {
-  //     const req = await axios({
-  //       method: "get",
-  //       url: `http://localhost:7000/room/${user.data.email}`,
-  //     });
-  //     console.log(req.data);
-  //     setroomCredential(req.data);
-  //     return req.data;
-  //   },
-  // });
 
   async function getRoomsDB() {
     try {

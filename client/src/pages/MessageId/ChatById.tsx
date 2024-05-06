@@ -5,7 +5,6 @@ import { GrEmoji } from "react-icons/gr";
 import { GrFormAttachment } from "react-icons/gr";
 import UploadFilePopUp from "./components/UploadFilePopUp";
 import { FormEvent, Fragment, useEffect, useRef, useState } from "react";
-// import { io, Socket } from "socket.io-client";
 import { socket } from "../../socketIo";
 import { useUser } from "../../customHooks/useUser";
 import moment from "moment";
@@ -19,6 +18,7 @@ import { FaSpinner } from "react-icons/fa6";
 import PollingModal from "../../generic/PollingModal";
 import Poll from "./components/Poll";
 import { HiOutlineVideoCamera } from "react-icons/hi2";
+import VideoCallModal from "../VideoCall/VideoCallModal";
 
 export default function ChatById() {
   const [toggleAttachment, setToggleAttachment] = useState(false);
@@ -30,6 +30,7 @@ export default function ChatById() {
   const [messageStatus, setmessageStatus] = useState("idle");
   const [isPollModalOpen, setPollModalOpen] = useState(false);
   const [isEmojiModalOpen, setisEmojiModalOpen] = useState(false);
+  const [isVideoCallModalOpen, setisVideoCallModalOpen] = useState(false);
   const roomCredential = useSelector(
     (state: chatAppType) => state.roomCredential
   );
@@ -98,7 +99,7 @@ export default function ChatById() {
     });
     setChat("");
   }
-  console.log(message);
+  // console.log(message);
   return (
     <section
       className={`flex flex-col w-full h-full overflow-y-auto no-scrollbar ${style.backgroundImageContainer}`}
@@ -126,7 +127,10 @@ export default function ChatById() {
           </div>
         </div>
         <div>
-          <HiOutlineVideoCamera className="text-white text-3xl cursor-pointer hover:bg-gray-50/25 rounded-md p-1" />
+          <HiOutlineVideoCamera
+            onClick={() => setisVideoCallModalOpen(true)}
+            className="text-white text-3xl cursor-pointer hover:bg-gray-50/25 rounded-md p-1"
+          />
         </div>
       </div>
 
@@ -224,6 +228,10 @@ export default function ChatById() {
             setToggleAttachment(false);
           }}
         />
+      )}
+
+      {isVideoCallModalOpen && (
+        <VideoCallModal closeModal={() => setisVideoCallModalOpen(false)} />
       )}
     </section>
   );

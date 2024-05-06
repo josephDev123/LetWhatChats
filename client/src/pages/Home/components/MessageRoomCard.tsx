@@ -37,7 +37,8 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
     <motion.section
       onClick={() => {
         dispatch(addRoomData(item));
-        redirect(convertToUrlFriendly(`/${item.roomUniqueName}`));
+        // redirect(convertToUrlFriendly(`/${item.roomUniqueName}`));\
+        window.location.href = convertToUrlFriendly(`/${item.roomUniqueName}`);
       }}
       className="flex gap-2 items-center hover:bg-slate-200 p-3 rounded-md cursor-pointer bg-green-50"
     >

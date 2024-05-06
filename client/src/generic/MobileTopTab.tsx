@@ -18,6 +18,12 @@ export default function MobileTopTab() {
       </NavLink>
       <NavLink
         className={({ isActive }) => (isActive ? "border-b-2" : "")}
+        to="/status"
+      >
+        status
+      </NavLink>
+      <NavLink
+        className={({ isActive }) => (isActive ? "border-b-2" : "")}
         to="/calls"
       >
         Calls
