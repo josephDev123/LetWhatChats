@@ -120,7 +120,7 @@ export default function HomeLayout({}: {}) {
     return () => {
       getRoomsDB();
     };
-  });
+  }, []);
   return (
     <section className="flex w-full h-full gap-1">
       {status === "loading" && (

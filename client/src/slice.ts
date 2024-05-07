@@ -5,6 +5,7 @@ import { ChatDataType } from "./type/chatDataType";
 export type chatOrgType = {
   roomCredential: messageRoomType | Object;
   chatData: ChatDataType[] | Object[];
+  isVideoModalOpen: boolean;
 };
 
 const initialState: chatOrgType = {
@@ -19,6 +20,7 @@ const initialState: chatOrgType = {
   chatData: [
     // { name: "", room: "", chat: "", time: "" }
   ],
+  isVideoModalOpen: false,
 };
 
 const chatSlice = createSlice({
@@ -32,8 +34,13 @@ const chatSlice = createSlice({
         roomCredential: payload,
       };
     },
+
+    setVideoModalOpen: (state, action) => {
+      const payload = action.payload;
+      state.isVideoModalOpen = payload;
+    },
   },
 });
 
 export default chatSlice.reducer;
-export const { addRoomData } = chatSlice.actions;
+export const { addRoomData, setVideoModalOpen } = chatSlice.actions;

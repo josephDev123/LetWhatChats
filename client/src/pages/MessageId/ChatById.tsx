@@ -11,7 +11,7 @@ import moment from "moment";
 import { ChatDataType } from "../../type/chatDataType";
 import style from "../../styles/mobile_bg.module.css";
 import Emojipicker from "../../generic/EmojiPicker";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { chatAppType } from "../../sliceType";
 import axios from "axios";
 import { FaSpinner } from "react-icons/fa6";
@@ -19,6 +19,8 @@ import PollingModal from "../../generic/PollingModal";
 import Poll from "./components/Poll";
 import { HiOutlineVideoCamera } from "react-icons/hi2";
 import VideoCallModal from "../VideoCall/VideoCallModal";
+import { setVideoModalOpen } from "../../slice";
+import { chatOrgType } from "../../slice";
 
 export default function ChatById() {
   const [toggleAttachment, setToggleAttachment] = useState(false);
@@ -30,7 +32,13 @@ export default function ChatById() {
   const [messageStatus, setmessageStatus] = useState("idle");
   const [isPollModalOpen, setPollModalOpen] = useState(false);
   const [isEmojiModalOpen, setisEmojiModalOpen] = useState(false);
-  const [isVideoCallModalOpen, setisVideoCallModalOpen] = useState(false);
+  const [Localvideo, setLocalvideo] = useState("");
+  // const [isVideoCallModalOpen, setisVideoCallModalOpen] = useState(false);
+
+  const isVideoModalOpen = useSelector(
+    (state: chatOrgType) => state.isVideoModalOpen
+  );
+  const dispatch = useDispatch();
   const roomCredential = useSelector(
     (state: chatAppType) => state.roomCredential
   );
@@ -99,6 +107,17 @@ export default function ChatById() {
     });
     setChat("");
   }
+
+  async function handleOpenVideoCall() {
+    try {
+      const video = await navigator.mediaDevices.getUserMedia({ video: true });
+      console.log(video);
+      // setLocalvideo(vide)
+      // dispatch(setVideoModalOpen(true));
+    } catch (error) {
+      console.log(error);
+    }
+  }
   // console.log(message);
   return (
     <section
@@ -128,7 +147,7 @@ export default function ChatById() {
         </div>
         <div>
           <HiOutlineVideoCamera
-            onClick={() => setisVideoCallModalOpen(true)}
+            onClick={handleOpenVideoCall}
             className="text-white text-3xl cursor-pointer hover:bg-gray-50/25 rounded-md p-1"
           />
         </div>
@@ -230,8 +249,8 @@ export default function ChatById() {
         />
       )}
 
-      {isVideoCallModalOpen && (
-        <VideoCallModal closeModal={() => setisVideoCallModalOpen(false)} />
+      {isVideoModalOpen && (
+        <VideoCallModal closeModal={() => dispatch(setVideoModalOpen(false))} />
       )}
     </section>
   );
