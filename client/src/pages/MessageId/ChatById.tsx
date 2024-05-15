@@ -18,9 +18,19 @@ import { FaSpinner } from "react-icons/fa6";
 import PollingModal from "../../generic/PollingModal";
 import Poll from "./components/Poll";
 import { HiOutlineVideoCamera } from "react-icons/hi2";
-import VideoCallModal from "../VideoCall/VideoCallModal";
+import { VideoCallModal } from "../VideoCall/VideoCallModal";
 import { setVideoModalOpen } from "../../slice";
 import { chatOrgType } from "../../slice";
+
+export type Ioffer = {
+  type: string;
+  offer: RTCSessionDescriptionInit;
+};
+
+export type Ianswer = {
+  type: string;
+  answer: RTCSessionDescriptionInit;
+};
 
 export default function ChatById() {
   const [toggleAttachment, setToggleAttachment] = useState(false);
@@ -32,7 +42,11 @@ export default function ChatById() {
   const [messageStatus, setmessageStatus] = useState("idle");
   const [isPollModalOpen, setPollModalOpen] = useState(false);
   const [isEmojiModalOpen, setisEmojiModalOpen] = useState(false);
-  const [Localvideo, setLocalvideo] = useState("");
+  const [LocalStreamvideo, setLocalStreamvideo] = useState<MediaStream | null>(
+    null
+  );
+  const [remoteStreamvideo, setRemoteStreamvideo] =
+    useState<MediaStream | null>(null);
   // const [isVideoCallModalOpen, setisVideoCallModalOpen] = useState(false);
 
   const isVideoModalOpen = useSelector(
@@ -43,10 +57,23 @@ export default function ChatById() {
     (state: chatAppType) => state.roomCredential
   );
 
+  let peerConnection: RTCPeerConnection;
+
   const welcomeRef = useRef<HTMLDivElement>(null);
   const [chat, setChat] = useState("");
   const { room } = useParams();
   const user = useUser();
+
+  const servers = {
+    iceServers: [
+      {
+        urls: [
+          "stun:stun1.l.google.com:19302",
+          "stun:stun2.l.google.com:19302",
+        ],
+      },
+    ],
+  };
 
   useEffect(() => {
     function handleWelcomeMessage(data: any) {
@@ -68,11 +95,13 @@ export default function ChatById() {
     // Handle incoming chat messages
     socket.on("exchangeMessage", handleExchangeMessage);
     socket.on("listenToCreatePoll", handlePollMessage);
+    socket.on("handshake", handlePeerMessage);
 
     return () => {
       socket.off("welcomeMessage", handleWelcomeMessage);
       socket.off("exchangeMessage", handleExchangeMessage);
       socket.off("listenToCreatePoll", handlePollMessage);
+      socket.off("listenToCreatePoll", handlePeerMessage);
     };
   }, []);
 
@@ -108,16 +137,132 @@ export default function ChatById() {
     setChat("");
   }
 
+  const createPeerConnection = async () => {
+    peerConnection = new RTCPeerConnection(servers);
+    setRemoteStreamvideo(new MediaStream());
+    if (!LocalStreamvideo) {
+      const videoObj = await navigator.mediaDevices.getUserMedia({
+        video: true,
+      });
+      setLocalStreamvideo(videoObj);
+    }
+
+    LocalStreamvideo?.getTracks().forEach((track) => {
+      peerConnection.addTrack(track, LocalStreamvideo);
+    });
+
+    peerConnection.onicecandidate = async (event) => {
+      if (event.candidate) {
+        socket.emit("handshake", {
+          type: "candidate",
+          candidate: event.candidate,
+          // memberId,
+        });
+      }
+    };
+
+    //create offer
+    const offer = await peerConnection.createOffer();
+    await peerConnection.setLocalDescription(offer);
+    //emit the offer
+    const offerData = {
+      type: "offer",
+      offer,
+    };
+    socket.emit("handShake", offerData);
+
+    // peerConnection.ontrack = (event) => {
+    //   if (!remoteStreamvideo) {
+    //     setRemoteStreamvideo(new MediaStream());
+    //   }
+    //   remoteStreamvideo?.addTrack(event.track);
+    // };
+    peerConnection.ontrack = (event) => {
+      console.log("stream", event);
+      event.streams[0].getTracks().forEach((track) => {
+        remoteStreamvideo?.addTrack(track);
+      });
+    };
+  };
+
   async function handleOpenVideoCall() {
+    peerConnection = new RTCPeerConnection(servers);
     try {
-      const video = await navigator.mediaDevices.getUserMedia({ video: true });
-      console.log(video);
-      // setLocalvideo(vide)
-      // dispatch(setVideoModalOpen(true));
+      createPeerConnection();
+      // const videoObj = await navigator.mediaDevices.getUserMedia({
+      //   video: true,
+      // });
+      // if (videoObj) {
+      //   // console.log(videoObj);
+      //   setLocalStreamvideo(videoObj);
+
+      //   LocalStreamvideo?.getTracks().forEach((track) => {
+      //     peerConnection.addTrack(track, LocalStreamvideo);
+      //   });
+      //   dispatch(setVideoModalOpen(true));
+      // }
+      // //listen for ice-candidate
+      // peerConnection.onicecandidate = (event) => {
+      //   if (event.candidate) {
+      //     socket.emit("handshake", {
+      //       type: "candidate",
+      //       candidate: event.candidate,
+      //     });
+      //   }
+      // };
+      // //create offer
+      // const offer = await peerConnection.createOffer();
+      // await peerConnection.setLocalDescription(offer);
+      // //emit the offer
+      // const offerData = {
+      //   type: "offer",
+      //   offer,
+      // };
+      // socket.emit("handShake", offerData);
+
+      // peerConnection.ontrack = (event) => {
+      //   if (!remoteStreamvideo) {
+      //     setRemoteStreamvideo(new MediaStream());
+      //   }
+      //   remoteStreamvideo?.addTrack(event.track);
+      // };
     } catch (error) {
       console.log(error);
     }
   }
+
+  const handlePeerMessage = (payload: any) => {
+    const data = payload;
+    if (data.type === "offer") {
+      createAnswer(data.offer);
+    }
+    if (data.type === "answer") {
+      addAnswer(data.answer);
+    }
+
+    if (data.type === "candidate") {
+      if (peerConnection) {
+        peerConnection.addIceCandidate(data.candidate);
+      }
+    }
+  };
+
+  async function createAnswer(offer: RTCSessionDescriptionInit) {
+    peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+    const answer = await peerConnection.createAnswer();
+    await peerConnection.setLocalDescription(answer);
+    const answerData = { type: "answer", answer };
+    socket.emit("handshake", answerData);
+  }
+
+  async function addAnswer(answer: RTCSessionDescriptionInit) {
+    // if (!peerConnection.currentRemoteDescription) {
+    await peerConnection.setRemoteDescription(
+      new RTCSessionDescription(answer)
+    );
+    // }
+  }
+
   // console.log(message);
   return (
     <section
@@ -250,7 +395,10 @@ export default function ChatById() {
       )}
 
       {isVideoModalOpen && (
-        <VideoCallModal closeModal={() => dispatch(setVideoModalOpen(false))} />
+        <VideoCallModal
+          localVideoStream={LocalStreamvideo}
+          closeModal={() => dispatch(setVideoModalOpen(false))}
+        />
       )}
     </section>
   );

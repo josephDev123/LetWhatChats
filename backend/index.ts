@@ -42,6 +42,10 @@ const startApp = async () => {
 
     // socketServer.io
     io.on("connection", (socket) => {
+      socket.on("handShake", (data) => {
+        console.log("from server");
+        io.emit("handShake", data);
+      });
       socket.on("createRoom", async (roomOption) => {
         socket.join(roomOption.roomUniqueName);
         io.to(roomOption.roomUniqueName).emit("getCreateRoom", roomOption);
