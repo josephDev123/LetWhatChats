@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { socket } from "../socketIo";
 import { useParams } from "react-router-dom";
 import { useUser } from "../customHooks/useUser";
+import { IoCloseSharp } from "react-icons/io5";
 
 interface PollingModalProps {
   closeModal: () => void;
@@ -32,6 +33,10 @@ export default function PollingModal({ closeModal }: PollingModalProps) {
   };
   return (
     <section className="rounded-md flex flex-col bg-black p-6 w-[400px]">
+      <IoCloseSharp
+        onClick={closeModal}
+        className="text-white text-2xl ms-auto cursor-pointer p-1 rounded-full hover:bg-white hover:text-black "
+      />
       <h3 className="text-white text-xl">Create a poll</h3>
       <h4 className="text-white mt-4">Question</h4>
       <input

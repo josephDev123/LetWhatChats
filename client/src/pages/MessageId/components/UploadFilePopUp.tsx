@@ -6,14 +6,19 @@ import { MdOutlinePoll } from "react-icons/md";
 
 interface UploadFilePopUpProps {
   openPollModal: () => void;
+  openUploadMediaModal: () => void;
 }
 
 export default function UploadFilePopUp({
   openPollModal,
+  openUploadMediaModal,
 }: UploadFilePopUpProps) {
   return (
     <section className="absolute bottom-12 bg-black/50 text-white/80 ml-2 flex flex-col space-y-2 drop-shadow-md px-4 py-2 rounded-md">
-      <span className="flex gap-2 cursor-not-allowed items-center hover:text-white/80">
+      <span
+        onClick={openUploadMediaModal}
+        className="flex gap-2 cursor-pointer items-center hover:text-white/80"
+      >
         <TbPhoto />
         Photo/Video
       </span>

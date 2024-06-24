@@ -21,6 +21,9 @@ import { HiOutlineVideoCamera } from "react-icons/hi2";
 import { VideoCallModal } from "../VideoCall/VideoCallModal";
 import { setVideoModalOpen } from "../../slice";
 import { chatOrgType } from "../../slice";
+import { MdOutlineJoinInner } from "react-icons/md";
+import Calls from "../Calls";
+import MediaViewModal from "./components/MediaViewModal";
 
 export type Ioffer = {
   type: string;
@@ -41,6 +44,7 @@ export default function ChatById() {
   const channel_members = unique_channelMember.splice(0, 3);
   const [messageStatus, setmessageStatus] = useState("idle");
   const [isPollModalOpen, setPollModalOpen] = useState(false);
+  const [isUploadMediaModalOpen, setUploadMediaModalOpen] = useState(false);
   const [isEmojiModalOpen, setisEmojiModalOpen] = useState(false);
   const [LocalStreamvideo, setLocalStreamvideo] = useState<MediaStream | null>(
     null
@@ -48,7 +52,7 @@ export default function ChatById() {
   const [remoteStreamvideo, setRemoteStreamvideo] =
     useState<MediaStream | null>(null);
   // const [isVideoCallModalOpen, setisVideoCallModalOpen] = useState(false);
-
+  console.log("remote: " + remoteStreamvideo, "local :" + LocalStreamvideo);
   const isVideoModalOpen = useSelector(
     (state: chatOrgType) => state.isVideoModalOpen
   );
@@ -57,7 +61,7 @@ export default function ChatById() {
     (state: chatAppType) => state.roomCredential
   );
 
-  let peerConnection: RTCPeerConnection;
+  let peerConnection = useRef<RTCPeerConnection | null>(null);
 
   const welcomeRef = useRef<HTMLDivElement>(null);
   const [chat, setChat] = useState("");
@@ -95,13 +99,17 @@ export default function ChatById() {
     // Handle incoming chat messages
     socket.on("exchangeMessage", handleExchangeMessage);
     socket.on("listenToCreatePoll", handlePollMessage);
-    socket.on("handshake", handlePeerMessage);
+    socket.on("answer", handlePeerMessage);
+    socket.on("offer", handlePeerMessage);
+    socket.on("iceCandidate", handlePeerMessage);
 
     return () => {
       socket.off("welcomeMessage", handleWelcomeMessage);
       socket.off("exchangeMessage", handleExchangeMessage);
       socket.off("listenToCreatePoll", handlePollMessage);
-      socket.off("listenToCreatePoll", handlePeerMessage);
+      socket.off("answer", handlePeerMessage);
+      socket.off("offer", handlePeerMessage);
+      socket.off("iceCandidate", handlePeerMessage);
     };
   }, []);
 
@@ -138,136 +146,167 @@ export default function ChatById() {
   }
 
   const createPeerConnection = async () => {
-    peerConnection = new RTCPeerConnection(servers);
-    setRemoteStreamvideo(new MediaStream());
-    if (!LocalStreamvideo) {
+    if (!peerConnection.current) {
+      peerConnection.current = new RTCPeerConnection(servers);
+
       const videoObj = await navigator.mediaDevices.getUserMedia({
         video: true,
       });
       setLocalStreamvideo(videoObj);
-    }
 
-    LocalStreamvideo?.getTracks().forEach((track) => {
-      peerConnection.addTrack(track, LocalStreamvideo);
-    });
-
-    peerConnection.onicecandidate = async (event) => {
-      if (event.candidate) {
-        socket.emit("handshake", {
-          type: "candidate",
-          candidate: event.candidate,
-          // memberId,
-        });
-      }
-    };
-
-    //create offer
-    const offer = await peerConnection.createOffer();
-    await peerConnection.setLocalDescription(offer);
-    //emit the offer
-    const offerData = {
-      type: "offer",
-      offer,
-    };
-    socket.emit("handShake", offerData);
-
-    // peerConnection.ontrack = (event) => {
-    //   if (!remoteStreamvideo) {
-    //     setRemoteStreamvideo(new MediaStream());
-    //   }
-    //   remoteStreamvideo?.addTrack(event.track);
-    // };
-    peerConnection.ontrack = (event) => {
-      console.log("stream", event);
-      event.streams[0].getTracks().forEach((track) => {
-        remoteStreamvideo?.addTrack(track);
+      videoObj?.getTracks().forEach((track) => {
+        peerConnection.current?.addTrack(track, videoObj);
       });
-    };
+
+      peerConnection.current.ontrack = (event) => {
+        console.log("stream");
+        const remoteStream = new MediaStream();
+        event.streams[0].getTracks().forEach((track) => {
+          remoteStream?.addTrack(track);
+        });
+        setRemoteStreamvideo(remoteStream);
+      };
+
+      peerConnection.current.onicecandidate = async (event) => {
+        if (event.candidate) {
+          console.log("Sending ICE candidate", event.candidate);
+          socket.emit("iceCandidate", {
+            type: "candidate",
+            candidate: event.candidate,
+          });
+        }
+      };
+    }
   };
 
   async function handleOpenVideoCall() {
-    peerConnection = new RTCPeerConnection(servers);
     try {
-      createPeerConnection();
-      // const videoObj = await navigator.mediaDevices.getUserMedia({
-      //   video: true,
-      // });
-      // if (videoObj) {
-      //   // console.log(videoObj);
-      //   setLocalStreamvideo(videoObj);
+      await createPeerConnection();
+      // socket.on("answer", handlePeerMessage);
+      // socket.on("offer", handlePeerMessage);
+      // socket.on("iceCandidate", handlePeerMessage);
+      const videoObj = await navigator.mediaDevices.getUserMedia({
+        video: true,
+      });
+      if (videoObj) {
+        // console.log(videoObj);
+        setLocalStreamvideo(videoObj);
+        // dispatch(setVideoModalOpen(true));
+      }
 
-      //   LocalStreamvideo?.getTracks().forEach((track) => {
-      //     peerConnection.addTrack(track, LocalStreamvideo);
-      //   });
-      //   dispatch(setVideoModalOpen(true));
-      // }
-      // //listen for ice-candidate
-      // peerConnection.onicecandidate = (event) => {
-      //   if (event.candidate) {
-      //     socket.emit("handshake", {
-      //       type: "candidate",
-      //       candidate: event.candidate,
-      //     });
-      //   }
-      // };
-      // //create offer
-      // const offer = await peerConnection.createOffer();
-      // await peerConnection.setLocalDescription(offer);
-      // //emit the offer
-      // const offerData = {
-      //   type: "offer",
-      //   offer,
-      // };
-      // socket.emit("handShake", offerData);
-
-      // peerConnection.ontrack = (event) => {
-      //   if (!remoteStreamvideo) {
-      //     setRemoteStreamvideo(new MediaStream());
-      //   }
-      //   remoteStreamvideo?.addTrack(event.track);
-      // };
+      //create offer
+      await createOffer();
     } catch (error) {
       console.log(error);
     }
   }
 
-  const handlePeerMessage = (payload: any) => {
-    const data = payload;
-    if (data.type === "offer") {
-      createAnswer(data.offer);
-    }
-    if (data.type === "answer") {
-      addAnswer(data.answer);
-    }
-
-    if (data.type === "candidate") {
-      if (peerConnection) {
-        peerConnection.addIceCandidate(data.candidate);
-      }
+  const handlePeerMessage = async (data: any) => {
+    console.log(data);
+    switch (data.type) {
+      case "offer":
+        await createAnswer(data.offer);
+        break;
+      case "answer":
+        await addAnswer(data.answer);
+        break;
+      case "candidate":
+        if (peerConnection.current) {
+          console.log("adding icecandidate");
+          await peerConnection.current.addIceCandidate(
+            new RTCIceCandidate(data.candidate)
+          );
+        }
+        break;
+      default:
+        break;
     }
   };
 
-  async function createAnswer(offer: RTCSessionDescriptionInit) {
-    peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
-    const answer = await peerConnection.createAnswer();
-    await peerConnection.setLocalDescription(answer);
-    const answerData = { type: "answer", answer };
-    socket.emit("handshake", answerData);
-  }
+  const createOffer = async () => {
+    if (peerConnection.current) {
+      const offer = await peerConnection.current.createOffer();
+      await peerConnection.current.setLocalDescription(offer);
+      socket.emit("offer", { type: "offer", offer });
+    }
+  };
 
-  async function addAnswer(answer: RTCSessionDescriptionInit) {
-    // if (!peerConnection.currentRemoteDescription) {
-    await peerConnection.setRemoteDescription(
-      new RTCSessionDescription(answer)
-    );
-    // }
-  }
+  const createAnswer = async (offer: RTCSessionDescriptionInit) => {
+    await createPeerConnection();
+    if (peerConnection.current) {
+      await peerConnection.current.setRemoteDescription(
+        new RTCSessionDescription(offer)
+      );
+      const answer = await peerConnection.current.createAnswer();
+      await peerConnection.current.setLocalDescription(answer);
+      socket.emit("answer", { type: "answer", answer });
+    }
+  };
+
+  const addAnswer = async (answer: RTCSessionDescriptionInit) => {
+    if (!peerConnection.current) {
+      console.error("Peer connection is not initialized.");
+      return;
+    }
+
+    if (peerConnection.current.signalingState === "stable") {
+      console.warn("Cannot set remote answer in stable state.");
+      return;
+    }
+
+    try {
+      await peerConnection.current.setRemoteDescription(
+        new RTCSessionDescription(answer)
+      );
+    } catch (error) {
+      console.error("Error setting remote answer:", error);
+    }
+  };
 
   // console.log(message);
+  let localvideoRef = useRef<HTMLVideoElement | null>(null);
+  let remoteVideoRef = useRef<HTMLVideoElement | null>(null);
+  useEffect(() => {
+    if (localvideoRef.current && LocalStreamvideo) {
+      localvideoRef.current.srcObject = LocalStreamvideo;
+      localvideoRef.current.play().catch((error) => {
+        console.error("Error playing video:", error);
+      });
+    }
+
+    if (remoteVideoRef.current && remoteStreamvideo) {
+      remoteVideoRef.current.srcObject = remoteStreamvideo;
+      remoteVideoRef.current.play().catch((error) => {
+        console.error("Error playing video:", error);
+      });
+    }
+  }, [LocalStreamvideo, remoteStreamvideo]);
+
   return (
     <section
       className={`flex flex-col w-full h-full overflow-y-auto no-scrollbar ${style.backgroundImageContainer}`}
     >
+      {/* <div className="grid grid-cols-2">
+        <video
+          className="border p-1"
+          ref={localvideoRef}
+          width={600}
+          height={400}
+          autoPlay
+          playsInline
+          muted
+        />
+
+        <video
+          className="border p-1"
+          ref={remoteVideoRef}
+          width={600}
+          height={400}
+          autoPlay
+          playsInline
+          muted
+        />
+      </div> */}
       <div className="flex justify-between items-center py-2 px-4 bg-black/40">
         <div className="flex  gap-2">
           <div className="sm:w-12 sm:h-12 h-10 w-10 rounded-full hover:">
@@ -290,9 +329,14 @@ export default function ChatById() {
             </p>
           </div>
         </div>
-        <div>
+        <div className="flex items-center gap-1">
           <HiOutlineVideoCamera
             onClick={handleOpenVideoCall}
+            className="text-white text-3xl cursor-pointer hover:bg-gray-50/25 rounded-md p-1"
+          />
+
+          <MdOutlineJoinInner
+            // onClick={HandleJoinedVideoCall}
             className="text-white text-3xl cursor-pointer hover:bg-gray-50/25 rounded-md p-1"
           />
         </div>
@@ -385,21 +429,36 @@ export default function ChatById() {
           <PollingModal closeModal={() => setPollModalOpen(false)} />
         </span>
       )}
+
+      {isUploadMediaModalOpen && (
+        <div className="absolute bottom-12 ml-2">
+          <MediaViewModal
+            setUploadMediaModalOpen={(value: boolean) =>
+              setUploadMediaModalOpen(value)
+            }
+          />
+        </div>
+      )}
       {toggleAttachment && (
         <UploadFilePopUp
           openPollModal={() => {
             setPollModalOpen(true);
             setToggleAttachment(false);
           }}
+          openUploadMediaModal={() => {
+            setUploadMediaModalOpen(true);
+            setToggleAttachment(false);
+          }}
         />
       )}
 
-      {isVideoModalOpen && (
+      {/* {isVideoModalOpen && (
         <VideoCallModal
+          remoteStreamvideo={remoteStreamvideo}
           localVideoStream={LocalStreamvideo}
           closeModal={() => dispatch(setVideoModalOpen(false))}
         />
-      )}
+      )} */}
     </section>
   );
 }

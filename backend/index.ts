@@ -42,9 +42,20 @@ const startApp = async () => {
 
     // socketServer.io
     io.on("connection", (socket) => {
-      socket.on("handShake", (data) => {
-        console.log("from server");
-        io.emit("handShake", data);
+      socket.on("offer", (data) => {
+        io.emit("offer", data);
+      });
+
+      socket.on("answer", (data) => {
+        io.emit("answer", data);
+      });
+
+      socket.on("iceCandidate", (data) => {
+        io.emit("iceCandidate", data);
+      });
+
+      socket.on("MemberJoined", (data) => {
+        io.emit("MemberJoined", data);
       });
       socket.on("createRoom", async (roomOption) => {
         socket.join(roomOption.roomUniqueName);

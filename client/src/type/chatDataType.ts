@@ -15,4 +15,5 @@ export type ChatDataType = {
   time: string;
   type?: string;
   poll_id: pollType;
+  img?: string;
 };
