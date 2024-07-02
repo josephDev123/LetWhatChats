@@ -44,7 +44,8 @@ export default function ChatById() {
   const channel_members = unique_channelMember.splice(0, 3);
   const [messageStatus, setmessageStatus] = useState("idle");
   const [isPollModalOpen, setPollModalOpen] = useState(false);
-  const [isUploadMediaModalOpen, setUploadMediaModalOpen] = useState(false);
+  const [fileToUpload, setFileToUpload] = useState("");
+  const [mediaTypeTobeUpload, setMediaTypeTobeUpload] = useState("");
   const [isEmojiModalOpen, setisEmojiModalOpen] = useState(false);
   const [LocalStreamvideo, setLocalStreamvideo] = useState<MediaStream | null>(
     null
@@ -52,7 +53,7 @@ export default function ChatById() {
   const [remoteStreamvideo, setRemoteStreamvideo] =
     useState<MediaStream | null>(null);
   // const [isVideoCallModalOpen, setisVideoCallModalOpen] = useState(false);
-  console.log("remote: " + remoteStreamvideo, "local :" + LocalStreamvideo);
+  // console.log("remote: " + remoteStreamvideo, "local :" + LocalStreamvideo);
   const isVideoModalOpen = useSelector(
     (state: chatOrgType) => state.isVideoModalOpen
   );
@@ -141,6 +142,7 @@ export default function ChatById() {
       room,
       chat,
       time: moment(new Date()).format("h:mm"),
+      img: fileToUpload,
     });
     setChat("");
   }
@@ -430,12 +432,13 @@ export default function ChatById() {
         </span>
       )}
 
-      {isUploadMediaModalOpen && (
+      {fileToUpload && (
         <div className="absolute bottom-12 ml-2">
           <MediaViewModal
-            setUploadMediaModalOpen={(value: boolean) =>
-              setUploadMediaModalOpen(value)
-            }
+            closeModal={() => setFileToUpload("")}
+            mediaType={mediaTypeTobeUpload}
+            fileToUpload={fileToUpload}
+            handleSubmitMessage={handleSubmitMessage}
           />
         </div>
       )}
@@ -445,10 +448,10 @@ export default function ChatById() {
             setPollModalOpen(true);
             setToggleAttachment(false);
           }}
-          openUploadMediaModal={() => {
-            setUploadMediaModalOpen(true);
-            setToggleAttachment(false);
-          }}
+          setFileToUpload={(value: string) => setFileToUpload(value)}
+          setMediaTypeTobeUpload={(value: string) =>
+            setMediaTypeTobeUpload(value)
+          }
         />
       )}
 

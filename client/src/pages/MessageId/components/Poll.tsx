@@ -15,7 +15,7 @@ interface PollProps {
 
 export default function Poll({ className, item, chat, setChat }: PollProps) {
   const user = useUser();
-  // console.log(item);
+
   function handleVote(whatToUpdateId: string, optionToUpdate: string) {
     console.log(whatToUpdateId);
     if (item.peopleWhovoted.includes(user.data.email)) {
