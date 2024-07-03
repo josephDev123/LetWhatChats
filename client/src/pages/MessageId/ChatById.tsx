@@ -38,6 +38,7 @@ export type Ianswer = {
 export default function ChatById() {
   const [toggleAttachment, setToggleAttachment] = useState(false);
   const [message, setMessage] = useState<ChatDataType[]>([]);
+  // console.log(message);
   const unique_channelMember = Array.from(
     new Set(message.map((item) => JSON.stringify(item.name)))
   ).map((item) => JSON.parse(item));
@@ -439,6 +440,7 @@ export default function ChatById() {
             mediaType={mediaTypeTobeUpload}
             fileToUpload={fileToUpload}
             handleSubmitMessage={handleSubmitMessage}
+            setChat={setChat}
           />
         </div>
       )}

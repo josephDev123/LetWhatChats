@@ -117,12 +117,13 @@ const startApp = async () => {
 
       socket.on("submitMessage", async (data) => {
         socket.join(data.room);
-        // console.log(userRoom);
+
         const submittedChatData = {
           name: data.name,
           room: data.room,
           chat: data.chat,
           time: data.time,
+          img: data.img,
         };
 
         io.to(data.room).emit("exchangeMessage", submittedChatData);

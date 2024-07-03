@@ -5,6 +5,7 @@ type SentMessageType = {
 };
 
 export default function SentMessage({ item }: SentMessageType) {
+  console.log(item);
   return (
     <section className="w-full flex justify-end ">
       <div className="flex flex-col leading-tight text-sm sm:w-[40%] w-[80%] rounded-r-md p-2 rounded-bl-md bg-black/30">
