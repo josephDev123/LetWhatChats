@@ -1,0 +1,1 @@
+function deleteFileOnfirebase(path: string) {}

@@ -391,7 +391,9 @@ export default function ChatById() {
         )}
       </div>
 
-      <div className="relative sticky bottom-0  sm:text-white/80 text-black/50 font-semibold flex gap-4 mt-auto items-center py-2 px-4 bg-black/40">
+      <div
+        className={`  sticky bottom-0  sm:text-white/80 text-black/50 font-semibold flex gap-4 mt-auto items-center py-2 px-4 bg-black/40`}
+      >
         <GrEmoji
           onClick={() => setisEmojiModalOpen((prev) => !prev)}
           className="hover:bg-black/30 p-1 rounded-md text-3xl cursor-pointer"
@@ -405,6 +407,7 @@ export default function ChatById() {
           className="flex justify-between w-full"
         >
           <input
+            disabled={fileToUpload ? true : false}
             onChange={(e) => setChat(e.target.value)}
             type="text"
             value={chat}
@@ -436,6 +439,7 @@ export default function ChatById() {
       {fileToUpload && (
         <div className="absolute bottom-12 ml-2">
           <MediaViewModal
+            chat={chat}
             closeModal={() => setFileToUpload("")}
             mediaType={mediaTypeTobeUpload}
             fileToUpload={fileToUpload}

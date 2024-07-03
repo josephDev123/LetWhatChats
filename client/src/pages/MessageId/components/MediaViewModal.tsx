@@ -9,6 +9,7 @@ interface MediaViewModalType {
   mediaType: string;
   handleSubmitMessage: (e: FormEvent<Element>) => void;
   setChat: React.Dispatch<SetStateAction<string>>;
+  chat: string;
 }
 export default function MediaViewModal({
   closeModal,
@@ -16,6 +17,7 @@ export default function MediaViewModal({
   mediaType,
   handleSubmitMessage,
   setChat,
+  chat,
 }: MediaViewModalType) {
   const filetypeExtract = mediaType.split("/")[0];
   console.log("media view ", fileToUpload);
@@ -60,7 +62,11 @@ export default function MediaViewModal({
         <button
           type="button"
           className="self-end text-white"
-          onClick={handleSubmitMessage}
+          onClick={(e: FormEvent) => {
+            if (!chat) return;
+            handleSubmitMessage(e);
+            closeModal();
+          }}
         >
           <MdOutlineRocketLaunch className="bg-green-600  hover:bg-green-700 text-3xl p-2 text-black rounded-md" />
         </button>
