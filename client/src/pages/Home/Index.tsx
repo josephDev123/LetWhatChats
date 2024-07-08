@@ -9,7 +9,7 @@ export default function Index() {
         <p className="sm:text-gray-300 text-black">From</p>
         <span className="flex items-center gap-2 ">
           <LuPencilLine />
-          JoeCompany
+          LetWhatChat
         </span>
       </div>
     </section>

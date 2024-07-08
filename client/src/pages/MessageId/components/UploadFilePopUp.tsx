@@ -2,7 +2,7 @@ import { TbPhoto } from "react-icons/tb";
 import { HiOutlineCamera } from "react-icons/hi2";
 import { HiOutlineDocumentPlus } from "react-icons/hi2";
 import { MdOutlinePoll } from "react-icons/md";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, SetStateAction, useRef, useState } from "react";
 import { useUploadFirebaseToFirebase } from "../../../customHooks/useUploadToFirebase";
 // import { Dispatch, SetStateAction } from "react";
 
@@ -10,18 +10,21 @@ interface UploadFilePopUpProps {
   openPollModal: () => void;
   setFileToUpload: (value: string) => void;
   setMediaTypeTobeUpload: (value: string) => void;
+  setfileRef: React.Dispatch<SetStateAction<string>>;
 }
 
 export default function UploadFilePopUp({
   openPollModal,
   setFileToUpload,
   setMediaTypeTobeUpload,
+  setfileRef,
 }: UploadFilePopUpProps) {
   const fileVideoRef = useRef<HTMLInputElement>(null);
-  const { downloadedUrl, errorMsg, uploadStageStatus, uploadFile } =
+  const { downloadedUrl, errorMsg, uploadStageStatus, uploadFile, FileRef } =
     useUploadFirebaseToFirebase();
-  console.log(downloadedUrl, errorMsg, uploadStageStatus);
+  console.log(downloadedUrl, errorMsg, uploadStageStatus, FileRef);
   setFileToUpload(downloadedUrl);
+  setfileRef(FileRef);
 
   async function handlefileAndVideo(e: ChangeEvent<HTMLInputElement>) {
     const fileInput = e.target as HTMLInputElement;

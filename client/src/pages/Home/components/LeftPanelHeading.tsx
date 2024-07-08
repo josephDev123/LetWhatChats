@@ -15,7 +15,7 @@ export default function LeftPanelHeading() {
   return (
     <section className="flex  items-center justify-between relative">
       <Link to="/" className="text-xl font-semibold ">
-        JoeWhatChats
+        LetWhatChats
       </Link>
       <span className="flex items-center sm:gap-6 gap-4 ">
         <IoCameraOutline className="cursor-pointer text-xl sm:hidden" />

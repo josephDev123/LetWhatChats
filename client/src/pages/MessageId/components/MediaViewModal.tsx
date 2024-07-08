@@ -2,6 +2,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { useUploadFirebaseToFirebase } from "../../../customHooks/useUploadToFirebase";
 import { FormEvent, SetStateAction } from "react";
 import { MdOutlineRocketLaunch } from "react-icons/md";
+import { deleteFileOnFirebase } from "../../../utils/deleteFileOnFirebase";
 
 interface MediaViewModalType {
   closeModal: () => void;
@@ -10,6 +11,8 @@ interface MediaViewModalType {
   handleSubmitMessage: (e: FormEvent<Element>) => void;
   setChat: React.Dispatch<SetStateAction<string>>;
   chat: string;
+  fileRef: string;
+  setfileRef: React.Dispatch<SetStateAction<string>>;
 }
 export default function MediaViewModal({
   closeModal,
@@ -18,21 +21,32 @@ export default function MediaViewModal({
   handleSubmitMessage,
   setChat,
   chat,
+  fileRef,
+  setfileRef,
 }: MediaViewModalType) {
   const filetypeExtract = mediaType.split("/")[0];
   console.log("media view ", fileToUpload);
   const { downloadedUrl, errorMsg, uploadStageStatus } =
     useUploadFirebaseToFirebase();
-  console.log(downloadedUrl, errorMsg, uploadStageStatus);
+  console.log(downloadedUrl, errorMsg, uploadStageStatus, fileRef);
+  const handleCloseModal = async () => {
+    try {
+      await deleteFileOnFirebase(fileRef);
+      closeModal;
+      setfileRef(" ");
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
-    <section className="flex flex-col h-full overflow-y-auto no-scrollbar">
-      <div className="flex flex-col bg-black/50 p-2  drop-shadow-md">
+    <section className="flex flex-col h-full justify-center items-center  overflow-y-auto sm:w-[400px] w-[90%] no-scrollbar">
+      <div className="flex flex-col justify-center items-center w-full h-fit bg-black/50 p-2  drop-shadow-md">
         <AiOutlineClose
-          onClick={closeModal}
+          onClick={handleCloseModal}
           className="ms-auto cursor-pointer p-1 rounded-full text-white hover:bg-green-300 hover:text-white text-2xl"
         />
 
-        <div className="bg-gray-300 h-[400px] w-[400px] p-2 ">
+        <div className="bg-gray-300 h-[400px] sm:w-[350px] w-fit p-2 overflow-y-auto">
           {filetypeExtract === "image" && (
             <img
               src={fileToUpload}
@@ -40,7 +54,7 @@ export default function MediaViewModal({
               loading="lazy"
               width={400}
               height={400}
-              className="objec"
+              className="object-contain"
             />
           )}
 
@@ -56,7 +70,7 @@ export default function MediaViewModal({
           type="text"
           // value=""
           placeholder="Caption(optional)"
-          className="p-2 bg-transparent outline-none focus:border rounded-md border-gray-300 my-2 text-white"
+          className="p-2 bg-transparent outline-none w-full focus:border rounded-md border-gray-300 my-2 text-white sm:border-none border"
           autoFocus
         />
         <button

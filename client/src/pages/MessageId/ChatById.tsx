@@ -46,6 +46,7 @@ export default function ChatById() {
   const [messageStatus, setmessageStatus] = useState("idle");
   const [isPollModalOpen, setPollModalOpen] = useState(false);
   const [fileToUpload, setFileToUpload] = useState("");
+  const [fileRef, setfileRef] = useState("");
   const [mediaTypeTobeUpload, setMediaTypeTobeUpload] = useState("");
   const [isEmojiModalOpen, setisEmojiModalOpen] = useState(false);
   const [LocalStreamvideo, setLocalStreamvideo] = useState<MediaStream | null>(
@@ -439,6 +440,8 @@ export default function ChatById() {
       {fileToUpload && (
         <div className="absolute bottom-12 ml-2">
           <MediaViewModal
+            fileRef={fileRef}
+            setfileRef={setfileRef}
             chat={chat}
             closeModal={() => setFileToUpload("")}
             mediaType={mediaTypeTobeUpload}
@@ -454,6 +457,7 @@ export default function ChatById() {
             setPollModalOpen(true);
             setToggleAttachment(false);
           }}
+          setfileRef={setfileRef}
           setFileToUpload={(value: string) => setFileToUpload(value)}
           setMediaTypeTobeUpload={(value: string) =>
             setMediaTypeTobeUpload(value)

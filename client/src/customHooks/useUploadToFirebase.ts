@@ -9,7 +9,7 @@ import { useState } from "react";
 
 export function useUploadFirebaseToFirebase() {
   const [downloadedUrl, setdownloadedUrl] = useState<string>("");
-  const [FilePathname, setFilePathname] = useState<string>("");
+  const [FileRef, setFileRef] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [uploadStageStatus, setUploadStageStatus] = useState<string | null>(
     null
@@ -25,7 +25,7 @@ export function useUploadFirebaseToFirebase() {
     const storageDb = getStorage();
     const timestamp = Date.now();
     const filePathName = `${pathname}/ ${file.name}-${timestamp}`;
-    setFilePathname(filePathName);
+    setFileRef(filePathName);
     // Upload file and metadata to the object 'images/mountains.jpg'
 
     const storageRef = ref(storageDb, `${filePathName}`);
@@ -86,7 +86,7 @@ export function useUploadFirebaseToFirebase() {
     downloadedUrl,
     errorMsg,
     uploadStageStatus,
-    FilePathname,
+    FileRef,
     uploadFile,
   };
 }
