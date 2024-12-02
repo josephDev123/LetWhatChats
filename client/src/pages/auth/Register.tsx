@@ -55,13 +55,15 @@ export default function Register() {
     setStatus("loading");
     try {
       const fileUploadUrl = await UploadFirebase(profileImgData);
+      console.log(fileUploadUrl);
       if (!fileUploadUrl) {
         setStatus("");
+        alert("file isssue ..");
         return;
       } else {
         const submitReq = await axiosInstance({
           method: "post",
-          url: "/auth/register",
+          url: "auth/register",
           data: {
             name: data.name,
             email: data.email,
@@ -77,12 +79,14 @@ export default function Register() {
       }
     } catch (error: any) {
       // console.log(error.response.data);
-      if (error.response.data) {
+      if (error.response) {
         setStatus("error");
+        console.log(error.response.data);
         setErrorMessage(error.response.data.error);
         return;
       }
       setStatus("error");
+      console.log(error);
       setErrorMessage("Something went wrong");
       return;
     }
