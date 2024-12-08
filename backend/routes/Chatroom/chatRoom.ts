@@ -2,32 +2,49 @@ import { Router } from "express";
 import { GlobalError } from "../../utils/globalError";
 import { roomModel } from "../../models/rooms";
 import { Request, Response, NextFunction } from "express";
+import { ConversationController } from "../../controllers/ConversationController";
+import { ConversationService } from "../../services/Conversation";
+import { ConversationRepo } from "../../Repository/Conversation";
+import { ConversationModel } from "../../models/Conversation";
+import { GroupMemberRepo } from "../../Repository/GroupMember";
+import { GroupMemberModel } from "../../models/GroupMember";
 
 export const chatRoomRoute = Router();
 
+const GroupMemberRepoImp = new GroupMemberRepo(GroupMemberModel);
+const ConversationRepoImp = new ConversationRepo(ConversationModel);
+const ConversationServiceImp = new ConversationService(
+  ConversationRepoImp,
+  GroupMemberRepoImp
+);
+const ConversationControllerImp = new ConversationController(
+  ConversationServiceImp
+);
+
 chatRoomRoute.post(
   "/create",
-  async function (req: Request, res: Response, next: NextFunction) {
-    try {
-      const body = req.body;
-      const doc = new roomModel({
-        userEmail: body.userEmail,
-        roomUniqueName: body.roomUniqueName,
-        avatar: body.avatar,
-        time: body.time,
-      });
-      await doc.save();
-      return res.status(200).json({ msg: "success" });
-    } catch (error) {
-      const errorHandler = new GlobalError(
-        "something went wrong",
-        "UnknownError",
-        500,
-        false
-      );
-      return next(errorHandler);
-    }
-  }
+  ConversationControllerImp.create.bind(ConversationControllerImp)
+  // async function (req: Request, res: Response, next: NextFunction) {
+  //   try {
+  //     const body = req.body;
+  //     const doc = new roomModel({
+  //       userEmail: body.userEmail,
+  //       roomUniqueName: body.roomUniqueName,
+  //       avatar: body.avatar,
+  //       time: body.time,
+  //     });
+  //     await doc.save();
+  //     return res.status(200).json({ msg: "success" });
+  //   } catch (error) {
+  //     const errorHandler = new GlobalError(
+  //       "something went wrong",
+  //       "UnknownError",
+  //       500,
+  //       false
+  //     );
+  //     return next(errorHandler);
+  //   }
+  // }
 );
 
 chatRoomRoute.get(
