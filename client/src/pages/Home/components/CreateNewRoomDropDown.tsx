@@ -12,6 +12,7 @@ import axios from "axios";
 import { messageRoomType } from "../../../type/messageRoomType";
 import { useQuery } from "@tanstack/react-query";
 import { FaSpinner } from "react-icons/fa6";
+import { useCreateConversationMutation } from "../../../customHooks/useCreateRoom";
 
 interface CreateNewRoomDropDownProps {
   newRoomDropDownStatus: boolean;
@@ -24,67 +25,20 @@ export default function CreateNewRoomDropDown({
 }: CreateNewRoomDropDownProps) {
   const [room, setRoom] = useState("");
   const [roomCredential, setroomCredential] = useState<messageRoomType[]>([]);
-  const currentTime = moment().format("h:mma");
   const user = useUser();
 
   const handleCreateRoom = async () => {
     if (!room || room.length < 1) {
       return;
     }
-    // try {
-    //   const res = await axios({
-    //     method: "post",
-    //     url: "http://localhost:7000/room/create",
-    //     data: {
-    //       userEmail: user.data.email,
-    //       roomUniqueName: convertToUrlFriendly(room),
-    //       avatar: user.data.profile_img,
-    //       time: currentTime,
-    //     },
-    //   });
-    //   const resData = res.data;
-    //   console.log(resData);
-    // } catch (error) {
-    //   console.log(error);
-    // }
 
-    socket.emit("createRoom", {
-      userEmail: user.data.email,
-      roomUniqueName: convertToUrlFriendly(room),
-      avatar: user.data.profile_img,
-      time: currentTime,
-    });
-
-    closeModal();
+    mutate(
+      { conversation_name: room, user_id: user.data._id },
+      { onSuccess: () => closeModal() }
+    );
   };
 
-  useEffect(() => {
-    function onGetCreateRoom(roomsCredential: any) {
-      console.log(roomsCredential);
-      setroomCredential((prev) => [...prev, roomsCredential]);
-    }
-
-    socket.on("getCreateRoom", onGetCreateRoom);
-
-    return () => {
-      socket.off("getCreateRoom", onGetCreateRoom);
-    };
-  }, []);
-
-  const { isLoading, isError } = useQuery({
-    queryKey: ["roomCredential"],
-    queryFn: async () => {
-      const req = await axios({
-        method: "get",
-        url: `http://localhost:7000/room/${user.data.email}`,
-      });
-      // console.log(req.data);
-      setroomCredential(req.data);
-      // dispatch(addRoomData(req.data));
-      return req.data;
-    },
-  });
-
+  const { mutate, isPending } = useCreateConversationMutation();
   return (
     <AnimatePresence>
       <motion.section
@@ -110,20 +64,23 @@ export default function CreateNewRoomDropDown({
         >
           <IoPeopleOutline className="bg-slate-200 rounded-full p-2 text-4xl" />
           <span className="text-white">Create Room</span>
+          {isPending && (
+            <FaSpinner className="animate-spin h-4 w-4 text-white ms-auto" />
+          )}
         </button>
 
         <h5 className="mt-2 text-white">All contacts</h5>
         <motion.div className="overflow-y-auto no-scrollbar space-y-0.5">
-          {isLoading && (
+          {/* {isLoading && (
             <div className="h-full flex flex-col justify-center items-center">
               <FaSpinner className="animate-spin h-12 w-12 text-white" />
             </div>
-          )}
-          {isError && (
+          )} */}
+          {/* {isError && (
             <div className="h-full">
               <span>Something went wrong</span>
             </div>
-          )}
+          )} */}
           {roomCredential.map((item, index) => (
             <MessageRoomCard key={index} item={item} />
           ))}

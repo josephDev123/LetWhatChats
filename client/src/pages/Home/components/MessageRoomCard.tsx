@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { BsThreeDots } from "react-icons/bs";
 import { useState } from "react";
 import { convertToUrlFriendly } from "../../../generic/convertToUrlFreiendly";
-import { addRoomData } from "../../../slice";
+import { addRoomData } from "../../../slices/slice";
 import { useDispatch } from "react-redux";
 import { generateRandomAlphaNumeric } from "../../../utils/longAlphaNumericString";
 

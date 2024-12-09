@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { messageRoomType } from "./type/messageRoomType";
-import { ChatDataType } from "./type/chatDataType";
+import { messageRoomType } from "../type/messageRoomType";
+import { ChatDataType } from "../type/chatDataType";
 
 export type chatOrgType = {
   roomCredential: messageRoomType | Object;
