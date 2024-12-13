@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { ConversationService } from "../services/Conversation";
 import { ConversationDTO } from "../DTO/conversationDTO";
+import { GlobalError } from "../utils/globalError";
 
 export class ConversationController {
   constructor(private readonly ConversationService: ConversationService) {}
@@ -19,6 +20,19 @@ export class ConversationController {
       return res.json(result).status(200);
     } catch (error) {
       next(error);
+    }
+  }
+
+  async find(req: Request, res: Response, next: NextFunction) {
+    try {
+      const payload = await req.body;
+      const page = payload.page ?? 1;
+      const limit = payload.limit ?? 4;
+      const response = await this.ConversationService.find(page, limit);
+      return res.json({ data: response }).status(200);
+    } catch (error) {
+      const ErrorFormat = error as GlobalError;
+      next(ErrorFormat);
     }
   }
 }

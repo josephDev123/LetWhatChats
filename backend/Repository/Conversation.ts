@@ -24,4 +24,32 @@ export class ConversationRepo {
       );
     }
   }
+
+  async find(page: number, limit: number) {
+    try {
+      const skip = (page - 1) * limit;
+      // const response = await this.ConversationModel.find({})
+      //   .skip(skip)
+      //   .limit(limit);
+
+      const ConversationAndMemberGroup = [
+        {
+          $lookup: {
+            from: "groupmembers",
+            localField: "_id",
+            foreignField: "conversation_id",
+            as: "ConversationWithMember",
+          },
+        },
+      ];
+      const response = await this.ConversationModel.aggregate(
+        ConversationAndMemberGroup
+      );
+
+      return response;
+    } catch (error) {
+      const ErrorFormat = error as GlobalError;
+      throw new GlobalError(ErrorFormat.message, ErrorFormat.name, 400, false);
+    }
+  }
 }

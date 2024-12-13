@@ -9,7 +9,7 @@ import { ConversationModel } from "../../models/Conversation";
 import { GroupMemberRepo } from "../../Repository/GroupMember";
 import { GroupMemberModel } from "../../models/GroupMember";
 
-export const chatRoomRoute = Router();
+export const Conversation = Router();
 
 const GroupMemberRepoImp = new GroupMemberRepo(GroupMemberModel);
 const ConversationRepoImp = new ConversationRepo(ConversationModel);
@@ -21,7 +21,7 @@ const ConversationControllerImp = new ConversationController(
   ConversationServiceImp
 );
 
-chatRoomRoute.post(
+Conversation.post(
   "/create",
   ConversationControllerImp.create.bind(ConversationControllerImp)
   // async function (req: Request, res: Response, next: NextFunction) {
@@ -47,7 +47,12 @@ chatRoomRoute.post(
   // }
 );
 
-chatRoomRoute.get(
+Conversation.get(
+  "/",
+  ConversationControllerImp.find.bind(ConversationControllerImp)
+);
+
+Conversation.get(
   "/:email",
   async function (req: Request, res: Response, next: NextFunction) {
     try {
@@ -74,7 +79,7 @@ chatRoomRoute.get(
   }
 );
 
-chatRoomRoute.get(
+Conversation.get(
   "/channel/:channel",
   async function (req: Request, res: Response, next: NextFunction) {
     try {

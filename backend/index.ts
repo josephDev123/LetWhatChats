@@ -12,7 +12,7 @@ import { chatMsgModel } from "./models/chatMsg";
 import { chatMsgRoute } from "./routes/chat/chatMsg";
 import { errorHandleMiddleware } from "./middleware/errorHandlerMiddleware";
 import { roomModel } from "./models/rooms";
-import { chatRoomRoute } from "./routes/Chatroom/chatRoom";
+import { Conversation } from "./routes/Conversation/conversation";
 import { PollModel } from "./models/Polling";
 import { VoteRouter } from "./routes/votePoll";
 
@@ -220,7 +220,7 @@ const startApp = async () => {
 
     // routes
     app.use("/auth", AuthRoute);
-    app.use("/room", chatRoomRoute);
+    app.use("/conversation", Conversation);
     app.use("/chat", chatMsgRoute);
     app.use("/vote", VoteRouter);
     app.use(errorHandleMiddleware);

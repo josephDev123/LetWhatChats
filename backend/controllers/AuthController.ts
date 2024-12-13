@@ -1,26 +1,17 @@
 import { Request, Response, NextFunction } from "express";
-import bcrypt from "bcrypt";
 import { hashPassword } from "../utils/hashPassword";
 import { isEmailAlreadyUsed } from "../utils/comparePassword";
-import { UserModel, userType } from "../models/Users";
+import { UserModel } from "../models/Users";
 import {
   loginCredentialValidation,
   registercredentialValidation,
 } from "../utils/authDataValidation";
 import { isRegisteredEmail } from "../utils/isRegisteredEmail";
-import { isNameAlreadyReqistered } from "../utils/isNameRegistered";
-import jwt from "jsonwebtoken";
-import { exist, string } from "joi";
 import { createToken } from "../utils/createToken";
-import UserProfile from "../models/UserProfile";
-import mongoose from "mongoose";
-import { Console, log, profile } from "console";
-import { randomBytes, randomUUID } from "crypto";
-import { sendMail } from "../utils/sendMail";
-import { generateRandomPIN } from "../utils/generateRandomPin";
 import { isUsernameRegistered } from "../utils/isUsernameRegistered";
 import { unhashPassword } from "../utils/unhashPassword";
 import { GlobalError } from "../utils/globalError";
+import { skip } from "node:test";
 
 export const register = async (
   req: Request,
@@ -205,6 +196,24 @@ export const loginController = async (req: Request, res: Response) => {
   }
 };
 
+export const users = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const payload = await req.body;
+    const page = Number(payload.page) ?? 1;
+    const limit = Number(payload.limit) ?? 4;
+    const skip = (page - 1) * limit;
+    const response = await UserModel.find({}).skip(skip).limit(limit);
+    return res.json({ data: response }).status(200);
+  } catch (error) {
+    const ErrorFormat = error as GlobalError;
+    next(ErrorFormat);
+  }
+};
+
 export const ConfirmOtp = async (req: Request, res: Response) => {
   try {
     const { otp, email } = req.body;
@@ -245,6 +254,7 @@ export const ConfirmOtp = async (req: Request, res: Response) => {
     });
   }
 };
+skip;
 
 export const refresh_token = async (req: Request, res: Response) => {
   const { email } = req.query;

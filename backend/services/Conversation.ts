@@ -46,4 +46,13 @@ export class ConversationService {
       await session.endSession();
     }
   }
+  async find(page: number, limit: number) {
+    try {
+      const response = await this.ConversationRepo.find(page, limit);
+      return response;
+    } catch (error) {
+      const ErrorFormat = error as GlobalError;
+      throw new GlobalError(ErrorFormat.message, ErrorFormat.name, 400, false);
+    }
+  }
 }
