@@ -15,6 +15,7 @@ import { roomModel } from "./models/rooms";
 import { Conversation } from "./routes/Conversation/conversation";
 import { PollModel } from "./models/Polling";
 import { VoteRouter } from "./routes/votePoll";
+import { chatRoute } from "./routes/chat/Chat";
 
 dotenv.config();
 
@@ -221,7 +222,8 @@ const startApp = async () => {
     // routes
     app.use("/auth", AuthRoute);
     app.use("/conversation", Conversation);
-    app.use("/chat", chatMsgRoute);
+    app.use("chat", chatRoute);
+    // app.use("/chat", chatMsgRoute);
     app.use("/vote", VoteRouter);
     app.use(errorHandleMiddleware);
     HttpServer.listen(process.env.PORT, () => {
