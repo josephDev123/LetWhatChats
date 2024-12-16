@@ -7,9 +7,14 @@ import { convertToUrlFriendly } from "../../../generic/convertToUrlFreiendly";
 import { addRoomData } from "../../../slices/slice";
 import { useDispatch } from "react-redux";
 import { generateRandomAlphaNumeric } from "../../../utils/longAlphaNumericString";
+import {
+  ConversationsTypeArray,
+  ConversationType,
+} from "../../../type/dbConversationType";
+import { Images } from "../../../../Images";
 
 type MessageRoomCard = {
-  item: messageRoomType;
+  item: ConversationType;
 };
 export default function MessageRoomCard({ item }: MessageRoomCard) {
   const [isOpenGroupLinkDropDown, setIsOpenGroupLinkDropDown] = useState(false);
@@ -38,13 +43,16 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
       onClick={() => {
         dispatch(addRoomData(item));
         // redirect(convertToUrlFriendly(`/${item.roomUniqueName}`));\
-        window.location.href = convertToUrlFriendly(`/${item.roomUniqueName}`);
+        window.location.href = convertToUrlFriendly(
+          `/${item.conversation_name}`
+        );
       }}
       className="flex gap-2 items-center hover:bg-slate-200 p-3 rounded-md cursor-pointer bg-green-50"
     >
       <img
-        src={item.avatar}
-        alt="profile_avatar"
+        // src={item.avatar}
+        src={Images.avatar_one_png}
+        alt=" avatar"
         width={12}
         height={12}
         loading="lazy"
@@ -53,18 +61,20 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
 
       <div className="flex flex-col ">
         <div className="flex justify-between gap-4 items-center">
-          <h5 className="font-semibold line-clamp-1">{item.roomUniqueName}</h5>
-          <span className="text-green-500">{item.time}</span>
+          <h5 className="font-semibold line-clamp-1">
+            {item.conversation_name}
+          </h5>
+          <span className="text-green-500">5:47pm</span>
         </div>
 
-        {item.name && item.content && (
+        {/* {item.name && item.content && (
           <p className="flex gap-2 ">
             <span className="text-slate-500 line-clamp-1">
               {item?.name} : {item?.content}
             </span>
-            {/* <span className="text-slate-500 text-ellipsis"></span> */}
+            
           </p>
-        )}
+        )} */}
       </div>
       <div className="ms-auto relative">
         <BsThreeDots
@@ -76,7 +86,7 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
         />
         {isOpenGroupLinkDropDown && (
           <div
-            onClick={(e) => handleCopyGroupLink(e, item.roomUniqueName)}
+            onClick={(e) => handleCopyGroupLink(e, item.conversation_name)}
             className="absolute top-6 z-10 right-0 drop-shadow-md p-1 w-36 h-8 rounded-sm bg-gray-50"
           >
             Copy group link

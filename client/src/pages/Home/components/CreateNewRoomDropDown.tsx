@@ -8,11 +8,12 @@ import { useEffect, useState } from "react";
 import { useUser } from "../../../customHooks/useUser";
 import moment from "moment";
 import { convertToUrlFriendly } from "../../../generic/convertToUrlFreiendly";
-import axios from "axios";
 import { messageRoomType } from "../../../type/messageRoomType";
-import { useQuery } from "@tanstack/react-query";
 import { FaSpinner } from "react-icons/fa6";
 import { useCreateConversationMutation } from "../../../customHooks/useCreateRoom";
+import { useQueryFacade } from "../../../utils/GetConversationFacade";
+import { axiosDefault } from "../../../axios/axiosInstance";
+import { User } from "../../../type/dbUserType";
 
 interface CreateNewRoomDropDownProps {
   newRoomDropDownStatus: boolean;
@@ -26,6 +27,16 @@ export default function CreateNewRoomDropDown({
   const [room, setRoom] = useState("");
   const [roomCredential, setroomCredential] = useState<messageRoomType[]>([]);
   const user = useUser();
+
+  const contacts = useQueryFacade(["users"], async () => {
+    const response = axiosDefault({
+      method: "get",
+      url: `auth/users`,
+    });
+    return (await response).data.data;
+  });
+
+  console.log(contacts);
 
   const handleCreateRoom = async () => {
     if (!room || room.length < 1) {
@@ -70,7 +81,7 @@ export default function CreateNewRoomDropDown({
         </button>
 
         <h5 className="mt-2 text-white">All contacts</h5>
-        <motion.div className="overflow-y-auto no-scrollbar space-y-0.5">
+        <motion.div className="overflow-y-auto no-scrollbar space-y-0.5 mt-2">
           {/* {isLoading && (
             <div className="h-full flex flex-col justify-center items-center">
               <FaSpinner className="animate-spin h-12 w-12 text-white" />
@@ -81,8 +92,35 @@ export default function CreateNewRoomDropDown({
               <span>Something went wrong</span>
             </div>
           )} */}
-          {roomCredential.map((item, index) => (
+          {/* {roomCredential.map((item, index) => (
             <MessageRoomCard key={index} item={item} />
+          ))} */}
+
+          {contacts.isLoading && (
+            <div className="h-full flex flex-col justify-center items-center">
+              <FaSpinner className="animate-spin h-8 w-8" />
+            </div>
+          )}
+
+          {contacts.data?.map((user: User, i: number) => (
+            <div
+              key={i}
+              className="flex items-center justify-between p-2 bg-green-50 hover:bg-green-100 rounded-md"
+            >
+              <div className="inline-flex gap-2 items-center text-black">
+                <img
+                  src={user.profile_img}
+                  alt="avatar"
+                  className=" w-8 h-8 rounded-full border"
+                />
+
+                <p>{user.name}</p>
+              </div>
+
+              <button className="p-0.5 px-2 rounded-md bg-green-400 hover:bg-green-300">
+                Create
+              </button>
+            </div>
           ))}
         </motion.div>
       </motion.section>
