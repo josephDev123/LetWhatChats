@@ -11,14 +11,16 @@ export class ChatController {
       const ChatRepoImpl = new ChatRepo(ChatModel);
       const ChatServiceImpl = new ChatService(ChatRepoImpl);
       const payload = req.body;
+
       const ExtractPayload: ChatDTO = {
-        message_text: payload.message,
+        message_text: payload.message_text,
         from_number: payload.from_number,
         conversation_id: payload.conversation_id,
         sent_datetime: payload.sent_datetime,
       };
 
       const result = await ChatServiceImpl.CreateChat(ExtractPayload);
+      // console.log(result);
       return res.status(200).json({
         message: "Successfully created a chat",
         data: result,

@@ -222,7 +222,7 @@ const startApp = async () => {
     // routes
     app.use("/auth", AuthRoute);
     app.use("/conversation", Conversation);
-    app.use("chat", chatRoute);
+    app.use("/chat", chatRoute);
     // app.use("/chat", chatMsgRoute);
     app.use("/vote", VoteRouter);
     app.use(errorHandleMiddleware);

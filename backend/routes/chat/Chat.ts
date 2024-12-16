@@ -4,4 +4,4 @@ import { ChatController } from "../../controllers/ChatController";
 export const chatRoute = Router();
 const ChatControllerImp = new ChatController();
 
-chatRoute.post("/", ChatControllerImp.createChat.bind(ChatControllerImp));
+chatRoute.post("/create", ChatControllerImp.createChat.bind(ChatControllerImp));
