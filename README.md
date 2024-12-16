@@ -1,12 +1,12 @@
 ## JoeWhatChats
 
-Welcome to the JoeWhatChats! This project aims to replicate the functionality of WhatsApp, allowing users to create rooms, send messages, and soon, make video calls using Node.js, Express, MongoDB, React, and Socket.IO.
+Welcome to the JoeWhatChats! This project aims to replicate the functionality of WhatsApp, allowing users to create rooms, send messages, using Node.js, Express, MongoDB, React, and Socket.IO.
 
 ## Features
 
 <ul>
 <li>
-<b>Create Rooms:</b> Users can create chat rooms and invite others to join the conversation.
+<b>Create Conversation:</b> Users can create conversation and  others to join the conversation.
 </li>
 <li>
 <b>Real-time Messaging:</b> Utilizing Socket.IO, messages are sent and received instantly, creating a seamless chatting experience.
@@ -16,9 +16,9 @@ Welcome to the JoeWhatChats! This project aims to replicate the functionality of
 <b>Secure Authentication:</b> Users can sign up securely with token authentication/authorization and log in to access the app's features.
 </li>
 
-<li>
+<!-- <li>
 <b>Video Call (Upcoming):</b> Soon, users will be able to initiate video calls within chat rooms for face-to-face communication.
-</li>
+</li> -->
 <ul>
 
 ## Samples
@@ -88,9 +88,9 @@ Add MongoDB connection URI, JWT secret, and other necessary variables.
 
 <ol>
 <li>Sign up or log in to your account.</li>
-<li>Create a new room or join an existing one.</li>
+<li>Create a new Conversation or join an existing one.</li>
 <li>Start sending and receiving messages in real-time.</li>
-<li>Stay tuned for the upcoming video call feature!</li>
+<!-- <li>Stay tuned for the upcoming video call feature!</li> -->
 </ol>
 
 ## Credits
