@@ -1,6 +1,6 @@
 ## JoeWhatChats
 
-Welcome to the JoeWhatChats! This project aims to replicate the functionality of WhatsApp, allowing users to create rooms, send messages, using Node.js, Express, MongoDB, React, and Socket.IO.
+Welcome to the JoeWhatChats! This project aims to replicate the functionality of WhatsApp, allowing users to create Conversation, send messages, using Node.js, Express, MongoDB, React, and Socket.IO.
 
 ## Features
 
