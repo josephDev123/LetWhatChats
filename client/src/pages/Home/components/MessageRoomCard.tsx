@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { BsThreeDots } from "react-icons/bs";
 import { useState } from "react";
 import { convertToUrlFriendly } from "../../../generic/convertToUrlFreiendly";
-import { addRoomData } from "../../../slices/slice";
+import { addRoomData } from "../../../lib/redux/slices/slice";
 import { useDispatch } from "react-redux";
 import { generateRandomAlphaNumeric } from "../../../utils/longAlphaNumericString";
 import {
@@ -12,15 +12,21 @@ import {
   ConversationType,
 } from "../../../type/dbConversationType";
 import { Images } from "../../../../Images";
+import { useUser } from "../../../customHooks/useUser";
 
 type MessageRoomCard = {
   item: ConversationType;
 };
 export default function MessageRoomCard({ item }: MessageRoomCard) {
   const [isOpenGroupLinkDropDown, setIsOpenGroupLinkDropDown] = useState(false);
-  const redirect = useNavigate();
-  const dispatch = useDispatch();
 
+  const dispatch = useDispatch();
+  const user = useUser();
+  const findUserById = item.ConversationWithMember.find(
+    (item) => item.user_id == user?.data?._id
+  );
+
+  console.log("");
   const handleCopyGroupLink = async (
     e: React.MouseEvent<HTMLDivElement, MouseEvent>,
     roomName: string
@@ -66,32 +72,29 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
           </h5>
           <span className="text-green-500">5:47pm</span>
         </div>
-
-        {/* {item.name && item.content && (
-          <p className="flex gap-2 ">
-            <span className="text-slate-500 line-clamp-1">
-              {item?.name} : {item?.content}
-            </span>
-            
-          </p>
-        )} */}
       </div>
       <div className="ms-auto relative">
-        <BsThreeDots
+        {!findUserById && (
+          <button className="px-2 bg-green-400 hover:bg-green-300 rounded-md">
+            Join
+          </button>
+        )}
+
+        {/* <BsThreeDots
           className="hover:bg-green-400 rounded-full p-1 text-xl"
           onClick={(e: any) => {
             e.stopPropagation();
             setIsOpenGroupLinkDropDown((prev) => !prev);
           }}
-        />
-        {isOpenGroupLinkDropDown && (
+        /> */}
+        {/* {isOpenGroupLinkDropDown && (
           <div
             onClick={(e) => handleCopyGroupLink(e, item.conversation_name)}
             className="absolute top-6 z-10 right-0 drop-shadow-md p-1 w-36 h-8 rounded-sm bg-gray-50"
           >
             Copy group link
           </div>
-        )}
+        )} */}
       </div>
     </motion.section>
   );

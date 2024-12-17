@@ -1,4 +1,4 @@
-import { axiosInstance } from "../../axios/axiosInstance";
+import { axiosInstance } from "../../lib/axios/axiosInstance";
 import { AxiosError } from "axios";
 import { errorAlert } from "../../utils/errorAlert";
 

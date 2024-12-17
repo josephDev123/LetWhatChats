@@ -10,10 +10,14 @@ import moment from "moment";
 import { convertToUrlFriendly } from "../../../generic/convertToUrlFreiendly";
 import { messageRoomType } from "../../../type/messageRoomType";
 import { FaSpinner } from "react-icons/fa6";
-import { useCreateConversationMutation } from "../../../customHooks/useCreateRoom";
+// import { useCreateConversationMutation } from "../../../customHooks/useCreateRoom";
 import { useQueryFacade } from "../../../utils/GetConversationFacade";
-import { axiosDefault } from "../../../axios/axiosInstance";
+import { axiosDefault, axiosInstance } from "../../../lib/axios/axiosInstance";
 import { User } from "../../../type/dbUserType";
+import { useCreateMutation } from "../../../utils/createConverationFacade";
+import { AxiosError } from "axios";
+import { useAppDispatch } from "../../../lib/redux/hooks";
+import { setTrigger } from "../../../lib/redux/slices/triggerQueryRefresh";
 
 interface CreateNewRoomDropDownProps {
   newRoomDropDownStatus: boolean;
@@ -25,8 +29,8 @@ export default function CreateNewRoomDropDown({
   closeModal,
 }: CreateNewRoomDropDownProps) {
   const [room, setRoom] = useState("");
-  const [roomCredential, setroomCredential] = useState<messageRoomType[]>([]);
   const user = useUser();
+  const dispatch = useAppDispatch();
 
   const contacts = useQueryFacade(["users"], async () => {
     const response = axiosDefault({
@@ -36,20 +40,39 @@ export default function CreateNewRoomDropDown({
     return (await response).data.data;
   });
 
-  console.log(contacts);
+  const { mutate, isPending } = useCreateMutation(
+    async () => {
+      try {
+        return axiosInstance.post("conversation/create", {
+          conversation_name: room,
+          user_id: user.data._id,
+        });
+      } catch (error) {
+        if (error instanceof AxiosError && error.response) {
+          throw new Error(error.response.data);
+        }
+        throw new Error("something went wrong");
+      }
+    },
+    () => {
+      dispatch(
+        setTrigger({
+          signal: `conversation${Math.random()}`,
+          type: "conversation",
+        })
+      );
+      closeModal();
+    }
+  );
 
   const handleCreateRoom = async () => {
     if (!room || room.length < 1) {
       return;
     }
 
-    mutate(
-      { conversation_name: room, user_id: user.data._id },
-      { onSuccess: () => closeModal() }
-    );
+    mutate({ onSuccess: () => closeModal() });
   };
 
-  const { mutate, isPending } = useCreateConversationMutation();
   return (
     <AnimatePresence>
       <motion.section
@@ -82,20 +105,6 @@ export default function CreateNewRoomDropDown({
 
         <h5 className="mt-2 text-white">All contacts</h5>
         <motion.div className="overflow-y-auto no-scrollbar space-y-0.5 mt-2">
-          {/* {isLoading && (
-            <div className="h-full flex flex-col justify-center items-center">
-              <FaSpinner className="animate-spin h-12 w-12 text-white" />
-            </div>
-          )} */}
-          {/* {isError && (
-            <div className="h-full">
-              <span>Something went wrong</span>
-            </div>
-          )} */}
-          {/* {roomCredential.map((item, index) => (
-            <MessageRoomCard key={index} item={item} />
-          ))} */}
-
           {contacts.isLoading && (
             <div className="h-full flex flex-col justify-center items-center">
               <FaSpinner className="animate-spin h-8 w-8" />

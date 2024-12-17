@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { store } from "./store.ts";
+import { store } from "./lib/redux/store.ts";
 import "./index.css";
 import { mainroutes } from "./route.tsx";
 import { RouterProvider } from "react-router-dom";

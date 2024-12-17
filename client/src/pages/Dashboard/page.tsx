@@ -1,4 +1,4 @@
-import { axiosDefault } from "../../axios/axiosInstance";
+import { axiosDefault } from "../../lib/axios/axiosInstance";
 import { useState } from "react";
 
 const DashboardPage = () => {

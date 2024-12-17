@@ -7,7 +7,7 @@ import { RiLockPasswordLine } from "react-icons/ri";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { axiosInstance } from "../../axios/axiosInstance";
+import { axiosInstance } from "../../lib/axios/axiosInstance";
 import LoadingModal from "../../generic/LoadingModal";
 import { loginSchema } from "../../zodTypes/registerType";
 import { useNavigate } from "react-router-dom";

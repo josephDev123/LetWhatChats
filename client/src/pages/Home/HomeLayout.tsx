@@ -4,37 +4,35 @@ import LeftPanelHeading from "./components/LeftPanelHeading";
 import SearchChat from "./components/SearchChat";
 import MessageRoomCard from "./components/MessageRoomCard";
 import { Images } from "../../../Images";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { socket } from "../../socketIo";
 import { useUser } from "../../customHooks/useUser";
 import MobileTopTab from "../../generic/MobileTopTab";
 import { FaSpinner } from "react-icons/fa6";
-import { convertToUrlFriendly } from "../../generic/convertToUrlFreiendly";
-import moment from "moment";
 import { useQueryFacade } from "../../utils/GetConversationFacade";
-import { axiosDefault } from "../../axios/axiosInstance";
+import { axiosDefault } from "../../lib/axios/axiosInstance";
 import { ConversationType } from "../../type/dbConversationType";
+import { useAppSelector } from "../../lib/redux/hooks";
 
 export default function HomeLayout({}: {}) {
   const [connectionStatus, setConnectionStatus] = useState<boolean>(
     socket.connected
   );
-  const [status, setStatus] = useState("idle");
+  const signalReQuery = useAppSelector((state) => state.triggerQueryRefresh);
 
-  const location = useLocation();
-
-  const [pathnameOne, pathname] = location.pathname.split("/");
-  const currentTime = moment().format("h:mma");
   const redirect = useNavigate();
   const user = useUser();
 
-  const conversations = useQueryFacade(["conversations"], async () => {
-    const response = axiosDefault({
-      method: "get",
-      url: `conversation`,
-    });
-    return (await response).data.data;
-  });
+  const conversations = useQueryFacade(
+    ["conversations", signalReQuery.signal],
+    async () => {
+      const response = axiosDefault({
+        method: "get",
+        url: `conversation`,
+      });
+      return (await response).data.data;
+    }
+  );
 
   // console.log(conversations);
   return (
