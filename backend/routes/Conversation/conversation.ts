@@ -47,10 +47,17 @@ Conversation.post(
   // }
 );
 
+Conversation.post(
+  "/create-single",
+  ConversationControllerImp.create_single.bind(ConversationControllerImp)
+);
+
 Conversation.get(
   "/",
   ConversationControllerImp.find.bind(ConversationControllerImp)
 );
+
+//old route
 
 Conversation.get(
   "/:email",

@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import { registerAction } from "./actions/auth/registerAction";
-import { loginAction } from "./actions/auth/loginAction";
+// import { loginAction } from "./actions/auth/loginAction";
 import { ConfirmOtp } from "./actions/auth/confirmOtp";
 import Otp from "./pages/otp/Otp";
 import SetUsername from "./pages/setUsername/SetUsername";
@@ -31,7 +31,7 @@ export const mainroutes = createBrowserRouter([
       },
 
       {
-        path: ":room",
+        path: "chat/:conversationId",
         element: <ChatById />,
         errorElement: "error",
       },

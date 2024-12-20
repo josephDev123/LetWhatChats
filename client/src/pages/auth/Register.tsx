@@ -73,6 +73,7 @@ export default function Register() {
           },
         });
         const resp = await submitReq.data;
+        console.log(resp);
 
         // window.location.href = "/login";
         location("/login");

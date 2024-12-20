@@ -2,7 +2,7 @@ import { TbPhoto } from "react-icons/tb";
 import { HiOutlineCamera } from "react-icons/hi2";
 import { HiOutlineDocumentPlus } from "react-icons/hi2";
 import { MdOutlinePoll } from "react-icons/md";
-import { ChangeEvent, SetStateAction, useRef, useState } from "react";
+import { ChangeEvent, SetStateAction, useRef } from "react";
 import { useUploadFirebaseToFirebase } from "../../../customHooks/useUploadToFirebase";
 // import { Dispatch, SetStateAction } from "react";
 

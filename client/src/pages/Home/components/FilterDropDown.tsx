@@ -1,8 +1,8 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { createNewRoomDropDownVariant } from "../../../framerMotion_variants/newRoomDropDownVariants";
 import { CiUnread } from "react-icons/ci";
-import { RiContactsLine } from "react-icons/ri";
-import { BsPeople } from "react-icons/bs";
+// import { RiContactsLine } from "react-icons/ri";
+// import { BsPeople } from "react-icons/bs";
 import { HiOutlineUserGroup } from "react-icons/hi2";
 import { IoPencilOutline } from "react-icons/io5";
 

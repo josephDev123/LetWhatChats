@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+// import { useParams } from "react-router-dom";
 import IncomingMessage from "./components/IncomingMessage";
 import SentMessage from "./components/SentMessage";
 import { GrEmoji } from "react-icons/gr";
@@ -11,76 +11,41 @@ import moment from "moment";
 import { ChatDataType } from "../../type/chatDataType";
 import style from "../../styles/mobile_bg.module.css";
 import Emojipicker from "../../generic/EmojiPicker";
-import { useSelector, useDispatch } from "react-redux";
-import { chatAppType } from "../../sliceType";
-import axios from "axios";
+// import { useSelector, useDispatch } from "react-redux";
+// import { chatAppType } from "../../sliceType";
 import { FaSpinner } from "react-icons/fa6";
 import PollingModal from "../../generic/PollingModal";
 import Poll from "./components/Poll";
 import { HiOutlineVideoCamera } from "react-icons/hi2";
-import { VideoCallModal } from "../VideoCall/VideoCallModal";
-import { setVideoModalOpen } from "../../lib/redux/slices/slice";
-import { chatOrgType } from "../../lib/redux/slices/slice";
+// import { chatOrgType } from "../../lib/redux/slices/slice";
 import { MdOutlineJoinInner } from "react-icons/md";
-import Calls from "../Calls";
 import MediaViewModal from "./components/MediaViewModal";
-
-export type Ioffer = {
-  type: string;
-  offer: RTCSessionDescriptionInit;
-};
-
-export type Ianswer = {
-  type: string;
-  answer: RTCSessionDescriptionInit;
-};
 
 export default function ChatById() {
   const [toggleAttachment, setToggleAttachment] = useState(false);
   const [message, setMessage] = useState<ChatDataType[]>([]);
-  // console.log(message);
-  const unique_channelMember = Array.from(
-    new Set(message.map((item) => JSON.stringify(item.name)))
-  ).map((item) => JSON.parse(item));
-  const channel_members = unique_channelMember.splice(0, 3);
+  // const unique_channelMember = Array.from(
+  //   new Set(message.map((item) => JSON.stringify(item.name)))
+  // ).map((item) => JSON.parse(item));
+  // const channel_members = unique_channelMember.splice(0, 3);
   const [messageStatus, setmessageStatus] = useState("idle");
+  console.log(setmessageStatus);
   const [isPollModalOpen, setPollModalOpen] = useState(false);
   const [fileToUpload, setFileToUpload] = useState("");
   const [fileRef, setfileRef] = useState("");
   const [mediaTypeTobeUpload, setMediaTypeTobeUpload] = useState("");
   const [isEmojiModalOpen, setisEmojiModalOpen] = useState(false);
-  const [LocalStreamvideo, setLocalStreamvideo] = useState<MediaStream | null>(
-    null
-  );
-  const [remoteStreamvideo, setRemoteStreamvideo] =
-    useState<MediaStream | null>(null);
-  // const [isVideoCallModalOpen, setisVideoCallModalOpen] = useState(false);
-  // console.log("remote: " + remoteStreamvideo, "local :" + LocalStreamvideo);
-  const isVideoModalOpen = useSelector(
-    (state: chatOrgType) => state.isVideoModalOpen
-  );
-  const dispatch = useDispatch();
-  const roomCredential = useSelector(
-    (state: chatAppType) => state.roomCredential
-  );
-
-  let peerConnection = useRef<RTCPeerConnection | null>(null);
+  // const isVideoModalOpen = useSelector(
+  //   (state: chatOrgType) => state.isVideoModalOpen
+  // );
+  // const dispatch = useDispatch();
+  // const roomCredential = useSelector(
+  //   (state: chatAppType) => state.roomCredential
+  // );
 
   const welcomeRef = useRef<HTMLDivElement>(null);
   const [chat, setChat] = useState("");
-  const { room } = useParams();
   const user = useUser();
-
-  const servers = {
-    iceServers: [
-      {
-        urls: [
-          "stun:stun1.l.google.com:19302",
-          "stun:stun2.l.google.com:19302",
-        ],
-      },
-    ],
-  };
 
   useEffect(() => {
     function handleWelcomeMessage(data: any) {
@@ -102,37 +67,11 @@ export default function ChatById() {
     // Handle incoming chat messages
     socket.on("exchangeMessage", handleExchangeMessage);
     socket.on("listenToCreatePoll", handlePollMessage);
-    socket.on("answer", handlePeerMessage);
-    socket.on("offer", handlePeerMessage);
-    socket.on("iceCandidate", handlePeerMessage);
 
     return () => {
       socket.off("welcomeMessage", handleWelcomeMessage);
       socket.off("exchangeMessage", handleExchangeMessage);
       socket.off("listenToCreatePoll", handlePollMessage);
-      socket.off("answer", handlePeerMessage);
-      socket.off("offer", handlePeerMessage);
-      socket.off("iceCandidate", handlePeerMessage);
-    };
-  }, []);
-
-  const getMessage = async () => {
-    setmessageStatus("loading");
-    try {
-      const res = await axios.get(`http://localhost:7000/chat/message/${room}`);
-      const result = res.data;
-      setMessage(result.data);
-      setmessageStatus("data");
-    } catch (error) {
-      setmessageStatus("error");
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    const callMessage = getMessage();
-    return () => {
-      callMessage;
     };
   }, []);
 
@@ -141,7 +80,7 @@ export default function ChatById() {
     // console.log(user.data.name, room, chat);
     socket.emit("submitMessage", {
       name: user.data.name,
-      room,
+
       chat,
       time: moment(new Date()).format("h:mm"),
       img: fileToUpload,
@@ -149,194 +88,36 @@ export default function ChatById() {
     setChat("");
   }
 
-  const createPeerConnection = async () => {
-    if (!peerConnection.current) {
-      peerConnection.current = new RTCPeerConnection(servers);
-
-      const videoObj = await navigator.mediaDevices.getUserMedia({
-        video: true,
-      });
-      setLocalStreamvideo(videoObj);
-
-      videoObj?.getTracks().forEach((track) => {
-        peerConnection.current?.addTrack(track, videoObj);
-      });
-
-      peerConnection.current.ontrack = (event) => {
-        console.log("stream");
-        const remoteStream = new MediaStream();
-        event.streams[0].getTracks().forEach((track) => {
-          remoteStream?.addTrack(track);
-        });
-        setRemoteStreamvideo(remoteStream);
-      };
-
-      peerConnection.current.onicecandidate = async (event) => {
-        if (event.candidate) {
-          console.log("Sending ICE candidate", event.candidate);
-          socket.emit("iceCandidate", {
-            type: "candidate",
-            candidate: event.candidate,
-          });
-        }
-      };
-    }
-  };
-
-  async function handleOpenVideoCall() {
-    try {
-      await createPeerConnection();
-      // socket.on("answer", handlePeerMessage);
-      // socket.on("offer", handlePeerMessage);
-      // socket.on("iceCandidate", handlePeerMessage);
-      const videoObj = await navigator.mediaDevices.getUserMedia({
-        video: true,
-      });
-      if (videoObj) {
-        // console.log(videoObj);
-        setLocalStreamvideo(videoObj);
-        // dispatch(setVideoModalOpen(true));
-      }
-
-      //create offer
-      await createOffer();
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  const handlePeerMessage = async (data: any) => {
-    console.log(data);
-    switch (data.type) {
-      case "offer":
-        await createAnswer(data.offer);
-        break;
-      case "answer":
-        await addAnswer(data.answer);
-        break;
-      case "candidate":
-        if (peerConnection.current) {
-          console.log("adding icecandidate");
-          await peerConnection.current.addIceCandidate(
-            new RTCIceCandidate(data.candidate)
-          );
-        }
-        break;
-      default:
-        break;
-    }
-  };
-
-  const createOffer = async () => {
-    if (peerConnection.current) {
-      const offer = await peerConnection.current.createOffer();
-      await peerConnection.current.setLocalDescription(offer);
-      socket.emit("offer", { type: "offer", offer });
-    }
-  };
-
-  const createAnswer = async (offer: RTCSessionDescriptionInit) => {
-    await createPeerConnection();
-    if (peerConnection.current) {
-      await peerConnection.current.setRemoteDescription(
-        new RTCSessionDescription(offer)
-      );
-      const answer = await peerConnection.current.createAnswer();
-      await peerConnection.current.setLocalDescription(answer);
-      socket.emit("answer", { type: "answer", answer });
-    }
-  };
-
-  const addAnswer = async (answer: RTCSessionDescriptionInit) => {
-    if (!peerConnection.current) {
-      console.error("Peer connection is not initialized.");
-      return;
-    }
-
-    if (peerConnection.current.signalingState === "stable") {
-      console.warn("Cannot set remote answer in stable state.");
-      return;
-    }
-
-    try {
-      await peerConnection.current.setRemoteDescription(
-        new RTCSessionDescription(answer)
-      );
-    } catch (error) {
-      console.error("Error setting remote answer:", error);
-    }
-  };
-
-  // console.log(message);
-  let localvideoRef = useRef<HTMLVideoElement | null>(null);
-  let remoteVideoRef = useRef<HTMLVideoElement | null>(null);
-  useEffect(() => {
-    if (localvideoRef.current && LocalStreamvideo) {
-      localvideoRef.current.srcObject = LocalStreamvideo;
-      localvideoRef.current.play().catch((error) => {
-        console.error("Error playing video:", error);
-      });
-    }
-
-    if (remoteVideoRef.current && remoteStreamvideo) {
-      remoteVideoRef.current.srcObject = remoteStreamvideo;
-      remoteVideoRef.current.play().catch((error) => {
-        console.error("Error playing video:", error);
-      });
-    }
-  }, [LocalStreamvideo, remoteStreamvideo]);
-
   return (
     <section
       className={`flex flex-col w-full h-full overflow-y-auto no-scrollbar ${style.backgroundImageContainer}`}
     >
-      {/* <div className="grid grid-cols-2">
-        <video
-          className="border p-1"
-          ref={localvideoRef}
-          width={600}
-          height={400}
-          autoPlay
-          playsInline
-          muted
-        />
-
-        <video
-          className="border p-1"
-          ref={remoteVideoRef}
-          width={600}
-          height={400}
-          autoPlay
-          playsInline
-          muted
-        />
-      </div> */}
       <div className="flex justify-between items-center py-2 px-4 bg-black/40">
         <div className="flex  gap-2">
           <div className="sm:w-12 sm:h-12 h-10 w-10 rounded-full hover:">
             <img
-              src={roomCredential.avatar}
+              src={"https://avatars.dicebear.com/api/human/123.svg"}
               alt="avatar"
               loading="lazy"
               className="rounded-full"
             />
           </div>
           <div className="flex flex-col leading-tight text-white/80">
-            <h5 className="font-bold text-sm sm:text-base">{room}</h5>
+            <h5 className="font-bold text-sm sm:text-base">{""}</h5>
             <p className="text-sm sm:text-base ">
-              {/* breteke, garri, juwon, mercy, joshua */}
               <div className="flex justify-between gap-2 items-center">
-                {channel_members.map((item, index) => (
+                {/* {channel_members.map((item, index) => (
                   <p key={index}>{item},</p>
-                ))}
+                ))} */}
+                breteke, garri, juwon, mercy, joshua
               </div>
             </p>
           </div>
         </div>
         <div className="flex items-center gap-1">
           <HiOutlineVideoCamera
-            onClick={handleOpenVideoCall}
-            className="text-white text-3xl cursor-pointer hover:bg-gray-50/25 rounded-md p-1"
+            // onClick={handleOpenVideoCall}
+            className="text-white text-3xl  hover:bg-gray-50/25 rounded-md p-1 cursor-not-allowed"
           />
 
           <MdOutlineJoinInner
@@ -358,7 +139,7 @@ export default function ChatById() {
         ) : (
           <>
             {message
-              .filter((itemRoom) => itemRoom.room === room)
+              .filter((itemRoom) => itemRoom.room === "")
               .map((item, i) => (
                 <Fragment key={i}>
                   {item.name !== user.data.name ? (

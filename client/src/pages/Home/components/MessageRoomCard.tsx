@@ -1,18 +1,19 @@
-import { messageRoomType } from "../../../type/messageRoomType";
+// import { messageRoomType } from "../../../type/messageRoomType";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { BsThreeDots } from "react-icons/bs";
+// import { BsThreeDots } from "react-icons/bs";
 import { useState } from "react";
-import { convertToUrlFriendly } from "../../../generic/convertToUrlFreiendly";
-import { addRoomData } from "../../../lib/redux/slices/slice";
-import { useDispatch } from "react-redux";
-import { generateRandomAlphaNumeric } from "../../../utils/longAlphaNumericString";
+// import { convertToUrlFriendly } from "../../../generic/convertToUrlFreiendly";
+// import { addRoomData } from "../../../lib/redux/slices/slice";
+// import { useDispatch } from "react-redux";
+// import { generateRandomAlphaNumeric } from "../../../utils/longAlphaNumericString";
 import {
-  ConversationsTypeArray,
+  // ConversationsTypeArray,
   ConversationType,
 } from "../../../type/dbConversationType";
 import { Images } from "../../../../Images";
 import { useUser } from "../../../customHooks/useUser";
+import { toast } from "react-toastify";
 
 type MessageRoomCard = {
   item: ConversationType;
@@ -20,50 +21,85 @@ type MessageRoomCard = {
 export default function MessageRoomCard({ item }: MessageRoomCard) {
   const [isOpenGroupLinkDropDown, setIsOpenGroupLinkDropDown] = useState(false);
 
-  const dispatch = useDispatch();
+  console.log(isOpenGroupLinkDropDown, setIsOpenGroupLinkDropDown);
+  const navigate = useNavigate();
   const user = useUser();
   const findUserById = item.ConversationWithMember.find(
     (item) => item.user_id == user?.data?._id
   );
 
   console.log("");
-  const handleCopyGroupLink = async (
-    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    roomName: string
-  ) => {
-    e.stopPropagation();
-    if (!window.navigator.clipboard) {
-      return alert("Your browser does not support this");
-    }
-    await window.navigator.clipboard.writeText(
-      `${
-        import.meta.env.VITE_HOSTNAME
-      }/${roomName}/invite/${generateRandomAlphaNumeric(20)}`
-    );
+  // const handleCopyGroupLink = async (
+  //   e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  //   roomName: string
+  // ) => {
+  //   e.stopPropagation();
+  //   if (!window.navigator.clipboard) {
+  //     return alert("Your browser does not support this");
+  //   }
+  //   await window.navigator.clipboard.writeText(
+  //     `${
+  //       import.meta.env.VITE_HOSTNAME
+  //     }/${roomName}/invite/${generateRandomAlphaNumeric(20)}`
+  //   );
 
-    setIsOpenGroupLinkDropDown(false);
+  //   setIsOpenGroupLinkDropDown(false);
+  // };
+  const handleNavigate = () => {
+    if (findUserById) {
+      return navigate(`chat/${item._id}`);
+    }
+    toast.error("You are not a member of this room");
   };
 
   return (
     <motion.section
       onClick={() => {
-        dispatch(addRoomData(item));
+        handleNavigate();
+        // dispatch(addRoomData(item));
         // redirect(convertToUrlFriendly(`/${item.roomUniqueName}`));\
-        window.location.href = convertToUrlFriendly(
-          `/${item.conversation_name}`
-        );
+        // window.location.href = convertToUrlFriendly(
+        //   `/${item.conversation_name}`
+        // );
       }}
       className="flex gap-2 items-center hover:bg-slate-200 p-3 rounded-md cursor-pointer bg-green-50"
     >
-      <img
-        // src={item.avatar}
-        src={Images.avatar_one_png}
-        alt=" avatar"
-        width={12}
-        height={12}
-        loading="lazy"
-        className="sm:h-12 sm:w-12 w-8 h-8 rounded-full border border-black"
-      />
+      {!item.conversation_name ? (
+        <div className="inline-flex ">
+          <span className="">
+            <img
+              src={item.ConversationWithMember[0].userDetails[0].profile_img}
+              alt=" avatar"
+              title={item.ConversationWithMember[0].userDetails[0].name}
+              width={6}
+              height={6}
+              loading="lazy"
+              className="sm:h-8 sm:w-8 w-5 h-5 rounded-full border border-black"
+            />
+          </span>
+
+          <span className="translate-x-[-12px]">
+            <img
+              src={item.ConversationWithMember[1].userDetails[0].profile_img}
+              alt=" avatar"
+              title={item.ConversationWithMember[1].userDetails[0].name}
+              width={6}
+              height={6}
+              loading="lazy"
+              className="sm:h-8 sm:w-8 w-5 h-5 rounded-full border border-black"
+            />
+          </span>
+        </div>
+      ) : (
+        <img
+          src={Images.avatar_one_png}
+          alt=" avatar"
+          width={12}
+          height={12}
+          loading="lazy"
+          className="sm:h-12 sm:w-12 w-8 h-8 rounded-full border border-black"
+        />
+      )}
 
       <div className="flex flex-col ">
         <div className="flex justify-between gap-4 items-center">
@@ -76,7 +112,7 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
       <div className="ms-auto relative">
         {!findUserById && (
           <button className="px-2 bg-green-400 hover:bg-green-300 rounded-md">
-            Join
+            {item.conversation_name && "Join"}
           </button>
         )}
 

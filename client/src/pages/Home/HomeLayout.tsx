@@ -1,12 +1,12 @@
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 
 import LeftPanelHeading from "./components/LeftPanelHeading";
 import SearchChat from "./components/SearchChat";
 import MessageRoomCard from "./components/MessageRoomCard";
 import { Images } from "../../../Images";
-import { useState } from "react";
-import { socket } from "../../socketIo";
-import { useUser } from "../../customHooks/useUser";
+// import { useState } from "react";
+// import { socket } from "../../socketIo";
+// import { useUser } from "../../customHooks/useUser";
 import MobileTopTab from "../../generic/MobileTopTab";
 import { FaSpinner } from "react-icons/fa6";
 import { useQueryFacade } from "../../utils/GetConversationFacade";
@@ -15,13 +15,13 @@ import { ConversationType } from "../../type/dbConversationType";
 import { useAppSelector } from "../../lib/redux/hooks";
 
 export default function HomeLayout({}: {}) {
-  const [connectionStatus, setConnectionStatus] = useState<boolean>(
-    socket.connected
-  );
+  // const [connectionStatus, setConnectionStatus] = useState<boolean>(
+  //   socket.connected
+  // );
   const signalReQuery = useAppSelector((state) => state.triggerQueryRefresh);
 
-  const redirect = useNavigate();
-  const user = useUser();
+  // const redirect = useNavigate();
+  // const user = useUser();
 
   const conversations = useQueryFacade(
     ["conversations", signalReQuery.signal],
@@ -34,7 +34,7 @@ export default function HomeLayout({}: {}) {
     }
   );
 
-  // console.log(conversations);
+  console.log(conversations.data);
   return (
     <section className="flex w-full h-full gap-1">
       {/* {conversations.isLoading && (

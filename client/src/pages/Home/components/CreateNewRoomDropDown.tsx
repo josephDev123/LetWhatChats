@@ -1,14 +1,14 @@
 import { motion, AnimatePresence } from "framer-motion";
-import MessageRoomCard from "./MessageRoomCard";
-import { messageRoomData } from "../../../dummyData/messageRoom_data";
+// import MessageRoomCard from "./MessageRoomCard";
+// import { messageRoomData } from "../../../dummyData/messageRoom_data";
 import { IoPeopleOutline } from "react-icons/io5";
 import { createNewRoomDropDownVariant } from "../../../framerMotion_variants/newRoomDropDownVariants";
-import { socket } from "../../../socketIo";
-import { useEffect, useState } from "react";
+// import { socket } from "../../../socketIo";
+import { useState } from "react";
 import { useUser } from "../../../customHooks/useUser";
-import moment from "moment";
-import { convertToUrlFriendly } from "../../../generic/convertToUrlFreiendly";
-import { messageRoomType } from "../../../type/messageRoomType";
+// import moment from "moment";
+// import { convertToUrlFriendly } from "../../../generic/convertToUrlFreiendly";
+
 import { FaSpinner } from "react-icons/fa6";
 // import { useCreateConversationMutation } from "../../../customHooks/useCreateRoom";
 import { useQueryFacade } from "../../../utils/GetConversationFacade";
@@ -46,6 +46,32 @@ export default function CreateNewRoomDropDown({
         return axiosInstance.post("conversation/create", {
           conversation_name: room,
           user_id: user.data._id,
+        });
+      } catch (error) {
+        if (error instanceof AxiosError && error.response) {
+          throw new Error(error.response.data);
+        }
+        throw new Error("something went wrong");
+      }
+    },
+    () => {
+      dispatch(
+        setTrigger({
+          signal: `conversation${Math.random()}`,
+          type: "conversation",
+        })
+      );
+      closeModal();
+    }
+  );
+
+  const { mutate: singleChatMutate, isPending: isLoading } = useCreateMutation(
+    async (data: { user_id2: string }) => {
+      try {
+        // console.log(user.data._id, data.user_id2);
+        return axiosInstance.post("conversation/create-single", {
+          user_id: user.data._id,
+          user_id2: data.user_id2,
         });
       } catch (error) {
         if (error instanceof AxiosError && error.response) {
@@ -111,26 +137,34 @@ export default function CreateNewRoomDropDown({
             </div>
           )}
 
-          {contacts.data?.map((user: User, i: number) => (
-            <div
-              key={i}
-              className="flex items-center justify-between p-2 bg-green-50 hover:bg-green-100 rounded-md"
-            >
-              <div className="inline-flex gap-2 items-center text-black">
-                <img
-                  src={user.profile_img}
-                  alt="avatar"
-                  className=" w-8 h-8 rounded-full border"
-                />
+          {contacts.data
+            ?.filter((filterUser: User) => filterUser._id !== user.data._id)
+            .map((user: User, i: number) => (
+              <div
+                key={i}
+                className="flex items-center justify-between p-2 bg-green-50 hover:bg-green-100 rounded-md"
+              >
+                <div className="inline-flex gap-2 items-center text-black">
+                  <img
+                    src={user.profile_img}
+                    alt="avatar"
+                    className=" w-8 h-8 rounded-full border"
+                  />
 
-                <p>{user.name}</p>
+                  <p>{user.name}</p>
+                </div>
+
+                <button
+                  onClick={() => singleChatMutate({ user_id2: user._id })}
+                  className="p-0.5 px-2 rounded-md bg-green-400 hover:bg-green-300 text-sm inline-flex items-center gap-1"
+                >
+                  Create
+                  {isLoading && (
+                    <FaSpinner className="animate-spin h-3 w-3 text-white ms-auto" />
+                  )}
+                </button>
               </div>
-
-              <button className="p-0.5 px-2 rounded-md bg-green-400 hover:bg-green-300">
-                Create
-              </button>
-            </div>
-          ))}
+            ))}
         </motion.div>
       </motion.section>
     </AnimatePresence>
