@@ -32,13 +32,7 @@ export default function CreateNewRoomDropDown({
   const user = useUser();
   const dispatch = useAppDispatch();
 
-  const contacts = useQueryFacade(["users"], async () => {
-    const response = axiosDefault({
-      method: "get",
-      url: `auth/users`,
-    });
-    return (await response).data.data;
-  });
+  const contacts = useQueryFacade<User[], Error>(["users"], "auth/users");
 
   const { mutate, isPending } = useCreateMutation(
     async () => {

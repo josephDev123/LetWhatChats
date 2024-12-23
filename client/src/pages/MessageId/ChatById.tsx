@@ -11,8 +11,6 @@ import moment from "moment";
 import { ChatDataType } from "../../type/chatDataType";
 import style from "../../styles/mobile_bg.module.css";
 import Emojipicker from "../../generic/EmojiPicker";
-// import { useSelector, useDispatch } from "react-redux";
-// import { chatAppType } from "../../sliceType";
 import { FaSpinner } from "react-icons/fa6";
 import PollingModal from "../../generic/PollingModal";
 import Poll from "./components/Poll";
@@ -20,16 +18,18 @@ import { HiOutlineVideoCamera } from "react-icons/hi2";
 // import { chatOrgType } from "../../lib/redux/slices/slice";
 import { MdOutlineJoinInner } from "react-icons/md";
 import MediaViewModal from "./components/MediaViewModal";
+import { useQueryFacade } from "../../utils/GetConversationFacade";
+import { ChatDataDTOType, MessageChatType } from "../../type/ChatDataDTO";
+import { useParams } from "react-router-dom";
 
 export default function ChatById() {
   const [toggleAttachment, setToggleAttachment] = useState(false);
-  const [message, setMessage] = useState<ChatDataType[]>([]);
+  const [message, setMessage] = useState<MessageChatType[]>([]);
   // const unique_channelMember = Array.from(
   //   new Set(message.map((item) => JSON.stringify(item.name)))
   // ).map((item) => JSON.parse(item));
   // const channel_members = unique_channelMember.splice(0, 3);
-  const [messageStatus, setmessageStatus] = useState("idle");
-  console.log(setmessageStatus);
+
   const [isPollModalOpen, setPollModalOpen] = useState(false);
   const [fileToUpload, setFileToUpload] = useState("");
   const [fileRef, setfileRef] = useState("");
@@ -38,14 +38,30 @@ export default function ChatById() {
   // const isVideoModalOpen = useSelector(
   //   (state: chatOrgType) => state.isVideoModalOpen
   // );
-  // const dispatch = useDispatch();
-  // const roomCredential = useSelector(
-  //   (state: chatAppType) => state.roomCredential
-  // );
 
   const welcomeRef = useRef<HTMLDivElement>(null);
   const [chat, setChat] = useState("");
   const user = useUser();
+  const { conversationId } = useParams();
+
+  const chatData = useQueryFacade<ChatDataDTOType, Error>(
+    ["chats", conversationId],
+    `chat/find?conversation_id=${conversationId}`
+  );
+
+  const ConversationRoomName =
+    chatData.data?.groupDetails.conversation_name || "";
+
+  const conversation_members = chatData.data?.groupDetails.UserDetails || [];
+
+  const conversationDisplayMembers = conversation_members
+    .map((item) => item.name.split(" ")[0])
+    .join(", ");
+
+  useEffect(() => {
+    setMessage(chatData.data?.messages || []);
+  }, [chatData.data?.messages]);
+  console.log(message);
 
   useEffect(() => {
     function handleWelcomeMessage(data: any) {
@@ -61,7 +77,7 @@ export default function ChatById() {
 
     function handlePollMessage(data: ChatDataType) {
       // console.log(data);
-      setMessage((prev) => [...prev, data]);
+      // setMessage((prev) => [...prev, data]);
     }
     socket.on("welcomeMessage", handleWelcomeMessage);
     // Handle incoming chat messages
@@ -93,7 +109,7 @@ export default function ChatById() {
       className={`flex flex-col w-full h-full overflow-y-auto no-scrollbar ${style.backgroundImageContainer}`}
     >
       <div className="flex justify-between items-center py-2 px-4 bg-black/40">
-        <div className="flex  gap-2">
+        <div className="flex items-center gap-2">
           <div className="sm:w-12 sm:h-12 h-10 w-10 rounded-full hover:">
             <img
               src={"https://avatars.dicebear.com/api/human/123.svg"}
@@ -103,13 +119,12 @@ export default function ChatById() {
             />
           </div>
           <div className="flex flex-col leading-tight text-white/80">
-            <h5 className="font-bold text-sm sm:text-base">{""}</h5>
+            <h5 className="font-bold text-sm sm:text-base">
+              {ConversationRoomName}
+            </h5>
             <p className="text-sm sm:text-base ">
               <div className="flex justify-between gap-2 items-center">
-                {/* {channel_members.map((item, index) => (
-                  <p key={index}>{item},</p>
-                ))} */}
-                breteke, garri, juwon, mercy, joshua
+                {conversationDisplayMembers}
               </div>
             </p>
           </div>
@@ -130,51 +145,65 @@ export default function ChatById() {
       <div className="flex flex-col justify-between gap-4 px-4 text-white/80 pt-8 mb-2">
         <div ref={welcomeRef}></div>
 
-        {messageStatus === "loading" ? (
+        {chatData.isLoading ? (
           <div className="flex justify-center items-center">
             <FaSpinner className="animate-spin h-8 w-8 text-white text-center" />
           </div>
-        ) : messageStatus === "error" ? (
+        ) : chatData.isError ? (
           <span className="text-sm text-red-400">Something went wrong</span>
         ) : (
+          // <>
+          //   {message
+          //     .filter((itemRoom) => itemRoom.room === "")
+          //     .map((item, i) => (
+          //       <Fragment key={i}>
+          //         {item.name !== user.data.name ? (
+          //           <>
+          //             {!item.chat ? "" : <IncomingMessage item={item} />}
+          //             {item.type === "poll" && (
+          //               <Poll
+          //                 className="self-start"
+          //                 item={item.poll_id}
+          //                 chat={message}
+          //                 setChat={setMessage}
+          //               />
+          //             )}
+          //           </>
+          //         ) : (
+          //           <>
+          //             {!item.chat ? "" : <SentMessage item={item} />}
+          //             {item.type === "poll" && (
+          //               <Poll
+          //                 className="self-end"
+          //                 item={item.poll_id}
+          //                 chat={message}
+          //                 setChat={setMessage}
+          //               />
+          //             )}
+          //           </>
+          //         )}
+          //       </Fragment>
+          //     ))}
+          // </>
           <>
-            {message
-              .filter((itemRoom) => itemRoom.room === "")
-              .map((item, i) => (
-                <Fragment key={i}>
-                  {item.name !== user.data.name ? (
-                    <>
-                      {!item.chat ? "" : <IncomingMessage item={item} />}
-                      {item.type === "poll" && (
-                        <Poll
-                          className="self-start"
-                          item={item.poll_id}
-                          chat={message}
-                          setChat={setMessage}
-                        />
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      {!item.chat ? "" : <SentMessage item={item} />}
-                      {item.type === "poll" && (
-                        <Poll
-                          className="self-end"
-                          item={item.poll_id}
-                          chat={message}
-                          setChat={setMessage}
-                        />
-                      )}
-                    </>
-                  )}
-                </Fragment>
-              ))}
+            {message.map((item, i) => (
+              <div
+                key={i}
+                className={`flex w-full ${
+                  item.from_userId === user.data._id
+                    ? "justify-end"
+                    : "justify-start"
+                } gap-2`}
+              >
+                <IncomingMessage item={item} />
+              </div>
+            ))}
           </>
         )}
       </div>
 
       <div
-        className={`  sticky bottom-0  sm:text-white/80 text-black/50 font-semibold flex gap-4 mt-auto items-center py-2 px-4 bg-black/40`}
+        className={`sticky bottom-0  sm:text-white/80 text-black/50 font-semibold flex gap-4 mt-auto items-center py-2 px-4 bg-black/40`}
       >
         <GrEmoji
           onClick={() => setisEmojiModalOpen((prev) => !prev)}

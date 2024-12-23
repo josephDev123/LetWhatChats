@@ -3,18 +3,22 @@ import {
   UseQueryOptions,
   UseQueryResult,
 } from "@tanstack/react-query";
+import { axiosDefault } from "../lib/axios/axiosInstance";
 
 interface UseQueryFacadeOptions<TQueryFnData, TError, TData>
   extends UseQueryOptions<TQueryFnData, TError, TData> {}
 
 export function useQueryFacade<TQueryFnData, TError, TData = TQueryFnData>(
   queryKey: any[],
-  queryFn: () => Promise<TQueryFnData>,
+  url: string,
   options?: UseQueryFacadeOptions<TQueryFnData, TError, TData>
 ): UseQueryResult<TData, TError> & { refresh: () => void } {
-  const query = useQuery({
+  const query = useQuery<TQueryFnData, TError, TData>({
     queryKey,
-    queryFn,
+    queryFn: async () => {
+      const response = await axiosDefault.get(url);
+      return response.data.data;
+    },
     ...options,
   });
 

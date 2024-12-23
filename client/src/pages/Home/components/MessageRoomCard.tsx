@@ -25,10 +25,10 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
   const navigate = useNavigate();
   const user = useUser();
   const findUserById = item.ConversationWithMember.find(
-    (item) => item.user_id == user?.data?._id
+    (member) => `${member.user_id} === ${user?.data?._id}`
   );
 
-  console.log("");
+  console.log("find", findUserById);
   // const handleCopyGroupLink = async (
   //   e: React.MouseEvent<HTMLDivElement, MouseEvent>,
   //   roomName: string
@@ -53,19 +53,9 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
   };
 
   return (
-    <motion.section
-      onClick={() => {
-        handleNavigate();
-        // dispatch(addRoomData(item));
-        // redirect(convertToUrlFriendly(`/${item.roomUniqueName}`));\
-        // window.location.href = convertToUrlFriendly(
-        //   `/${item.conversation_name}`
-        // );
-      }}
-      className="flex gap-2 items-center hover:bg-slate-200 p-3 rounded-md cursor-pointer bg-green-50"
-    >
+    <motion.section className="flex gap-2 items-center hover:bg-slate-200 p-3 rounded-md cursor-pointer bg-green-50">
       {!item.conversation_name ? (
-        <div className="inline-flex ">
+        <div className="inline-flex " onClick={handleNavigate}>
           <span className="">
             <img
               src={item.ConversationWithMember[0].userDetails[0].profile_img}
@@ -101,7 +91,7 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
         />
       )}
 
-      <div className="flex flex-col ">
+      <div className="flex flex-col" onClick={handleNavigate}>
         <div className="flex justify-between gap-4 items-center">
           <h5 className="font-semibold line-clamp-1">
             {item.conversation_name}

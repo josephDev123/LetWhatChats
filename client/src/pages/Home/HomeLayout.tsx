@@ -10,31 +10,30 @@ import { Images } from "../../../Images";
 import MobileTopTab from "../../generic/MobileTopTab";
 import { FaSpinner } from "react-icons/fa6";
 import { useQueryFacade } from "../../utils/GetConversationFacade";
-import { axiosDefault } from "../../lib/axios/axiosInstance";
 import { ConversationType } from "../../type/dbConversationType";
 import { useAppSelector } from "../../lib/redux/hooks";
+import { useEffect, useState } from "react";
 
 export default function HomeLayout({}: {}) {
+  const signalReQuery = useAppSelector((state) => state.triggerQueryRefresh);
+  const [queryKey, setQueryKey] = useState([signalReQuery.signal]);
+  useEffect(() => {
+    setQueryKey([signalReQuery.signal]);
+  }, [signalReQuery.signal]);
+
   // const [connectionStatus, setConnectionStatus] = useState<boolean>(
   //   socket.connected
   // );
-  const signalReQuery = useAppSelector((state) => state.triggerQueryRefresh);
 
   // const redirect = useNavigate();
   // const user = useUser();
 
-  const conversations = useQueryFacade(
-    ["conversations", signalReQuery.signal],
-    async () => {
-      const response = axiosDefault({
-        method: "get",
-        url: `conversation`,
-      });
-      return (await response).data.data;
-    }
+  const conversations = useQueryFacade<ConversationType[], Error>(
+    ["conversations", ...queryKey],
+    "conversation"
   );
 
-  console.log(conversations.data);
+  // console.log(conversations.data);
   return (
     <section className="flex w-full h-full gap-1">
       {/* {conversations.isLoading && (
