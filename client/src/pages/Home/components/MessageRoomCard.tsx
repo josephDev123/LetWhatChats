@@ -19,16 +19,16 @@ type MessageRoomCard = {
   item: ConversationType;
 };
 export default function MessageRoomCard({ item }: MessageRoomCard) {
-  const [isOpenGroupLinkDropDown, setIsOpenGroupLinkDropDown] = useState(false);
+  // const [isOpenGroupLinkDropDown, setIsOpenGroupLinkDropDown] = useState(false);
 
-  console.log(isOpenGroupLinkDropDown, setIsOpenGroupLinkDropDown);
+  // console.log(isOpenGroupLinkDropDown, setIsOpenGroupLinkDropDown);
   const navigate = useNavigate();
   const user = useUser();
   const findUserById = item.ConversationWithMember.find(
     (member) => `${member.user_id} === ${user?.data?._id}`
   );
 
-  console.log("find", findUserById);
+  // console.log("find", findUserById);
   // const handleCopyGroupLink = async (
   //   e: React.MouseEvent<HTMLDivElement, MouseEvent>,
   //   roomName: string
@@ -82,7 +82,7 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
         </div>
       ) : (
         <img
-          src={Images.avatar_one_png}
+          src={"https://avatars.dicebear.com/api/human/123.svg"}
           alt=" avatar"
           width={12}
           height={12}

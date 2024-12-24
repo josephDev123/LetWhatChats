@@ -1,48 +1,54 @@
-// import { useParams } from "react-router-dom";
 import IncomingMessage from "./components/IncomingMessage";
-import SentMessage from "./components/SentMessage";
+// import SentMessage from "./components/SentMessage";
 import { GrEmoji } from "react-icons/gr";
 import { GrFormAttachment } from "react-icons/gr";
 import UploadFilePopUp from "./components/UploadFilePopUp";
-import { FormEvent, Fragment, useEffect, useRef, useState } from "react";
-import { socket } from "../../socketIo";
+import { FormEvent, useEffect, useRef, useState } from "react";
+import { socket as SocketIo } from "../../socketIo";
 import { useUser } from "../../customHooks/useUser";
-import moment from "moment";
+// import moment from "moment";
 import { ChatDataType } from "../../type/chatDataType";
 import style from "../../styles/mobile_bg.module.css";
 import Emojipicker from "../../generic/EmojiPicker";
 import { FaSpinner } from "react-icons/fa6";
 import PollingModal from "../../generic/PollingModal";
-import Poll from "./components/Poll";
-import { HiOutlineVideoCamera } from "react-icons/hi2";
+// import Poll from "./components/Poll";
+// import { HiOutlineVideoCamera } from "react-icons/hi2";
 // import { chatOrgType } from "../../lib/redux/slices/slice";
 import { MdOutlineJoinInner } from "react-icons/md";
 import MediaViewModal from "./components/MediaViewModal";
 import { useQueryFacade } from "../../utils/GetConversationFacade";
 import { ChatDataDTOType, MessageChatType } from "../../type/ChatDataDTO";
 import { useParams } from "react-router-dom";
+import { ChatbroadCastDataDTOType } from "../../type/ChatbroadcastDataDTOType";
+import { Socket } from "socket.io-client";
 
 export default function ChatById() {
   const [toggleAttachment, setToggleAttachment] = useState(false);
   const [message, setMessage] = useState<MessageChatType[]>([]);
-  // const unique_channelMember = Array.from(
-  //   new Set(message.map((item) => JSON.stringify(item.name)))
-  // ).map((item) => JSON.parse(item));
-  // const channel_members = unique_channelMember.splice(0, 3);
 
   const [isPollModalOpen, setPollModalOpen] = useState(false);
   const [fileToUpload, setFileToUpload] = useState("");
   const [fileRef, setfileRef] = useState("");
   const [mediaTypeTobeUpload, setMediaTypeTobeUpload] = useState("");
   const [isEmojiModalOpen, setisEmojiModalOpen] = useState(false);
+  const [chat, setChat] = useState("");
+  const user = useUser();
+  const { conversationId } = useParams();
   // const isVideoModalOpen = useSelector(
   //   (state: chatOrgType) => state.isVideoModalOpen
   // );
 
   const welcomeRef = useRef<HTMLDivElement>(null);
-  const [chat, setChat] = useState("");
-  const user = useUser();
-  const { conversationId } = useParams();
+  const socket = useRef<Socket | null>(null);
+
+  useEffect(() => {
+    socket.current = SocketIo;
+  }, [conversationId]);
+
+  socket.current?.on("connect", () => {
+    console.log(socket.current?.id);
+  });
 
   const chatData = useQueryFacade<ChatDataDTOType, Error>(
     ["chats", conversationId],
@@ -61,47 +67,58 @@ export default function ChatById() {
   useEffect(() => {
     setMessage(chatData.data?.messages || []);
   }, [chatData.data?.messages]);
-  console.log(message);
 
-  useEffect(() => {
-    function handleWelcomeMessage(data: any) {
-      if (welcomeRef.current) {
-        welcomeRef.current.innerHTML = data;
-      }
-    }
+  // useEffect(() => {
+  //   function handleWelcomeMessage(data: any) {
+  //     if (welcomeRef.current) {
+  //       welcomeRef.current.innerHTML = data;
+  //     }
+  //   }
 
-    function handleExchangeMessage(chat: any) {
-      // console.log(chat);
-      setMessage((prevMessage) => [...prevMessage, chat]);
-    }
+  //   function handleExchangeMessage(chat: any) {
+  //     // console.log(chat);
+  //     setMessage((prevMessage) => [...prevMessage, chat]);
+  //   }
 
-    function handlePollMessage(data: ChatDataType) {
-      // console.log(data);
-      // setMessage((prev) => [...prev, data]);
-    }
-    socket.on("welcomeMessage", handleWelcomeMessage);
-    // Handle incoming chat messages
-    socket.on("exchangeMessage", handleExchangeMessage);
-    socket.on("listenToCreatePoll", handlePollMessage);
+  //   function handlePollMessage(data: ChatDataType) {
+  //     // console.log(data);
+  //     // setMessage((prev) => [...prev, data]);
+  //   }
+  //   socket.on("welcomeMessage", handleWelcomeMessage);
+  //   // Handle incoming chat messages
+  //   socket.on("exchangeMessage", handleExchangeMessage);
+  //   socket.on("listenToCreatePoll", handlePollMessage);
 
-    return () => {
-      socket.off("welcomeMessage", handleWelcomeMessage);
-      socket.off("exchangeMessage", handleExchangeMessage);
-      socket.off("listenToCreatePoll", handlePollMessage);
-    };
-  }, []);
+  //   return () => {
+  //     socket.off("welcomeMessage", handleWelcomeMessage);
+  //     socket.off("exchangeMessage", handleExchangeMessage);
+  //     socket.off("listenToCreatePoll", handlePollMessage);
+  //   };
+  // }, []);
 
   function handleSubmitMessage(e: FormEvent) {
     e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const chat = formData.get("message") as string;
+    if (chat) return;
+    console.log(formData.get("message"));
+    const payload: ChatbroadCastDataDTOType = {
+      message_text: chat,
+      from_userId: user.data._id,
+      message_type: "text",
+      imgUrl: "",
+      conversation_id: conversationId || "",
+      from_UserDetails: { ...user.data, __v: 0 },
+    };
     // console.log(user.data.name, room, chat);
-    socket.emit("submitMessage", {
-      name: user.data.name,
+    // socket.emit("submitMessage", {
+    //   name: user.data.name,
 
-      chat,
-      time: moment(new Date()).format("h:mm"),
-      img: fileToUpload,
-    });
-    setChat("");
+    //   chat,
+    //   time: moment(new Date()).format("h:mm"),
+    //   img: fileToUpload,
+    // });
+    // setChat("");
   }
 
   return (
@@ -130,10 +147,10 @@ export default function ChatById() {
           </div>
         </div>
         <div className="flex items-center gap-1">
-          <HiOutlineVideoCamera
-            // onClick={handleOpenVideoCall}
+          {/* <HiOutlineVideoCamera
+          onClick={handleOpenVideoCall}
             className="text-white text-3xl  hover:bg-gray-50/25 rounded-md p-1 cursor-not-allowed"
-          />
+          /> */}
 
           <MdOutlineJoinInner
             // onClick={HandleJoinedVideoCall}
@@ -142,7 +159,7 @@ export default function ChatById() {
         </div>
       </div>
 
-      <div className="flex flex-col justify-between gap-4 px-4 text-white/80 pt-8 mb-2">
+      <div className="flex flex-col justify-between gap-4 sm:px-4 px-1 text-white/80 pt-8 mb-2">
         <div ref={welcomeRef}></div>
 
         {chatData.isLoading ? (
@@ -222,6 +239,7 @@ export default function ChatById() {
             onChange={(e) => setChat(e.target.value)}
             type="text"
             value={chat}
+            name="message"
             placeholder="Type a message"
             className="bg-transparent placeholder:text-black/50 w-full focus:outline-none"
           />
