@@ -43,6 +43,7 @@ export default function HomeLayout({}: {}) {
               <FaSpinner className="animate-spin h-8 w-8" />
             </div>
           )}
+
           {conversations.isError && (
             <div className="">
               <span className="text-red-400">Something went wrong</span>

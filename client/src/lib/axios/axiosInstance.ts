@@ -11,7 +11,7 @@ export const axiosInstance = axios.create({
 
 // Initialize your custom Axios instance
 export const axiosDefault = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL,
+  baseURL: import.meta.env.VITE_BASEURL,
   withCredentials: true,
 });
 
