@@ -5,7 +5,7 @@ import { getCredential } from "../../utils/getCredential";
 const { userData } = getCredential();
 
 export const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL,
+  baseURL: import.meta.env.VITE_BASEURL,
   withCredentials: true,
 });
 
