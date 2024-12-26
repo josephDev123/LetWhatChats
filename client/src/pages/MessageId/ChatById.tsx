@@ -1,32 +1,26 @@
 import IncomingMessage from "./components/IncomingMessage";
-// import SentMessage from "./components/SentMessage";
 import { GrEmoji } from "react-icons/gr";
 import { GrFormAttachment } from "react-icons/gr";
 import UploadFilePopUp from "./components/UploadFilePopUp";
 import { FormEvent, useEffect, useRef, useState } from "react";
-import { socket as SocketIo } from "../../socketIo";
+import { socket } from "../../socketIo";
 import { useUser } from "../../customHooks/useUser";
-// import moment from "moment";
-import { ChatDataType } from "../../type/chatDataType";
 import style from "../../styles/mobile_bg.module.css";
 import Emojipicker from "../../generic/EmojiPicker";
 import { FaSpinner } from "react-icons/fa6";
 import PollingModal from "../../generic/PollingModal";
-// import Poll from "./components/Poll";
-// import { HiOutlineVideoCamera } from "react-icons/hi2";
-// import { chatOrgType } from "../../lib/redux/slices/slice";
 import { MdOutlineJoinInner } from "react-icons/md";
 import MediaViewModal from "./components/MediaViewModal";
 import { useQueryFacade } from "../../utils/GetConversationFacade";
 import { ChatDataDTOType, MessageChatType } from "../../type/ChatDataDTO";
 import { useParams } from "react-router-dom";
 import { ChatbroadCastDataDTOType } from "../../type/ChatbroadcastDataDTOType";
-import { Socket } from "socket.io-client";
+import { toast } from "react-toastify";
+import { handleSocketDisconnect } from "../../utils/socketDisconnect";
 
 export default function ChatById() {
   const [toggleAttachment, setToggleAttachment] = useState(false);
   const [message, setMessage] = useState<MessageChatType[]>([]);
-
   const [isPollModalOpen, setPollModalOpen] = useState(false);
   const [fileToUpload, setFileToUpload] = useState("");
   const [fileRef, setfileRef] = useState("");
@@ -34,20 +28,16 @@ export default function ChatById() {
   const [isEmojiModalOpen, setisEmojiModalOpen] = useState(false);
   const [chat, setChat] = useState("");
   const user = useUser();
+  // console.log(user);
   const { conversationId } = useParams();
   // const isVideoModalOpen = useSelector(
   //   (state: chatOrgType) => state.isVideoModalOpen
   // );
 
   const welcomeRef = useRef<HTMLDivElement>(null);
-  const socket = useRef<Socket | null>(null);
 
-  useEffect(() => {
-    socket.current = SocketIo;
-  }, [conversationId]);
-
-  socket.current?.on("connect", () => {
-    console.log(socket.current?.id);
+  socket.on("connect", () => {
+    console.log(socket.id);
   });
 
   const chatData = useQueryFacade<ChatDataDTOType, Error>(
@@ -68,58 +58,50 @@ export default function ChatById() {
     setMessage(chatData.data?.messages || []);
   }, [chatData.data?.messages]);
 
-  // useEffect(() => {
-  //   function handleWelcomeMessage(data: any) {
-  //     if (welcomeRef.current) {
-  //       welcomeRef.current.innerHTML = data;
-  //     }
-  //   }
+  useEffect(() => {
+    // Join the room
+    socket.emit("joinConversation", { conversationId });
 
-  //   function handleExchangeMessage(chat: any) {
-  //     // console.log(chat);
-  //     setMessage((prevMessage) => [...prevMessage, chat]);
-  //   }
+    // Listen for events
+    socket.once("joinConversation", (data) => {
+      console.log(data);
+      toast.success("Conversation establish successfully");
+    });
 
-  //   function handlePollMessage(data: ChatDataType) {
-  //     // console.log(data);
-  //     // setMessage((prev) => [...prev, data]);
-  //   }
-  //   socket.on("welcomeMessage", handleWelcomeMessage);
-  //   // Handle incoming chat messages
-  //   socket.on("exchangeMessage", handleExchangeMessage);
-  //   socket.on("listenToCreatePoll", handlePollMessage);
+    // Listen for incoming messages
+    socket.on("receiveMessage", (message) => {
+      console.log(message);
+      setMessage((prevMessages) => [...prevMessages, message]);
+    });
 
-  //   return () => {
-  //     socket.off("welcomeMessage", handleWelcomeMessage);
-  //     socket.off("exchangeMessage", handleExchangeMessage);
-  //     socket.off("listenToCreatePoll", handlePollMessage);
-  //   };
-  // }, []);
+    // Clean up on component unmount
+    return () => {
+      socket.off("joinConversation");
+      socket.off("receiveMessage");
+    };
+  }, [conversationId]);
 
   function handleSubmitMessage(e: FormEvent) {
     e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
     const chat = formData.get("message") as string;
-    if (chat) return;
+    if (!chat) return;
     console.log(formData.get("message"));
     const payload: ChatbroadCastDataDTOType = {
       message_text: chat,
-      from_userId: user.data._id,
+      from_userId: user.data?._id,
       message_type: "text",
       imgUrl: "",
       conversation_id: conversationId || "",
       from_UserDetails: { ...user.data, __v: 0 },
     };
-    // console.log(user.data.name, room, chat);
-    // socket.emit("submitMessage", {
-    //   name: user.data.name,
 
-    //   chat,
-    //   time: moment(new Date()).format("h:mm"),
-    //   img: fileToUpload,
-    // });
-    // setChat("");
+    socket.emit("sendMessage", { conversationId, message: payload });
+    form.reset();
   }
+
+  handleSocketDisconnect(socket);
 
   return (
     <section
@@ -207,7 +189,7 @@ export default function ChatById() {
               <div
                 key={i}
                 className={`flex w-full ${
-                  item.from_userId === user.data._id
+                  item.from_userId === user.data?._id
                     ? "justify-end"
                     : "justify-start"
                 } gap-2`}
@@ -238,7 +220,7 @@ export default function ChatById() {
             disabled={fileToUpload ? true : false}
             onChange={(e) => setChat(e.target.value)}
             type="text"
-            value={chat}
+            // value={chat}
             name="message"
             placeholder="Type a message"
             className="bg-transparent placeholder:text-black/50 w-full focus:outline-none"

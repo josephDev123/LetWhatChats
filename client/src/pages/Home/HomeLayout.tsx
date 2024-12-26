@@ -1,32 +1,24 @@
 import { Outlet } from "react-router-dom";
-
 import LeftPanelHeading from "./components/LeftPanelHeading";
 import SearchChat from "./components/SearchChat";
 import MessageRoomCard from "./components/MessageRoomCard";
 import { Images } from "../../../Images";
-// import { useState } from "react";
-// import { socket } from "../../socketIo";
-// import { useUser } from "../../customHooks/useUser";
 import MobileTopTab from "../../generic/MobileTopTab";
 import { FaSpinner } from "react-icons/fa6";
 import { useQueryFacade } from "../../utils/GetConversationFacade";
 import { ConversationType } from "../../type/dbConversationType";
 import { useAppSelector } from "../../lib/redux/hooks";
 import { useEffect, useState } from "react";
+import { useUser } from "../../customHooks/useUser";
 
 export default function HomeLayout({}: {}) {
   const signalReQuery = useAppSelector((state) => state.triggerQueryRefresh);
   const [queryKey, setQueryKey] = useState([signalReQuery.signal]);
+  const user = useUser();
+  // console.log(user);
   useEffect(() => {
     setQueryKey([signalReQuery.signal]);
   }, [signalReQuery.signal]);
-
-  // const [connectionStatus, setConnectionStatus] = useState<boolean>(
-  //   socket.connected
-  // );
-
-  // const redirect = useNavigate();
-  // const user = useUser();
 
   const conversations = useQueryFacade<ConversationType[], Error>(
     ["conversations", ...queryKey],
@@ -36,12 +28,6 @@ export default function HomeLayout({}: {}) {
   // console.log(conversations.data);
   return (
     <section className="flex w-full h-full gap-1">
-      {/* {conversations.isLoading && (
-        <section className="fixed h-full w-full text-white flex flex-col items-center justify-center">
-          loading ...
-        </section>
-      )} */}
-      {/* left section */}
       <div className="md:w-[30%] sm:w-[40%] w-full flex flex-col h-screen sm:p-2">
         <div className="sm:bg-transparent bg-[#075E55] p-2 sm:text-inherit text-white/75">
           <LeftPanelHeading />
