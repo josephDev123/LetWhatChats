@@ -12,7 +12,7 @@ import { useUser } from "../../../customHooks/useUser";
 import { FaSpinner } from "react-icons/fa6";
 // import { useCreateConversationMutation } from "../../../customHooks/useCreateRoom";
 import { useQueryFacade } from "../../../utils/GetConversationFacade";
-import { axiosDefault, axiosInstance } from "../../../lib/axios/axiosInstance";
+import { axiosInstance } from "../../../lib/axios/axiosInstance";
 import { User } from "../../../type/dbUserType";
 import { useCreateMutation } from "../../../utils/createConverationFacade";
 import { AxiosError } from "axios";

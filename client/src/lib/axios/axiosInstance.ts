@@ -5,13 +5,13 @@ import { getCredential } from "../../utils/getCredential";
 const { userData } = getCredential();
 
 export const axiosInstance = axios.create({
-  baseURL: "http://localhost:7000/",
+  baseURL: import.meta.env.VITE_BASE_URL,
   withCredentials: true,
 });
 
 // Initialize your custom Axios instance
 export const axiosDefault = axios.create({
-  baseURL: "http://localhost:7000/",
+  baseURL: import.meta.env.VITE_BASE_URL,
   withCredentials: true,
 });
 

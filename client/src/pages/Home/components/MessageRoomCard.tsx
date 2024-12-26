@@ -2,7 +2,6 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 // import { BsThreeDots } from "react-icons/bs";
-import { useState } from "react";
 // import { convertToUrlFriendly } from "../../../generic/convertToUrlFreiendly";
 // import { addRoomData } from "../../../lib/redux/slices/slice";
 // import { useDispatch } from "react-redux";
@@ -11,7 +10,6 @@ import {
   // ConversationsTypeArray,
   ConversationType,
 } from "../../../type/dbConversationType";
-import { Images } from "../../../../Images";
 import { useUser } from "../../../customHooks/useUser";
 import { toast } from "react-toastify";
 

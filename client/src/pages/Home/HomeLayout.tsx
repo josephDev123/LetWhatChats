@@ -9,12 +9,12 @@ import { useQueryFacade } from "../../utils/GetConversationFacade";
 import { ConversationType } from "../../type/dbConversationType";
 import { useAppSelector } from "../../lib/redux/hooks";
 import { useEffect, useState } from "react";
-import { useUser } from "../../customHooks/useUser";
+// import { useUser } from "../../customHooks/useUser";
 
 export default function HomeLayout({}: {}) {
   const signalReQuery = useAppSelector((state) => state.triggerQueryRefresh);
   const [queryKey, setQueryKey] = useState([signalReQuery.signal]);
-  const user = useUser();
+  // const user = useUser();
   // console.log(user);
   useEffect(() => {
     setQueryKey([signalReQuery.signal]);
