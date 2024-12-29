@@ -14,8 +14,7 @@ import { useEffect, useState } from "react";
 export default function HomeLayout({}: {}) {
   const signalReQuery = useAppSelector((state) => state.triggerQueryRefresh);
   const [queryKey, setQueryKey] = useState([signalReQuery.signal]);
-  // const user = useUser();
-  // console.log(user);
+
   useEffect(() => {
     setQueryKey([signalReQuery.signal]);
   }, [signalReQuery.signal]);

@@ -21,6 +21,7 @@ export const mainroutes = createBrowserRouter([
   {
     path: "/",
     element: <HomeLayout />,
+    loader: verifyUserStatus,
 
     children: [
       {
