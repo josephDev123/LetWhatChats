@@ -1,6 +1,6 @@
 import axios from "axios"; // Axios, // AxiosInstance, // AxiosError, // AxiosRequestConfig,
 
-import { getCredential } from "../../utils/getCredential";
+// import { getCredential } from "../../utils/getCredential";
 import { useUser } from "../../customHooks/useUser";
 
 // const { userData } = getCredential();
