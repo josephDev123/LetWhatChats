@@ -1,14 +1,14 @@
 import { AiOutlineClose } from "react-icons/ai";
-import { useUploadFirebaseToFirebase } from "../../../customHooks/useUploadToFirebase";
+// import { useUploadFirebaseToFirebase } from "../../../customHooks/useUploadToFirebase";
 import { FormEvent, SetStateAction } from "react";
 import { MdOutlineRocketLaunch } from "react-icons/md";
-import { deleteFileOnFirebase } from "../../../utils/deleteFileOnFirebase";
+// import { deleteFileOnFirebase } from "../../../utils/deleteFileOnFirebase";
 
 interface MediaViewModalType {
   closeModal: () => void;
   fileToUpload: string;
   mediaType: string;
-  handleSubmitMessage: (e: FormEvent<Element>) => void;
+  handleSubmitMessage: (e?: FormEvent<Element>) => void;
   setChat: React.Dispatch<SetStateAction<string>>;
   chat: string;
   fileRef: string;
@@ -26,13 +26,13 @@ export default function MediaViewModal({
 }: MediaViewModalType) {
   const filetypeExtract = mediaType.split("/")[0];
   console.log("media view ", fileToUpload);
-  const { downloadedUrl, errorMsg, uploadStageStatus } =
-    useUploadFirebaseToFirebase();
-  console.log(downloadedUrl, errorMsg, uploadStageStatus, fileRef);
+  // const { downloadedUrl, errorMsg, uploadStageStatus } =
+  //   useUploadFirebaseToFirebase();
+  console.log(fileRef);
   const handleCloseModal = async () => {
     try {
-      await deleteFileOnFirebase(fileRef);
-      closeModal;
+      // await deleteFileOnFirebase(fileRef);
+      closeModal();
       setfileRef(" ");
     } catch (error) {
       console.log(error);
@@ -76,10 +76,10 @@ export default function MediaViewModal({
         <button
           type="button"
           className="self-end text-white"
-          onClick={(e: FormEvent) => {
+          onClick={() => {
             if (!chat) return;
-            handleSubmitMessage(e);
             closeModal();
+            handleSubmitMessage();
           }}
         >
           <MdOutlineRocketLaunch className="bg-green-600  hover:bg-green-700 text-3xl p-2 text-black rounded-md" />

@@ -1,6 +1,6 @@
 import { TbPhoto } from "react-icons/tb";
 import { HiOutlineCamera } from "react-icons/hi2";
-import { HiOutlineDocumentPlus } from "react-icons/hi2";
+// import { HiOutlineDocumentPlus } from "react-icons/hi2";
 import { MdOutlinePoll } from "react-icons/md";
 import { ChangeEvent, SetStateAction, useRef } from "react";
 import { useUploadFirebaseToFirebase } from "../../../customHooks/useUploadToFirebase";
@@ -22,7 +22,7 @@ export default function UploadFilePopUp({
   const fileVideoRef = useRef<HTMLInputElement>(null);
   const { downloadedUrl, errorMsg, uploadStageStatus, uploadFile, FileRef } =
     useUploadFirebaseToFirebase();
-  console.log(downloadedUrl, errorMsg, uploadStageStatus, FileRef);
+  // console.log(downloadedUrl, errorMsg, uploadStageStatus, FileRef);
   setFileToUpload(downloadedUrl);
   setfileRef(FileRef);
 
@@ -71,12 +71,13 @@ export default function UploadFilePopUp({
             onChange={handlefileAndVideo}
             ref={fileVideoRef}
             type="file"
+            accept="image/*"
             name=""
             id=""
             className="hidden"
           />
           <TbPhoto />
-          Photo/Video
+          Photo
         </span>
       </div>
 
@@ -85,10 +86,10 @@ export default function UploadFilePopUp({
         Camera
       </span>
 
-      <span className="flex gap-2 cursor-not-allowed items-center hover:text-white/80">
+      {/* <span className="flex gap-2 cursor-not-allowed items-center hover:text-white/80">
         <HiOutlineDocumentPlus />
         Document
-      </span>
+      </span> */}
 
       <span
         onClick={() => openPollModal()}

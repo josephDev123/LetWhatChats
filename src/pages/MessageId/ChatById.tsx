@@ -22,7 +22,8 @@ export default function ChatById() {
   const [toggleAttachment, setToggleAttachment] = useState(false);
   const [message, setMessage] = useState<MessageChatType[]>([]);
   const [isPollModalOpen, setPollModalOpen] = useState(false);
-  const [fileToUpload, setFileToUpload] = useState("");
+  const [fileToUpload, setFileToUpload] = useState<string | null>(null);
+
   const [fileRef, setfileRef] = useState("");
   const [mediaTypeTobeUpload, setMediaTypeTobeUpload] = useState("");
   const [isEmojiModalOpen, setisEmojiModalOpen] = useState(false);
@@ -81,18 +82,18 @@ export default function ChatById() {
     };
   }, [conversationId]);
 
-  function handleSubmitMessage(e: FormEvent) {
-    e.preventDefault();
-    const form = e.target as HTMLFormElement;
+  function handleSubmitMessage(e?: FormEvent) {
+    e?.preventDefault();
+    const form = e?.target as HTMLFormElement;
     const formData = new FormData(form);
-    const chat = formData.get("message") as string;
-    if (!chat) return;
-    console.log(formData.get("message"));
+    const chatText = (formData.get("message") as string) || chat;
+    if (!chatText) return "oloti";
+    console.log(chatText);
     const payload: ChatbroadCastDataDTOType = {
-      message_text: chat,
+      message_text: chatText,
       from_userId: user.data?._id,
       message_type: "text",
-      imgUrl: "",
+      imgUrl: fileToUpload!,
       conversation_id: conversationId || "",
       from_UserDetails: { ...user.data, __v: 0 },
     };
@@ -109,13 +110,41 @@ export default function ChatById() {
     >
       <div className="flex justify-between items-center py-2 px-4 bg-black/40">
         <div className="flex items-center gap-2">
-          <div className="sm:w-12 sm:h-12 h-10 w-10 rounded-full hover:">
-            <img
-              src={"https://avatars.dicebear.com/api/human/123.svg"}
-              alt="avatar"
-              loading="lazy"
-              className="rounded-full"
-            />
+          <div className="w-12 h-12 flex items-center rounded-full hover:">
+            {!ConversationRoomName ? (
+              <div className="inline-flex ">
+                <span className="">
+                  <img
+                    src={chatData.data?.groupDetails.UserDetails[0].profile_img}
+                    alt=" avatar"
+                    title={chatData.data?.groupDetails.UserDetails[0].name}
+                    width={6}
+                    height={6}
+                    loading="lazy"
+                    className="w-6 h-6 rounded-full border border-black"
+                  />
+                </span>
+
+                <span className="translate-x-[-12px]">
+                  <img
+                    src={chatData.data?.groupDetails.UserDetails[1].profile_img}
+                    alt=" avatar"
+                    title={chatData.data?.groupDetails.UserDetails[1].name}
+                    width={6}
+                    height={6}
+                    loading="lazy"
+                    className="w-6 h-6 rounded-full border border-black"
+                  />
+                </span>
+              </div>
+            ) : (
+              <img
+                src={"https://avatars.dicebear.com/api/human/123.svg"}
+                alt="avatar"
+                loading="lazy"
+                className="rounded-full"
+              />
+            )}
           </div>
           <div className="flex flex-col leading-tight text-white/80">
             <h5 className="font-bold text-sm sm:text-base">
@@ -202,15 +231,16 @@ export default function ChatById() {
       </div>
 
       <div
-        className={`sticky bottom-0  sm:text-white/80 text-black/50 font-semibold flex gap-4 mt-auto items-center py-2 px-4 bg-black/40`}
+        // sticky bottom-0
+        className={` sm:text-white/80 text-black/50 font-semibold flex sm:gap-4 gap-2 mt-auto items-center py-2 sm:px-4 px-2 bg-black/40`}
       >
         <GrEmoji
           onClick={() => setisEmojiModalOpen((prev) => !prev)}
-          className="hover:bg-black/30 p-1 rounded-md text-3xl cursor-pointer"
+          className="hover:bg-black/30 p-1 rounded-md sm:text-3xl text-5xl cursor-pointer"
         />
         <GrFormAttachment
           onClick={() => setToggleAttachment((prev) => !prev)}
-          className="hover:bg-black/30 p-1 rounded-md text-3xl cursor-pointer"
+          className="hover:bg-black/30 p-1 rounded-md sm:text-3xl text-5xl cursor-pointer"
         />
         <form
           onSubmit={handleSubmitMessage}
@@ -253,7 +283,7 @@ export default function ChatById() {
             fileRef={fileRef}
             setfileRef={setfileRef}
             chat={chat}
-            closeModal={() => setFileToUpload("")}
+            closeModal={() => setFileToUpload(null)}
             mediaType={mediaTypeTobeUpload}
             fileToUpload={fileToUpload}
             handleSubmitMessage={handleSubmitMessage}

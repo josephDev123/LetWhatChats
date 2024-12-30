@@ -3,7 +3,7 @@ import { BsFilter } from "react-icons/bs";
 import { useState } from "react";
 import CreateNewRoomDropDown from "./CreateNewRoomDropDown";
 import FilterDropDown from "./FilterDropDown";
-import { IoCameraOutline } from "react-icons/io5";
+// import { IoCameraOutline } from "react-icons/io5";
 import { CiSearch } from "react-icons/ci";
 import { Link } from "react-router-dom";
 
@@ -18,7 +18,7 @@ export default function LeftPanelHeading() {
         LetWhatChats
       </Link>
       <span className="flex items-center sm:gap-6 gap-4 ">
-        <IoCameraOutline className="cursor-pointer text-xl sm:hidden" />
+        {/* <IoCameraOutline className="cursor-pointer text-xl sm:hidden" /> */}
         <CiSearch className="cursor-pointer text-xl sm:hidden" />
         <FaRegPenToSquare
           className="cursor-pointer"
