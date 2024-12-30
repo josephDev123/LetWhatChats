@@ -1,8 +1,10 @@
 import axios from "axios"; // Axios, // AxiosInstance, // AxiosError, // AxiosRequestConfig,
 
 import { getCredential } from "../../utils/getCredential";
+import { useUser } from "../../customHooks/useUser";
 
-const { userData } = getCredential();
+// const { userData } = getCredential();
+const user = useUser();
 
 export const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASEURL,
@@ -25,7 +27,7 @@ const refreshAccessToken = async () => {
     // Make an API request to your server to refresh the token
     const response = await axiosDefault.get("auth/refresh-access-token", {
       params: {
-        email: userData.user.email,
+        email: user.data.email,
       },
     });
     return response.data.data; // Assuming your response provides the new token
