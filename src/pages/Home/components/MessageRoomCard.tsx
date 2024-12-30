@@ -6,10 +6,7 @@ import { useNavigate } from "react-router-dom";
 // import { addRoomData } from "../../../lib/redux/slices/slice";
 // import { useDispatch } from "react-redux";
 // import { generateRandomAlphaNumeric } from "../../../utils/longAlphaNumericString";
-import {
-  // ConversationsTypeArray,
-  ConversationType,
-} from "../../../type/dbConversationType";
+import { ConversationType } from "../../../type/dbConversationType";
 import { useUser } from "../../../customHooks/useUser";
 import { toast } from "react-toastify";
 
@@ -19,7 +16,6 @@ type MessageRoomCard = {
 export default function MessageRoomCard({ item }: MessageRoomCard) {
   // const [isOpenGroupLinkDropDown, setIsOpenGroupLinkDropDown] = useState(false);
 
-  // console.log(isOpenGroupLinkDropDown, setIsOpenGroupLinkDropDown);
   const navigate = useNavigate();
   const user = useUser();
   const findUserById = item.ConversationWithMember.find(
@@ -45,7 +41,7 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
   // };
   const handleNavigate = () => {
     if (findUserById) {
-      return navigate(`chat/${item._id}`);
+      return navigate(`/chat/${item._id}`);
     }
     toast.error("You are not a member of this room");
   };
