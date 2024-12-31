@@ -48,8 +48,8 @@ export default function HomeLayout({}: {}) {
               <span className="text-red-400">Something went wrong</span>
             </div>
           )}
-          {conversations.data?.map((item: ConversationType, index: number) => (
-            <MessageRoomCard key={index} item={item} />
+          {conversations.data?.map((item: ConversationType) => (
+            <MessageRoomCard key={item._id} item={item} />
           ))}
         </div>
         {/* small screen */}

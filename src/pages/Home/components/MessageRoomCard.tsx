@@ -22,23 +22,8 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
     (member) => `${member.user_id} === ${user?.data?._id}`
   );
 
-  // console.log("find", findUserById);
-  // const handleCopyGroupLink = async (
-  //   e: React.MouseEvent<HTMLDivElement, MouseEvent>,
-  //   roomName: string
-  // ) => {
-  //   e.stopPropagation();
-  //   if (!window.navigator.clipboard) {
-  //     return alert("Your browser does not support this");
-  //   }
-  //   await window.navigator.clipboard.writeText(
-  //     `${
-  //       import.meta.env.VITE_HOSTNAME
-  //     }/${roomName}/invite/${generateRandomAlphaNumeric(20)}`
-  //   );
+  console.log("find", findUserById);
 
-  //   setIsOpenGroupLinkDropDown(false);
-  // };
   const handleNavigate = () => {
     if (findUserById) {
       return navigate(`/chat/${item._id}`);
