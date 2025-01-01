@@ -9,12 +9,14 @@ import { useNavigate } from "react-router-dom";
 import { ConversationType } from "../../../type/dbConversationType";
 import { useUser } from "../../../customHooks/useUser";
 import { toast } from "react-toastify";
+import { BsThreeDots } from "react-icons/bs";
+import { useState } from "react";
 
 type MessageRoomCard = {
   item: ConversationType;
 };
 export default function MessageRoomCard({ item }: MessageRoomCard) {
-  // const [isOpenGroupLinkDropDown, setIsOpenGroupLinkDropDown] = useState(false);
+  const [isProfileDropdown, setProfileDropdown] = useState(false);
 
   const navigate = useNavigate();
   const user = useUser();
@@ -22,7 +24,7 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
     (member) => `${member.user_id} === ${user?.data?._id}`
   );
 
-  console.log("find", findUserById);
+  // console.log("find", findUserById);
 
   const handleNavigate = () => {
     if (findUserById) {
@@ -75,7 +77,7 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
           <h5 className="font-semibold line-clamp-1">
             {item.conversation_name}
           </h5>
-          <span className="text-green-500">5:47pm</span>
+          {/* <span className="text-green-500">5:47pm</span> */}
         </div>
       </div>
       <div className="ms-auto relative">
@@ -85,21 +87,21 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
           </button>
         )}
 
-        {/* <BsThreeDots
+        <BsThreeDots
           className="hover:bg-green-400 rounded-full p-1 text-xl"
           onClick={(e: any) => {
             e.stopPropagation();
-            setIsOpenGroupLinkDropDown((prev) => !prev);
+            setProfileDropdown((prev) => !prev);
           }}
-        /> */}
-        {/* {isOpenGroupLinkDropDown && (
-          <div
-            onClick={(e) => handleCopyGroupLink(e, item.conversation_name)}
-            className="absolute top-6 z-10 right-0 drop-shadow-md p-1 w-36 h-8 rounded-sm bg-gray-50"
+        />
+        {isProfileDropdown && (
+          <button
+            disabled
+            className="absolute cursor-not-allowed top-6 z-10 right-0 drop-shadow-md p-1 w-36 h-8 rounded-sm bg-gray-50"
           >
-            Copy group link
-          </div>
-        )} */}
+            Edit Profile
+          </button>
+        )}
       </div>
     </motion.section>
   );

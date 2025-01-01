@@ -12,6 +12,9 @@ import { useEffect, useState } from "react";
 // import { useUser } from "../../customHooks/useUser";
 
 export default function HomeLayout({}: {}) {
+  const [conversationsFiltered, setConversationsFiltered] = useState<
+    ConversationType[]
+  >([]);
   const signalReQuery = useAppSelector((state) => state.triggerQueryRefresh);
   const [queryKey, setQueryKey] = useState([signalReQuery.signal]);
 
@@ -24,13 +27,40 @@ export default function HomeLayout({}: {}) {
     "conversation"
   );
 
-  // console.log(conversations.data);
+  useEffect(() => {
+    setConversationsFiltered(conversations.data || []);
+  }, [conversations.data]);
+
+  const listenToSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.toLowerCase();
+    console.log(value);
+    if (value === "") {
+      setConversationsFiltered(conversations.data || []);
+      return;
+    }
+
+    const filtered =
+      conversations.data?.filter((item) => {
+        if (item.conversation_name) {
+          return item.conversation_name.toLowerCase().includes(value);
+        }
+        return false;
+      }) || [];
+
+    if (filtered.length === 0) {
+      setConversationsFiltered(conversations.data || []);
+    } else {
+      setConversationsFiltered(filtered);
+    }
+  };
+
+  console.log(conversations.data);
   return (
     <section className="flex w-full h-full gap-1">
       <div className="md:w-[30%] sm:w-[40%] w-full flex flex-col h-screen sm:p-2">
         <div className="sm:bg-transparent bg-[#075E55] p-2 sm:text-inherit text-white/75">
           <LeftPanelHeading />
-          <SearchChat />
+          <SearchChat listenToSearch={listenToSearch} />
           <MobileTopTab />
         </div>
 
@@ -48,7 +78,7 @@ export default function HomeLayout({}: {}) {
               <span className="text-red-400">Something went wrong</span>
             </div>
           )}
-          {conversations.data?.map((item: ConversationType) => (
+          {conversationsFiltered?.map((item: ConversationType) => (
             <MessageRoomCard key={item._id} item={item} />
           ))}
         </div>
