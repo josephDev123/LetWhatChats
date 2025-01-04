@@ -87,13 +87,15 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
           </button>
         )}
 
-        <BsThreeDots
-          className="hover:bg-green-400 rounded-full p-1 text-xl"
-          onClick={(e: any) => {
-            e.stopPropagation();
-            setProfileDropdown((prev) => !prev);
-          }}
-        />
+        {item.conversation_name && (
+          <BsThreeDots
+            className="hover:bg-green-400 rounded-full p-1 text-xl"
+            onClick={(e: any) => {
+              e.stopPropagation();
+              setProfileDropdown((prev) => !prev);
+            }}
+          />
+        )}
         {isProfileDropdown && (
           <button
             onClick={() => alert("coming soon ...")}
