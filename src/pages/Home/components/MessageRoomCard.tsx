@@ -96,10 +96,11 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
         />
         {isProfileDropdown && (
           <button
-            disabled
+            onClick={() => alert("coming soon ...")}
+            // disabled
             className="absolute cursor-not-allowed top-6 z-10 right-0 drop-shadow-md p-1 w-36 h-8 rounded-sm bg-gray-50"
           >
-            Edit Profile
+            Edit Conversation
           </button>
         )}
       </div>
