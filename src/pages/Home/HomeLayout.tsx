@@ -7,7 +7,7 @@ import MobileTopTab from "../../generic/MobileTopTab";
 import { FaSpinner } from "react-icons/fa6";
 import { useQueryFacade } from "../../utils/GetConversationFacade";
 import { ConversationType } from "../../type/dbConversationType";
-import { useAppSelector } from "../../lib/redux/hooks";
+// import { useAppSelector } from "../../lib/redux/hooks";
 import { useEffect, useState } from "react";
 // import { useUser } from "../../customHooks/useUser";
 
@@ -15,12 +15,12 @@ export default function HomeLayout({}: {}) {
   const [conversationsFiltered, setConversationsFiltered] = useState<
     ConversationType[]
   >([]);
-  const signalReQuery = useAppSelector((state) => state.triggerQueryRefresh);
-  const [queryKey, setQueryKey] = useState([signalReQuery.signal]);
+  // const signalReQuery = useAppSelector((state) => state.triggerQueryRefresh);
+  // const [queryKey, setQueryKey] = useState([signalReQuery.signal]);
 
-  useEffect(() => {
-    setQueryKey([signalReQuery.signal]);
-  }, [signalReQuery.signal]);
+  // useEffect(() => {
+  //   setQueryKey([signalReQuery.signal]);
+  // }, [signalReQuery.signal]);
 
   const conversations = useQueryFacade<ConversationType[], Error>(
     // ...queryKey
