@@ -93,7 +93,7 @@ export default function ChatById() {
       message_text: chatText,
       from_userId: user.data?._id,
       message_type: "text",
-      imgUrl: fileToUpload!,
+      imgUrl: fileToUpload || "",
       conversation_id: conversationId || "",
       from_UserDetails: { ...user.data, __v: 0 },
     };
