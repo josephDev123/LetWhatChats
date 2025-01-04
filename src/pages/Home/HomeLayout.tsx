@@ -23,7 +23,8 @@ export default function HomeLayout({}: {}) {
   }, [signalReQuery.signal]);
 
   const conversations = useQueryFacade<ConversationType[], Error>(
-    ["conversations", ...queryKey],
+    // ...queryKey
+    ["conversations"],
     "conversation"
   );
 
