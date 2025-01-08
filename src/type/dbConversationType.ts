@@ -19,6 +19,8 @@ export type ConversationMember = {
 
 export type ConversationType = {
   _id: string;
+  avatar: string;
+  creator: string;
   conversation_name: string;
   __v: number;
   ConversationWithMember: ConversationMember[];

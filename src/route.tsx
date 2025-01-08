@@ -16,6 +16,7 @@ import Community from "./pages/Community";
 import Chats from "./pages/Chats";
 import Calls from "./pages/Calls";
 import Index from "./pages/Home/Index";
+import ConversationProfile from "./pages/ConversationProfile.ts/Profile";
 
 export const mainroutes = createBrowserRouter([
   {
@@ -34,6 +35,11 @@ export const mainroutes = createBrowserRouter([
       {
         path: "chat/:conversationId",
         element: <ChatById />,
+        errorElement: "error",
+      },
+      {
+        path: "conversation/:conversationId",
+        element: <ConversationProfile />,
         errorElement: "error",
       },
       {

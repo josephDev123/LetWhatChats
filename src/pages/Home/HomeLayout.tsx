@@ -4,7 +4,7 @@ import SearchChat from "./components/SearchChat";
 import MessageRoomCard from "./components/MessageRoomCard";
 import { Images } from "../../../Images";
 import MobileTopTab from "../../generic/MobileTopTab";
-import { FaSpinner } from "react-icons/fa6";
+import { FaRegPenToSquare, FaSpinner } from "react-icons/fa6";
 import { useQueryFacade } from "../../utils/GetConversationFacade";
 import { ConversationType } from "../../type/dbConversationType";
 // import { useAppSelector } from "../../lib/redux/hooks";
@@ -55,7 +55,7 @@ export default function HomeLayout({}: {}) {
     }
   };
 
-  console.log(conversations.data);
+  // console.log(conversations.data);
   return (
     <section className="flex w-full h-full gap-1">
       <div className="md:w-[30%] sm:w-[40%] w-full flex flex-col h-screen sm:p-2">
@@ -77,6 +77,16 @@ export default function HomeLayout({}: {}) {
           {conversations.isError && (
             <div className="">
               <span className="text-red-400">Something went wrong</span>
+            </div>
+          )}
+
+          {conversationsFiltered.length == 0 && (
+            <div>
+              <p>No conversation. </p>
+              <p className="inline-flex items-center gap-2">
+                Click <FaRegPenToSquare className="text-green-400" /> above to
+                create
+              </p>
             </div>
           )}
           {conversationsFiltered?.map((item: ConversationType) => (

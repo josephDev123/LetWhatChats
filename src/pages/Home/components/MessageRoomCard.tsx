@@ -11,20 +11,40 @@ import { useUser } from "../../../customHooks/useUser";
 import { toast } from "react-toastify";
 import { BsThreeDots } from "react-icons/bs";
 import { useState } from "react";
+import { useGeneralMutation } from "../../../utils/useMutationFacade";
+import { joinConversationDTO } from "../../../type/JoinConversationDTO";
+import { FaSpinner } from "react-icons/fa6";
 
 type MessageRoomCard = {
   item: ConversationType;
 };
 export default function MessageRoomCard({ item }: MessageRoomCard) {
   const [isProfileDropdown, setProfileDropdown] = useState(false);
-
   const navigate = useNavigate();
   const user = useUser();
+  const { mutateAsync, isPending } = useGeneralMutation<
+    any,
+    joinConversationDTO
+  >("post", "group-member/join");
   const findUserById = item.ConversationWithMember.find(
-    (member) => `${member.user_id} === ${user?.data?._id}`
+    (member) => member.user_id === user?.data?._id
   );
 
   // console.log("find", findUserById);
+
+  const handleJoinConversation = () => {
+    mutateAsync(
+      { conversation_id: item._id, user_id: user.data._id },
+      {
+        onError: (error) => {
+          toast.error(`Something went wrong:${error.message}. Check Network.`);
+        },
+        onSuccess() {
+          toast.success("Join successfully");
+        },
+      }
+    );
+  };
 
   const handleNavigate = () => {
     if (findUserById) {
@@ -63,7 +83,7 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
         </div>
       ) : (
         <img
-          src={"https://avatars.dicebear.com/api/human/123.svg"}
+          src={item.avatar || "https://avatars.dicebear.com/api/human/123.svg"}
           alt=" avatar"
           width={12}
           height={12}
@@ -80,10 +100,16 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
           {/* <span className="text-green-500">5:47pm</span> */}
         </div>
       </div>
-      <div className="ms-auto relative">
+      <div className="ms-auto relative inline-flex items-center">
         {!findUserById && (
-          <button className="px-2 bg-green-400 hover:bg-green-300 rounded-md">
-            {item.conversation_name && "Join"}
+          <button
+            onClick={handleJoinConversation}
+            className="px-2 bg-green-400 inline-flex gap-1 items-center hover:bg-green-300 rounded-md"
+          >
+            {item.conversation_name && "Join"}{" "}
+            {isPending && (
+              <FaSpinner className="animate-spin h-4 w-4 text-white ms-auto" />
+            )}
           </button>
         )}
 
@@ -98,9 +124,16 @@ export default function MessageRoomCard({ item }: MessageRoomCard) {
         )}
         {isProfileDropdown && (
           <button
-            onClick={() => alert("coming soon ...")}
-            // disabled
-            className="absolute cursor-not-allowed top-6 z-10 right-0 drop-shadow-md p-1 w-36 h-8 rounded-sm bg-gray-50"
+            onClick={() => {
+              if (user.data._id !== item.creator) {
+                toast.error("Only the Creator can edit");
+                return;
+              }
+              return navigate(`/conversation/${item._id}`);
+            }}
+            className={`absolute ${
+              user.data._id !== item.creator && " cursor-not-allowed"
+            } top-6 z-10 right-0 drop-shadow-md p-1 w-36 h-8 rounded-sm bg-gray-50`}
           >
             Edit Conversation
           </button>

@@ -38,6 +38,7 @@ export default function CreateNewRoomDropDown({
     async () => {
       try {
         return axiosInstance.post("conversation/create", {
+          creator: user.data._id,
           conversation_name: room,
           user_id: user.data._id,
         });
