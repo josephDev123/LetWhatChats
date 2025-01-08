@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 // import { useQueryFacade } from "../../utils/GetConversationFacade";
 // import { ConversationType } from "../../type/dbConversationType";
 import { ConversationPayload } from "../../type/ConversationProfile";
+import { Images } from "../../../Images";
 
 type conversationProfileType = {
   conversation_name: string;
@@ -66,7 +67,7 @@ export default function ConversationProfile() {
       <h1 className="font-medium">Conversation Profile</h1>
       <div className="relative mt-4">
         <img
-          src={profile.avatar || `/public/imgs/avatar_one.svg`}
+          src={profile.avatar || Images.avatar_one}
           alt="conversation avatar"
           className=" w-20 h-20 rounded-full object-cover"
         />
