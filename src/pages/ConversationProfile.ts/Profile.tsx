@@ -87,14 +87,14 @@ export default function ConversationProfile() {
         accept="image/*"
       />
       <form onSubmit={handleSubmit(handleSaveConversationProfile)}>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid sm:grid-cols-2 grid-cols-1 gap-2">
           <div className="flex flex-col">
             <input
               type="text"
               {...register("conversationName")}
               placeholder="Conversation name"
               defaultValue={profile.conversation_name}
-              className="p-2 rounded-md outline-none text-black"
+              className="p-2 rounded-md outline-none text-black border"
             />
             {errors.conversationName && (
               <small className="text-red-400 mt-1">
