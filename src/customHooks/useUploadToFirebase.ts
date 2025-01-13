@@ -45,8 +45,8 @@ export function useUploadFirebaseToFirebase() {
             setUploadStageStatus("Upload is paused");
             break;
           case "running":
-            console.log("Upload is running");
-            setUploadStageStatus("Upload is running");
+            console.log("Upload is running. pls");
+            setUploadStageStatus("Upload is running pls wait");
             break;
         }
       },

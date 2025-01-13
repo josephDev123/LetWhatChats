@@ -9,7 +9,7 @@ const ConversationProfileSchema = z.object({
     .optional(),
   conversationName: z
     .string()
-    .min(1, { message: "Conversation name is required" })
+    // .min(1, { message: "Conversation name is required" })
     .max(15, {
       message: "Conversation name must be less than 15 characters",
     }),
