@@ -109,7 +109,7 @@ export default function ConversationProfile() {
     <section className="p-2 flex flex-col justify-center items-center text-white">
       <h1 className="font-medium">Conversation Profile</h1>
       {conversation.isError && (
-        <p className="text-sm text-red-300 h-40">
+        <p className="text-sm text-red-300 h-40 mt-6">
           Something went wrong. Check Your Network or Refresh
         </p>
       )}
