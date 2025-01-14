@@ -1,24 +1,20 @@
 export const createNewRoomDropDownVariant = {
   open: {
     opacity: 1,
-    // y: [0, 10],
-    scale: [0.5, 1],
-
+    scale: 1,
     transition: {
-      delayChildren: 0.5,
-      staggerChildren: 0.5,
+      // delayChildren: 0.5,
+      // staggerChildren: 0.5,
       duration: 0.5,
     },
   },
   closed: {
-    // scale: [1, 0],
     opacity: 0,
-    y: -100,
-    scale: 0.5,
+    scale: 0,
     transition: {
-      duration: 0.5,
-      // exit: { scale: [1, 0.5, 0] },
-      exit: { scale: [1, 0.5, 0], y: [-100, 0] },
+      // duration: 0.5,
+      exit: { scale: 0 },
+      // exit: { scale: [1, 0.5, 0], y: [-100, 0] },
     },
   },
 };

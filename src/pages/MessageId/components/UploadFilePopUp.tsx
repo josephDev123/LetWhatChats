@@ -51,7 +51,7 @@ export default function UploadFilePopUp({
     }
   }
   return (
-    <section className="absolute bottom-12 bg-black/50 text-white/80 ml-2 flex flex-col space-y-2 drop-shadow-md px-4 py-2 rounded-md">
+    <section className="absolute sm:bottom-12 bottom-16 bg-black/50 text-white/80 ml-2 flex flex-col space-y-2 drop-shadow-md px-4 py-2 rounded-md">
       <div className="flex  flex-col">
         <div>
           {uploadStageStatus ? (

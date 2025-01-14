@@ -232,7 +232,7 @@ export default function ChatById() {
 
       <div
         // sticky bottom-0
-        className={` sm:text-white/80 text-black/50 font-semibold flex sm:gap-4 gap-2 mt-auto items-center py-2 sm:px-4 px-2 bg-black/40`}
+        className={`sticky bottom-0 sm:text-white/80 text-black/50 font-semibold flex sm:gap-4 gap-2 mt-auto items-center py-2 sm:px-4 px-2 bg-black/40`}
       >
         <GrEmoji
           onClick={() => setisEmojiModalOpen((prev) => !prev)}
@@ -260,7 +260,7 @@ export default function ChatById() {
       </div>
       {/* modals */}
       {isEmojiModalOpen && (
-        <span className="absolute bottom-12">
+        <span className="absolute sm:bottom-12 bottom-16">
           <Emojipicker
             setEmojidata={(item: any) => {
               setChat((prevText) => `${prevText}  ${item.emoji} `);

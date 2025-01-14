@@ -46,12 +46,12 @@ export default function LeftPanelHeading() {
       {openFilterModal && (
         <FilterDropDown newRoomDropDownStatus={openFilterModal} />
       )}
-      {toggleCreateNewRoomDropDown && (
-        <CreateNewRoomDropDown
-          newRoomDropDownStatus={toggleCreateNewRoomDropDown}
-          closeModal={() => setToggleCreateNewRoomDropDown(false)}
-        />
-      )}
+      {/* {toggleCreateNewRoomDropDown && ( */}
+      <CreateNewRoomDropDown
+        newRoomDropDownStatus={toggleCreateNewRoomDropDown}
+        closeModal={() => setToggleCreateNewRoomDropDown(false)}
+      />
+      {/* )} */}
     </section>
   );
 }
