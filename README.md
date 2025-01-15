@@ -25,11 +25,13 @@ Welcome to the JoeWhatChats! This project aims to replicate the functionality of
 
 ### large screen version
 
-<img src="./client/src/assets/chat_sample.png" loading="lazy" alt="large screen sample" />
+<img src="/imgs/letWhatChat1.png" loading="lazy" alt="large screen sample" />
+<img src="/imgs/letWhatChat2.png" loading="lazy" alt="large screen sample" />
 
 ### small screen version
 
-<img src="./client/src/assets/mobile_chat_sample.png" loading="lazy" alt="large screen sample" />
+<img src="/imgs/WhatsApp Image.jpg" loading="lazy" alt="large screen sample" />
+<img src="/imgs/letWhatChat2.png" loading="lazy" alt="large screen sample" />
 
 ## Technologies Used
 
