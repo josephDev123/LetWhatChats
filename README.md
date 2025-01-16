@@ -27,7 +27,8 @@ Welcome to the JoeWhatChats! This project aims to replicate the functionality of
 
 <img src="/public/imgs/letWhatChat1.png" loading="lazy" alt="large screen sample" />
 <img src="/public/imgs/letWhatChat2.png" loading="lazy" alt="large screen sample" />
-<br/>
+<br/> <br/>
+
 ### small screen version
 
 <img src="/public/imgs/WhatsAppImage.jpg" loading="lazy" alt="large screen sample" />
