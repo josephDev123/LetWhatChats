@@ -25,7 +25,7 @@ Welcome to the JoeWhatChats! This project aims to replicate the functionality of
 
 ### large screen version
 
-<img src="/imgs/letWhatChat1.png" loading="lazy" alt="large screen sample" />
+<img src="/public/imgs/letWhatChat1.png" loading="lazy" alt="large screen sample" />
 <img src="/imgs/letWhatChat2.png" loading="lazy" alt="large screen sample" />
 
 ### small screen version
