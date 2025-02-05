@@ -220,7 +220,6 @@ export default function Register() {
           </div>
         </form>
         <p className="mt-4">
-          {" "}
           Already registered,{" "}
           <Link to="/login" className="text-green-600 font-semibold ">
             Login
