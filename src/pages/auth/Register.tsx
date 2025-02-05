@@ -94,7 +94,7 @@ export default function Register() {
   };
 
   return (
-    <div className="flex flex-col h-screen w-full bg-slate-200 justify-center items-center">
+    <div className="flex flex-col h-screen w-full justify-center items-center  bg-[url(./imgs/pngs/whatsappBackground.jpeg)] bg-auto">
       <div className="w-[80%] md:w-[50%] lg:w-[400px] bg-white rounded-md p-4 drop-shadow-md">
         <div className="flex justify-center items-center ">
           <SVGChatComponent color="green" className="w-[100px] h-[100px]" />
