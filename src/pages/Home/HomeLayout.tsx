@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useSearchParams } from "react-router-dom";
 import LeftPanelHeading from "./components/LeftPanelHeading";
 import SearchChat from "./components/SearchChat";
 import MessageRoomCard from "./components/MessageRoomCard";
@@ -9,12 +9,13 @@ import { useQueryFacade } from "../../utils/GetConversationFacade";
 import { ConversationType } from "../../type/dbConversationType";
 // import { useAppSelector } from "../../lib/redux/hooks";
 import { useEffect, useState } from "react";
-// import { useUser } from "../../customHooks/useUser";
 
 export default function HomeLayout({}: {}) {
   const [conversationsFiltered, setConversationsFiltered] = useState<
     ConversationType[]
   >([]);
+  const [searchParam, setSearchParam] = useSearchParams();
+  console.log(setSearchParam);
   // const signalReQuery = useAppSelector((state) => state.triggerQueryRefresh);
   // const [queryKey, setQueryKey] = useState([signalReQuery.signal]);
 
@@ -89,9 +90,16 @@ export default function HomeLayout({}: {}) {
               </p>
             </div>
           )}
-          {conversationsFiltered?.map((item: ConversationType) => (
-            <MessageRoomCard key={item._id} item={item} />
-          ))}
+
+          {!searchParam.get("type")
+            ? conversationsFiltered?.map((item: ConversationType) => (
+                <MessageRoomCard key={item._id} item={item} />
+              ))
+            : conversations.data
+                ?.filter((item) => item.conversation_name !== null)
+                .map((item: ConversationType) => (
+                  <MessageRoomCard key={item._id} item={item} />
+                ))}
         </div>
         {/* small screen */}
         <div className="sm:hidden flex flex-col w-full overflow-y-auto no-scrollbar h-full bg-cover bg-center">

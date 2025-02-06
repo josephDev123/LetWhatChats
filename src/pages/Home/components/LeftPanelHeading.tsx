@@ -44,7 +44,10 @@ export default function LeftPanelHeading() {
       </span>
 
       {openFilterModal && (
-        <FilterDropDown newRoomDropDownStatus={openFilterModal} />
+        <FilterDropDown
+          newRoomDropDownStatus={openFilterModal}
+          closedropdown={() => setOpenFilterModal(false)}
+        />
       )}
       {/* {toggleCreateNewRoomDropDown && ( */}
       <CreateNewRoomDropDown
