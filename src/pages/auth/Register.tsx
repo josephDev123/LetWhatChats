@@ -15,6 +15,7 @@ import { UploadFirebase } from "../../utils/firebaseImgUpload";
 import LoadingModal from "../../generic/LoadingModal";
 import { registerSchema } from "../../zodTypes/registerType";
 import { useNavigate } from "react-router-dom";
+import { Images } from "../../../Images";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -94,7 +95,11 @@ export default function Register() {
   };
 
   return (
-    <div className="flex flex-col h-screen w-full justify-center items-center  bg-[url(./imgs/pngs/whatsappBackground.jpeg)] bg-auto">
+    <div
+      // bg-[url(./imgs/pngs/whatsappBackground.jpeg)]
+      style={{ backgroundImage: `url(${Images.whatsapp_bg})` }}
+      className="flex flex-col h-screen w-full justify-center items-center  bg-auto"
+    >
       <div className="w-[80%] md:w-[50%] lg:w-[400px] bg-white rounded-md p-4 drop-shadow-md">
         <div className="flex justify-center items-center ">
           <SVGChatComponent color="green" className="w-[100px] h-[100px]" />

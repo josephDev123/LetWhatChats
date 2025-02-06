@@ -12,6 +12,7 @@ import LoadingModal from "../../generic/LoadingModal";
 import { loginSchema } from "../../zodTypes/registerType";
 import { useNavigate } from "react-router-dom";
 import { LuUserCircle2 } from "react-icons/lu";
+import { Images } from "../../../Images";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -52,7 +53,10 @@ export default function Login() {
   };
 
   return (
-    <div className="flex flex-col h-screen w-full bg-[url(./imgs/pngs/whatsappBackground.jpeg)] bg-auto bg-opacity-30 justify-center items-center">
+    <div
+      style={{ backgroundImage: `url(${Images.whatsapp_bg})` }}
+      className="flex flex-col h-screen w-full  justify-center items-center"
+    >
       <div className="w-[80%] md:w-[50%] lg:w-[400px] bg-white rounded-md p-4 drop-shadow-md">
         <div className="flex justify-center items-center ">
           <SVGChatComponent color="green" className="w-[100px] h-[100px]" />
