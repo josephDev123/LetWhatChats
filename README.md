@@ -1,6 +1,6 @@
 ## JoeWhatChats
 
-Welcome to the JoeWhatChats! This project aims to replicate the functionality of WhatsApp, allowing users to create Conversation, send messages, using Node.js, Express, MongoDB, React, and Socket.IO.
+Welcome to the LetWhatChats! This project aims to replicate the functionality of WhatsApp, allowing users to create Conversation, send messages, using Node.js, Express, MongoDB, React, and Socket.IO.
 
 ## Features
 
@@ -60,32 +60,17 @@ Welcome to the JoeWhatChats! This project aims to replicate the functionality of
 ## Installation
 
 1. Clone the repository:
-   `git clone https://github.com/yourusername/whatsapp-clone.git`
+   `[git clone https://github.com/yourusername/whatsapp-clone.git](https://github.com/josephDev123/LetWhatChats.git)`
 
-2. Install dependencies for the backend:
-   `cd backend 
-    npm install
-`
+2. Install dependencies for the frontend:
+   `npm install`
 
-3. Install dependencies for the frontend:
-   `cd client
-    npm install
-`
+3. Set up environment variables:
 
-4. Set up environment variables:
+Create a .env file in the client root directory. follow the .env.sample guideline
 
-Create a .env file in the backend directory.
-Add MongoDB connection URI, JWT secret, and other necessary variables.
-
-5. Start the backend server:
-   `cd backend
-    npm start
-`
-
-6. Start the frontend development server:
-   `cd frontend
-    npm start
-`
+1. Start the frontend development server:
+   `npm start`
 
 ## Usage
 
@@ -95,6 +80,10 @@ Add MongoDB connection URI, JWT secret, and other necessary variables.
 <li>Start sending and receiving messages in real-time.</li>
 <!-- <li>Stay tuned for the upcoming video call feature!</li> -->
 </ol>
+
+## Deployment
+
+AWS EC2
 
 ## Credits
 
