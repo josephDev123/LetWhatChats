@@ -34,14 +34,11 @@ Welcome to the LetWhatChats! This project aims to replicate the functionality of
 <img src="/public/imgs/WhatsAppImage.jpg" loading="lazy" alt="large screen sample" />
 <img src="/public/imgs/WhatsAppImagesample2.jpg" loading="lazy" alt="large screen sample" />
 
-## Technologies Used
+## Frontend Technologies Used
 
 <ul>
 <li>
-<b>Node.js:</b>  Backend server implementation using Express framework..
-</li>
-<li>
-<b>MongoDB:</b>  Database management with Mongoose ODM for storing user information, room data, and messages.
+<b>HTML & CSS(Tailwind css): </b>   structure and styling the application
 </li>
 
 <li>
@@ -49,12 +46,17 @@ Welcome to the LetWhatChats! This project aims to replicate the functionality of
 </li>
 
 <li>
-<b>Socket.IO:</b>  Real-time communication between clients and server for instant messaging.
+<b>Typescript</b> 
 </li>
 
 <li>
-<b>HTML & CSS: </b>   Designing and styling the application to resemble WhatsApp's familiar interface.
+<b>Firebase:</b> File storage 
 </li>
+
+<li>
+<b>Socket.IO:</b>  Real-time communication between clients and server for instant messaging.
+</li>
+
 <ul>
 
 ## Installation
