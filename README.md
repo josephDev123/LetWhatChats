@@ -60,14 +60,14 @@ Welcome to the LetWhatChats! This project aims to replicate the functionality of
 ## Installation
 
 1. Clone the repository:
-   `[git clone https://github.com/yourusername/whatsapp-clone.git](https://github.com/josephDev123/LetWhatChats.git)`
+   `(https://github.com/josephDev123/LetWhatChats.git)`
 
 2. Install dependencies for the frontend:
    `npm install`
 
 3. Set up environment variables:
 
-Create a .env file in the client root directory. follow the .env.sample guideline
+Create a .env file in the root directory. follow the .env.sample guideline
 
 1. Start the frontend development server:
    `npm start`
