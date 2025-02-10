@@ -100,7 +100,7 @@ export default function Register() {
       style={{ backgroundImage: `url(${Images.whatsapp_bg})` }}
       className="flex flex-col h-screen w-full justify-center items-center  bg-auto"
     >
-      <div className="w-[80%] md:w-[50%] lg:w-[400px] bg-white rounded-md p-4 drop-shadow-md">
+      <div className="w-[90%] sm:w-[80%] md:w-[50%] lg:w-[400px] bg-white rounded-md p-4 drop-shadow-md">
         <div className="flex justify-center items-center ">
           <SVGChatComponent color="green" className="w-[100px] h-[100px]" />
         </div>
@@ -183,7 +183,7 @@ export default function Register() {
 
           <div className="flex flex-col">
             <div className="flex gap-1 w-full items-center justify-center ">
-              <CiFileOn color="green" className="text-xl" />
+              <CiFileOn color="green" className="sm:text-xl" />
               <input
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   handleUploadedProfileImgDisplay(e)
@@ -192,8 +192,7 @@ export default function Register() {
                 name="profile_img"
                 type="file"
                 accept="image/*"
-                className="outline-none placeholder:pl-5 cursor-pointer "
-                placeholder="Enter your correct password"
+                className="outline-none placeholder:pl-5 cursor-pointer sm:text-base text-xs"
               />
               {uploadProfileUrl ? (
                 <>

@@ -57,7 +57,7 @@ export default function Login() {
       style={{ backgroundImage: `url(${Images.whatsapp_bg})` }}
       className="flex flex-col h-screen w-full  justify-center items-center"
     >
-      <div className="w-[80%] md:w-[50%] lg:w-[400px] bg-white rounded-md p-4 drop-shadow-md">
+      <div className=" w-[90%] sm:w-[80%] md:w-[50%] lg:w-[400px] bg-white rounded-md p-4 drop-shadow-md">
         <div className="flex justify-center items-center ">
           <SVGChatComponent color="green" className="w-[100px] h-[100px]" />
         </div>
