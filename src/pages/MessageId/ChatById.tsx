@@ -178,7 +178,7 @@ export default function ChatById() {
             <FaSpinner className="animate-spin h-8 w-8 text-white text-center" />
           </div>
         ) : chatData.isError ? (
-          <span className="text-sm text-red-400">Something went wrong</span>
+          <span className="text-sm text-red-400">Something went wrong ..</span>
         ) : (
           // <>
           //   {message
