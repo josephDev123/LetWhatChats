@@ -18,7 +18,6 @@ import Calls from "./pages/Calls";
 import Index from "./pages/Home/Index";
 import ConversationProfile from "./pages/ConversationProfile.ts/Profile";
 
-// hello
 export const mainroutes = createBrowserRouter([
   {
     path: "/",
