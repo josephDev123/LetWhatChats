@@ -180,39 +180,6 @@ export default function ChatById() {
         ) : chatData.isError ? (
           <span className="text-sm text-red-400">Something went wrong ..</span>
         ) : (
-          // <>
-          //   {message
-          //     .filter((itemRoom) => itemRoom.room === "")
-          //     .map((item, i) => (
-          //       <Fragment key={i}>
-          //         {item.name !== user.data.name ? (
-          //           <>
-          //             {!item.chat ? "" : <IncomingMessage item={item} />}
-          //             {item.type === "poll" && (
-          //               <Poll
-          //                 className="self-start"
-          //                 item={item.poll_id}
-          //                 chat={message}
-          //                 setChat={setMessage}
-          //               />
-          //             )}
-          //           </>
-          //         ) : (
-          //           <>
-          //             {!item.chat ? "" : <SentMessage item={item} />}
-          //             {item.type === "poll" && (
-          //               <Poll
-          //                 className="self-end"
-          //                 item={item.poll_id}
-          //                 chat={message}
-          //                 setChat={setMessage}
-          //               />
-          //             )}
-          //           </>
-          //         )}
-          //       </Fragment>
-          //     ))}
-          // </>
           <>
             {message.map((item, i) => (
               <div
@@ -244,7 +211,7 @@ export default function ChatById() {
         />
         <form
           onSubmit={handleSubmitMessage}
-          className="flex justify-between w-full"
+          className="flex justify-between w-full bg-transparent"
         >
           <input
             disabled={fileToUpload ? true : false}
@@ -253,7 +220,7 @@ export default function ChatById() {
             // value={chat}
             name="message"
             placeholder="Type a message"
-            className="bg-transparent placeholder:text-black/50 w-full focus:outline-none"
+            className="bg-transparent placeholder:text-white/60 w-full focus:outline-none "
           />
           <button type="submit">Send</button>
         </form>

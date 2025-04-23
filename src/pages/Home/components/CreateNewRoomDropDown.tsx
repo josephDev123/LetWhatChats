@@ -105,7 +105,7 @@ export default function CreateNewRoomDropDown({
           initial={{ opacity: 0, scale: 0 }}
           animate={newRoomDropDownStatus ? "open" : "closed"}
           variants={createNewRoomDropDownVariant}
-          exit={{ opacity: 0 }}
+          exit={{ opacity: 0, scale: 0 }}
           className="absolute bottom-0 top-7 lg:right-0 sm:left-32 right-0 p-4 drop-shadow-md rounded-md sm:w-[300px] w-full sm:h-[500px] h-[400px] overflow-y-auto no-scrollbar flex flex-col text-black bg-black/75 z-30"
         >
           <h4 className="w-full text-xl">New chat</h4>

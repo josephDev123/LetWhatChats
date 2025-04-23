@@ -31,7 +31,8 @@ export default function HomeLayout({}: {}) {
 
   useEffect(() => {
     setConversationsFiltered(conversations.data || []);
-  }, [conversations.data]);
+  }, []);
+  // conversations.data
 
   const listenToSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.toLowerCase();
