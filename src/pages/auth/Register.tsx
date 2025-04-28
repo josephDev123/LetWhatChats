@@ -16,6 +16,8 @@ import LoadingModal from "../../generic/LoadingModal";
 import { registerSchema } from "../../zodTypes/registerType";
 import { useNavigate } from "react-router-dom";
 import { Images } from "../../../Images";
+import { AxiosErrorHandler } from "../../utils/AxiosErrorHandler";
+import { toast } from "react-toastify";
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -55,11 +57,16 @@ export default function Register() {
   const handleOnSubmit: SubmitHandler<registerType> = async (data) => {
     setStatus("loading");
     try {
-      const fileUploadUrl = await UploadFirebase(profileImgData);
+      if (!profileImgData) {
+        setStatus("");
+        toast.error("profile pic required");
+        return;
+      }
+      const fileUploadUrl = (await UploadFirebase(profileImgData)) as any;
       console.log(fileUploadUrl);
       if (!fileUploadUrl) {
         setStatus("");
-        alert("file isssue ..");
+        toast.error("profile pic upload failed");
         return;
       } else {
         const submitReq = await axiosInstance({
@@ -79,18 +86,10 @@ export default function Register() {
         // window.location.href = "/login";
         location("/login");
       }
-    } catch (error: any) {
-      // console.log(error.response.data);
-      if (error.response) {
-        setStatus("error");
-        console.log(error.response.data);
-        setErrorMessage(error.response.data.error);
-        return;
-      }
+    } catch (error: unknown) {
       setStatus("error");
-      console.log(error);
-      setErrorMessage("Something went wrong");
-      return;
+      const errorMessage = AxiosErrorHandler(error);
+      setErrorMessage(errorMessage);
     }
   };
 
@@ -181,7 +180,7 @@ export default function Register() {
             </p>
           </div>
 
-          <div className="flex flex-col">
+          <div className="flex flex-col w-full ">
             <div className="flex gap-1 w-full items-center justify-center ">
               <CiFileOn color="green" className="sm:text-xl" />
               <input
@@ -192,22 +191,23 @@ export default function Register() {
                 name="profile_img"
                 type="file"
                 accept="image/*"
-                className="outline-none placeholder:pl-5 cursor-pointer sm:text-base text-xs"
+                className="outline-none cursor-pointer sm:text-base text-xs"
               />
-              {uploadProfileUrl ? (
-                <>
-                  {" "}
+
+              <div className="w-6 h-6">
+                {uploadProfileUrl ? (
                   <img
                     src={uploadProfileUrl}
-                    width={25}
-                    height={25}
+                    // width={25}
+                    // height={25}
+
                     loading="lazy"
-                    className="rounded-full"
+                    className="rounded-full object-fill"
                   />
-                </>
-              ) : (
-                ""
-              )}
+                ) : (
+                  ""
+                )}
+              </div>
             </div>
             <p className="text-xs text-red-500">
               {/* {errors.profile_img ? errors.profile_img.message : ""} */}

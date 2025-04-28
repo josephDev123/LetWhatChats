@@ -13,6 +13,7 @@ import { loginSchema } from "../../zodTypes/registerType";
 import { useNavigate } from "react-router-dom";
 import { LuUserCircle2 } from "react-icons/lu";
 import { Images } from "../../../Images";
+import { AxiosErrorHandler } from "../../utils/AxiosErrorHandler";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -46,9 +47,10 @@ export default function Login() {
 
       return location("/");
     } catch (error: any) {
-      console.log(error);
+      // console.log(error);
       setStatus("error");
-      setErrorMessage(error.message);
+      const errorMessage = AxiosErrorHandler(error);
+      setErrorMessage(errorMessage);
     }
   };
 
