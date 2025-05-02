@@ -8,14 +8,14 @@ import { FaRegPenToSquare, FaSpinner } from "react-icons/fa6";
 import { useQueryFacade } from "../../utils/GetConversationFacade";
 import { ConversationType } from "../../type/dbConversationType";
 // import { useAppSelector } from "../../lib/redux/hooks";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export default function HomeLayout({}: {}) {
   const [conversationsFiltered, setConversationsFiltered] = useState<
     ConversationType[]
   >([]);
-  const [searchParam, setSearchParam] = useSearchParams();
-  console.log(setSearchParam);
+  // const [searchParam, setSearchParam] = useSearchParams();
+  // console.log(setSearchParam);
   // const signalReQuery = useAppSelector((state) => state.triggerQueryRefresh);
   // const [queryKey, setQueryKey] = useState([signalReQuery.signal]);
 
@@ -23,41 +23,44 @@ export default function HomeLayout({}: {}) {
   //   setQueryKey([signalReQuery.signal]);
   // }, [signalReQuery.signal]);
 
-  const conversations = useQueryFacade<ConversationType[], Error>(
+  const { isLoading, isError, data } = useQueryFacade<
+    ConversationType[],
+    Error
+  >(
     // ...queryKey
     ["conversations"],
     "conversation"
   );
 
   useEffect(() => {
-    setConversationsFiltered(conversations.data || []);
-  }, []);
+    setConversationsFiltered(data || []);
+  }, [data]);
   // conversations.data
 
   const listenToSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.toLowerCase();
     console.log(value);
     if (value === "") {
-      setConversationsFiltered(conversations.data || []);
+      setConversationsFiltered(data || []);
       return;
     }
 
     const filtered =
-      conversations.data?.filter((item) => {
+      data?.filter((item) => {
         if (item.conversation_name) {
           return item.conversation_name.toLowerCase().includes(value);
         }
         return false;
       }) || [];
 
-    if (filtered.length === 0) {
-      setConversationsFiltered(conversations.data || []);
-    } else {
-      setConversationsFiltered(filtered);
-    }
+    // if (filtered.length === 0) {
+    //   setConversationsFiltered(conversations.data || []);
+    // } else {
+    setConversationsFiltered(filtered);
+    // }
   };
 
-  // console.log(conversations.data);
+  console.log(data);
   return (
     <section className="flex w-full h-full gap-1">
       <div className="md:w-[30%] sm:w-[40%] w-full flex flex-col h-screen sm:p-2">
@@ -70,37 +73,33 @@ export default function HomeLayout({}: {}) {
         {/* large screen left panel */}
         <div className="overflow-y-auto  sm:flex hidden flex-col mt-4 space-y-0.5 h-full">
           {/* <span>Connection status: {connectionStatus}</span> */}
-          {conversations.isLoading && (
+          {isLoading ? (
             <div className="h-full flex flex-col justify-center items-center">
               <FaSpinner className="animate-spin h-8 w-8" />
             </div>
-          )}
-
-          {conversations.isError && (
+          ) : isError ? (
             <div className="">
               <span className="text-red-400">Something went wrong</span>
             </div>
+          ) : (
+            <>
+              {conversationsFiltered.length < 1 ? (
+                <div>
+                  <p>No conversation. </p>
+                  <p className="inline-flex items-center gap-2">
+                    Click <FaRegPenToSquare className="text-green-400" /> above
+                    to create
+                  </p>
+                </div>
+              ) : (
+                <>
+                  {conversationsFiltered?.map((item: ConversationType) => (
+                    <MessageRoomCard key={item._id} item={item} />
+                  ))}
+                </>
+              )}
+            </>
           )}
-
-          {conversationsFiltered.length == 0 && (
-            <div>
-              <p>No conversation. </p>
-              <p className="inline-flex items-center gap-2">
-                Click <FaRegPenToSquare className="text-green-400" /> above to
-                create
-              </p>
-            </div>
-          )}
-
-          {!searchParam.get("type")
-            ? conversationsFiltered?.map((item: ConversationType) => (
-                <MessageRoomCard key={item._id} item={item} />
-              ))
-            : conversations.data
-                ?.filter((item) => item.conversation_name !== null)
-                .map((item: ConversationType) => (
-                  <MessageRoomCard key={item._id} item={item} />
-                ))}
         </div>
         {/* small screen */}
         <div className="sm:hidden flex flex-col w-full overflow-y-auto no-scrollbar h-full bg-cover bg-center">
