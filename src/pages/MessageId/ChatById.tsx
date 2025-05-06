@@ -15,7 +15,7 @@ import { useQueryFacade } from "../../utils/GetConversationFacade";
 import { ChatDataDTOType, MessageChatType } from "../../type/ChatDataDTO";
 import { useParams } from "react-router-dom";
 import { ChatbroadCastDataDTOType } from "../../type/ChatbroadcastDataDTOType";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { handleSocketDisconnect } from "../../utils/socketDisconnect";
 import AvatarGroup from "./components/AvatarGroup";
 
@@ -24,11 +24,6 @@ export default function ChatById() {
   const [message, setMessage] = useState<MessageChatType[]>([]);
   const [isPollModalOpen, setPollModalOpen] = useState(false);
   const [fileToUpload, setFileToUpload] = useState<string | null>(null);
-
-  const [loading1, setLoading1] = useState(true);
-  const [loading2, setLoading2] = useState(true);
-  const [error1, setError1] = useState(false);
-  const [error2, setError2] = useState(false);
 
   const [fileRef, setfileRef] = useState("");
   const [mediaTypeTobeUpload, setMediaTypeTobeUpload] = useState("");
