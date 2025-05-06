@@ -1,4 +1,4 @@
-import { Outlet, useSearchParams } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import LeftPanelHeading from "./components/LeftPanelHeading";
 import SearchChat from "./components/SearchChat";
 import MessageRoomCard from "./components/MessageRoomCard";
@@ -8,21 +8,9 @@ import { FaRegPenToSquare, FaSpinner } from "react-icons/fa6";
 import { useQueryFacade } from "../../utils/GetConversationFacade";
 import { ConversationType } from "../../type/dbConversationType";
 // import { useAppSelector } from "../../lib/redux/hooks";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function HomeLayout({}: {}) {
-  const [conversationsFiltered, setConversationsFiltered] = useState<
-    ConversationType[]
-  >([]);
-  // const [searchParam, setSearchParam] = useSearchParams();
-  // console.log(setSearchParam);
-  // const signalReQuery = useAppSelector((state) => state.triggerQueryRefresh);
-  // const [queryKey, setQueryKey] = useState([signalReQuery.signal]);
-
-  // useEffect(() => {
-  //   setQueryKey([signalReQuery.signal]);
-  // }, [signalReQuery.signal]);
-
   const { isLoading, isError, data } = useQueryFacade<
     ConversationType[],
     Error
@@ -31,6 +19,17 @@ export default function HomeLayout({}: {}) {
     ["conversations"],
     "conversation"
   );
+  const [conversationsFiltered, setConversationsFiltered] = useState<
+    ConversationType[]
+  >(data || []);
+  // const [searchParam, setSearchParam] = useSearchParams();
+  // console.log(setSearchParam);
+  // const signalReQuery = useAppSelector((state) => state.triggerQueryRefresh);
+  // const [queryKey, setQueryKey] = useState([signalReQuery.signal]);
+
+  // useEffect(() => {
+  //   setQueryKey([signalReQuery.signal]);
+  // }, [signalReQuery.signal]);
 
   useEffect(() => {
     setConversationsFiltered(data || []);
@@ -60,7 +59,7 @@ export default function HomeLayout({}: {}) {
     // }
   };
 
-  console.log(data);
+  console.log(conversationsFiltered);
   return (
     <section className="flex w-full h-full gap-1">
       <div className="md:w-[30%] sm:w-[40%] w-full flex flex-col h-screen sm:p-2">

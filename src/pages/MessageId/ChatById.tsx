@@ -61,13 +61,13 @@ export default function ChatById() {
 
   useEffect(() => {
     // Join the room
-    socket.emit("joinConversation", { conversationId });
+    // socket.emit("joinConversation", { conversationId });
 
-    // Listen for events
-    socket.once("joinConversation", (data) => {
-      console.log(data);
-      toast.success("Conversation establish successfully");
-    });
+    // // Listen for events
+    // socket.once("joinConversation", (data) => {
+    //   console.log(data);
+    //   toast.success("Conversation establish successfully");
+    // });
 
     // Listen for incoming messages
     socket.on("receiveMessage", (message) => {
