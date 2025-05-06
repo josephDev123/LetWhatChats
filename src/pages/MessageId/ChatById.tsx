@@ -17,12 +17,18 @@ import { useParams } from "react-router-dom";
 import { ChatbroadCastDataDTOType } from "../../type/ChatbroadcastDataDTOType";
 import { toast } from "react-toastify";
 import { handleSocketDisconnect } from "../../utils/socketDisconnect";
+import AvatarGroup from "./components/AvatarGroup";
 
 export default function ChatById() {
   const [toggleAttachment, setToggleAttachment] = useState(false);
   const [message, setMessage] = useState<MessageChatType[]>([]);
   const [isPollModalOpen, setPollModalOpen] = useState(false);
   const [fileToUpload, setFileToUpload] = useState<string | null>(null);
+
+  const [loading1, setLoading1] = useState(true);
+  const [loading2, setLoading2] = useState(true);
+  const [error1, setError1] = useState(false);
+  const [error2, setError2] = useState(false);
 
   const [fileRef, setfileRef] = useState("");
   const [mediaTypeTobeUpload, setMediaTypeTobeUpload] = useState("");
@@ -48,6 +54,7 @@ export default function ChatById() {
 
   const ConversationRoomName =
     chatData.data?.groupDetails.conversation_name || "";
+  console.log(ConversationRoomName);
 
   const conversation_members = chatData.data?.groupDetails.UserDetails || [];
 
@@ -110,7 +117,7 @@ export default function ChatById() {
     >
       <div className="flex justify-between items-center py-2 px-4 bg-black/40">
         <div className="flex items-center gap-2">
-          <div className="w-12 h-12 flex items-center rounded-full hover:">
+          {/* <div className="w-12 h-12 flex items-center rounded-full hover:">
             {!ConversationRoomName ? (
               <div className="inline-flex ">
                 <span className="">
@@ -145,7 +152,11 @@ export default function ChatById() {
                 className="rounded-full"
               />
             )}
-          </div>
+          </div> */}
+          <AvatarGroup
+            ConversationRoomName={ConversationRoomName}
+            chatData={chatData.data!}
+          />
           <div className="flex flex-col leading-tight text-white/80">
             <h5 className="font-bold text-sm sm:text-base">
               {ConversationRoomName}
