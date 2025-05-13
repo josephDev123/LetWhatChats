@@ -31,6 +31,8 @@ export interface GroupMember {
 export interface GroupDetails {
   _id: string;
   conversation_name: string;
+  creator: string;
+  avatar: string | null;
   GroupMembers: GroupMember[];
   UserDetails: UserDetails[];
 }

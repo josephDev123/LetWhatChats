@@ -105,6 +105,7 @@ export default function ChatById() {
   }
 
   handleSocketDisconnect(socket);
+  console.log(chatData.data);
 
   return (
     <section
@@ -112,42 +113,6 @@ export default function ChatById() {
     >
       <div className="flex justify-between items-center py-2 px-4 bg-black/40">
         <div className="flex items-center gap-2">
-          {/* <div className="w-12 h-12 flex items-center rounded-full hover:">
-            {!ConversationRoomName ? (
-              <div className="inline-flex ">
-                <span className="">
-                  <img
-                    src={chatData.data?.groupDetails.UserDetails[0].profile_img}
-                    alt=" avatar"
-                    title={chatData.data?.groupDetails.UserDetails[0].name}
-                    width={6}
-                    height={6}
-                    loading="lazy"
-                    className="w-6 h-6 rounded-full border border-black"
-                  />
-                </span>
-
-                <span className="translate-x-[-12px]">
-                  <img
-                    src={chatData.data?.groupDetails.UserDetails[1].profile_img}
-                    alt=" avatar"
-                    title={chatData.data?.groupDetails.UserDetails[1].name}
-                    width={6}
-                    height={6}
-                    loading="lazy"
-                    className="w-6 h-6 rounded-full border border-black"
-                  />
-                </span>
-              </div>
-            ) : (
-              <img
-                src={"https://avatars.dicebear.com/api/human/123.svg"}
-                alt="avatar"
-                loading="lazy"
-                className="rounded-full"
-              />
-            )}
-          </div> */}
           <AvatarGroup
             ConversationRoomName={ConversationRoomName}
             chatData={chatData.data!}

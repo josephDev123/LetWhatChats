@@ -10,8 +10,10 @@ const AvatarGroup = ({
 }) => {
   const [loading1, setLoading1] = useState(true);
   const [loading2, setLoading2] = useState(true);
+  const [loading3, setLoading3] = useState(true);
   const [error1, setError1] = useState(false);
   const [error2, setError2] = useState(false);
+  const [error3, setError3] = useState(false);
 
   return (
     <div className="w-12 h-12 flex items-center rounded-full hover:">
@@ -70,12 +72,35 @@ const AvatarGroup = ({
           </span>
         </div>
       ) : (
-        <img
-          src={"https://avatars.dicebear.com/api/human/123.svg"}
-          alt="avatar"
-          loading="lazy"
-          className="rounded-full"
-        />
+        <>
+          {!error1 && loading1 ? (
+            <div className="w-6 h-6 rounded-full border border-gray-200 flex items-center justify-center bg-white">
+              <div className="animate-spin h-3 w-3 border-2 border-gray-500 border-t-transparent rounded-full"></div>
+            </div>
+          ) : error3 ? (
+            <small className="text-xs w-12 h-12  flex flex-col items-center justify-center text-red-300 rounded-full border">
+              avatar issue
+            </small>
+          ) : (
+            <img
+              onLoad={() => {
+                setLoading1(false);
+                setError1(false);
+              }}
+              onError={() => {
+                setLoading1(false);
+                setError1(true);
+              }}
+              src={
+                chatData.groupDetails.avatar ||
+                "https://avatars.dicebear.com/api/human/123.svg"
+              }
+              alt="avatar"
+              loading="lazy"
+              className="rounded-full"
+            />
+          )}
+        </>
       )}
     </div>
   );
