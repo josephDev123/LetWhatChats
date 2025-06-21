@@ -18,6 +18,8 @@ import { ChatbroadCastDataDTOType } from "../../type/ChatbroadcastDataDTOType";
 // import { toast } from "react-toastify";
 import { handleSocketDisconnect } from "../../utils/socketDisconnect";
 import AvatarGroup from "./components/AvatarGroup";
+import { Uuid } from "../../utils/Uuid";
+import { toast } from "react-toastify";
 
 export default function ChatById() {
   const [toggleAttachment, setToggleAttachment] = useState(false);
@@ -32,11 +34,9 @@ export default function ChatById() {
   const user = useUser();
   // console.log(user);
   const { conversationId } = useParams();
-  // const isVideoModalOpen = useSelector(
-  //   (state: chatOrgType) => state.isVideoModalOpen
-  // );
 
   const welcomeRef = useRef<HTMLDivElement>(null);
+  const pendingMessagesRef = useRef(new Map());
 
   socket.on("connect", () => {
     console.log(socket.id);
@@ -49,7 +49,7 @@ export default function ChatById() {
 
   const ConversationRoomName =
     chatData.data?.groupDetails.conversation_name || "";
-  console.log(ConversationRoomName);
+  // console.log(ConversationRoomName);
 
   const conversation_members = chatData.data?.groupDetails.UserDetails || [];
 
@@ -63,35 +63,48 @@ export default function ChatById() {
 
   useEffect(() => {
     // Join the room
-    // socket.emit("joinConversation", { conversationId });
+    socket.emit("joinConversation", { conversationId });
 
-    // // Listen for events
-    // socket.once("joinConversation", (data) => {
-    //   console.log(data);
-    //   toast.success("Conversation establish successfully");
-    // });
+    // Listen for events
+    socket.once("joinConversation", (data) => {
+      console.log(data);
+      console.log("Conversation establish successfully");
+    });
 
     // Listen for incoming messages
     socket.on("receiveMessage", (message) => {
       console.log(message);
       setMessage((prevMessages) => [...prevMessages, message]);
+
+      // Clear timeout if this was a pending message we sent
+      const timeout = pendingMessagesRef.current.get(message.message_id);
+      if (timeout) {
+        clearTimeout(timeout);
+        pendingMessagesRef.current.delete(message.message_id);
+      }
     });
 
     // Clean up on component unmount
     return () => {
       socket.off("joinConversation");
       socket.off("receiveMessage");
+
+      // Cleanup all timeouts
+      pendingMessagesRef.current.forEach((timeout) => clearTimeout(timeout));
+      pendingMessagesRef.current.clear();
     };
   }, [conversationId]);
 
   function handleSubmitMessage(e?: FormEvent) {
     e?.preventDefault();
+    const uuid = Uuid();
     const form = e?.target as HTMLFormElement;
     const formData = new FormData(form);
     const chatText = (formData.get("message") as string) || chat;
     if (!chatText) return "oloti";
-    console.log(chatText);
+    // console.log(chatText);
     const payload: ChatbroadCastDataDTOType = {
+      message_id: uuid,
       message_text: chatText,
       from_userId: user.data?._id,
       message_type: "text",
@@ -102,10 +115,18 @@ export default function ChatById() {
 
     socket.emit("sendMessage", { conversationId, message: payload });
     form.reset();
+    // Set 3s timeout to check if it's acknowledged
+    const timeout = setTimeout(() => {
+      toast.error(`Message with id ${uuid} not acknowledged in 5 sec`);
+      // You can show an error, retry, or notify user here
+    }, 5000);
+
+    // Store the timeout, using the message id
+    pendingMessagesRef.current.set(uuid, timeout);
   }
 
   handleSocketDisconnect(socket);
-  console.log(chatData.data);
+  // console.log(chatData.data);
 
   return (
     <section

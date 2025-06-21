@@ -25,7 +25,8 @@ export default function IncomingMessage({ item }: IncomingMessageType) {
               className="h-72 object-cover w-full"
             />
             <p className="mt-1 text-base">{item.message_text}</p>
-            <span className="self-end">
+            <span className="inline-flex justify-between items-center">
+              <span className="test-sm animate-ping"> {item.status} </span>
               {moment(item.sent_datetime).format("HH:s")}
             </span>
           </>

@@ -9,6 +9,7 @@ export interface UserDetails {
 }
 
 export interface MessageChatType {
+  message_id: string;
   _id: string;
   message_text: string;
   from_userId: string;
@@ -18,6 +19,7 @@ export interface MessageChatType {
   sent_datetime: string; // ISO string format
   __v: number;
   from_UserDetails: UserDetails;
+  status: "pending" | "fail" | "success";
 }
 
 export interface GroupMember {
